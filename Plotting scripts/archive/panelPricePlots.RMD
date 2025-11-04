@@ -1,0 +1,407 @@
+---
+title: "Annual mileage distribution plots regional deepdive"
+author: "Johanna Hoppe"
+date: "2025-02-03"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)#
+library(ggplot2)
+library(data.table)
+library(RColorBrewer)
+library(ggtext)
+library(ggh4x)
+library(tibble)
+library(ggforce)
+library(patchwork)
+library(ggpattern)
+library(grid)
+# Get the directory of the currently running script or Rmd
+folder_path <- dirname(this.path::this.dir())
+```
+
+
+```{r, fig.width=45, fig.height=10, fig.fullwidth=FALSE}
+
+```
+
+```{r, fig.width=45, fig.height=10, fig.fullwidth=FALSE}
+# Select plot data
+yrs <- c(2030)
+vehSize <- "Tractor-Trailer"
+operationMode <- c("Regional")
+trucktechs <- c("Diesel", "FCET", "BET Large Battery", "BET Small Battery")
+TCOgapScen <- "Medium"
+```
+
+```{r, fig.width=22.5, fig.height=10, fig.fullwidth=FALSE}
+TCOdata <- TCOdata[ period %in% yrs & `Vehicle Size` %in% vehSize & Operation %in% operationMode & `Fuel Type` %in% trucktechs & TCOgapScenario == TCOgapScen]
+
+TCOdata[`Fuel Type` == "BET Large Battery", `Fuel Type` := "BET\nLarge Battery"]
+TCOdata[`Fuel Type` == "BET Small Battery", `Fuel Type` := "BET\nSmall Battery"]
+TCOdata[, `Fuel Type` := factor(`Fuel Type`, levels = c("Diesel", "FCET", "BET\nLarge Battery", "BET\nSmall Battery"))]
+# Step 1: Compute sum per Fuel Type
+TCOSum <- TCOdata[, .(value = sum(value)), by = `Fuel Type`]
+
+# Step 2: Compute differences to Diesel
+diesel_val <- TCOSum[`Fuel Type` == "Diesel", value]
+TCOSum[, diff := value - diesel_val]
+
+# Step 3: Create segment data for arrows (exclude Diesel)
+arrow_data <- TCOSum[`Fuel Type` != "Diesel"]
+arrow_data[, `"TCOgapScenario"` := "Medium"]  # x-position
+arrow_data[, x := "Medium"]
+arrow_data[, xend := "Medium"]
+arrow_data[, y := diesel_val]
+arrow_data[, yend := value]
+
+# Step 4: Plot
+TCObarPlots <- ggplot(TCOdata, aes(x = `TCOgapScenario`)) +
+  geom_bar(aes(y = value, fill = Parameter), position = "stack", stat = "identity", width = 0.6) +
+  scale_fill_manual(values = ParameterColors) +
+ geom_hline(yintercept = diesel_val, linetype = "dashed", color = "black", size = 1) +
+geom_segment(
+ data = arrow_data,
+ aes(x = x, xend = xend, y = y, yend = yend),
+ arrow = arrow(length = unit(0.4, "cm"), type = "open", ends = "last", angle = 40),
+ color = "black",
+ linewidth = 3
+) +
+geom_label(
+ data = arrow_data,
+ aes(
+   x = xend,
+   y = (y + yend) / 2,
+   label = "DCO"
+),
+ hjust = -0.1,
+ vjust = 0.5,
+size = 12,
+ color = "black",           # text color
+ fill = "white",          # background color
+ label.size = 0,        # border thickness
+ label.r = unit(0.15, "lines"),  # corner radius
+ fontface = "bold"
+) +
+  facet_wrap(~ `Fuel Type`, nrow = 1) +
+  labs(x = "", y = "TCO [EUR/vehkm]", title = paste("TCO\n", operationMode, vehSize, "in", yrs)) +
+  scale_x_discrete(labels = function(x) { sub("\\s", "\n", x) }) +
+  themePanel +
+  theme(
+    panel.spacing = unit(0.5, "lines"),
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  )
+
+
+plot(TCObarPlots)
+```
+
+```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
+
+salesPrices <- salesPrices[period %in% yrs &  `Fuel Type` %in% trucktechs & `Vehicle Size` %in% vehSize]
+salesPrices[`Fuel Type` == "BET Large Battery", `Fuel Type` := "BET\nLarge\nBattery"]
+salesPrices[`Fuel Type` == "BET Small Battery", `Fuel Type` := "BET\nSmall\nBattery"]
+salesPrices[, `Fuel Type` := factor(`Fuel Type`, levels = c("Diesel", "FCET", "BET\nLarge\nBattery", "BET\nSmall\nBattery"))]
+salesPrices[, `Vehicle-Parameter-Scenario` := factor(`Vehicle-Parameter-Scenario`, levels = c("Low", "Medium", "High"))]
+
+
+# Stacked Bar Plot
+salesPbarPlots <- ggplot(salesPrices, aes(x = `Vehicle-Parameter-Scenario`)) +
+  geom_bar(aes(y = value, fill = Parameter), position = "stack", stat = "identity", width = 0.8) +
+  scale_fill_manual(values = ParameterColors) + 
+  facet_wrap(~ `Fuel Type`, nrow = 1) +
+  labs(x = "", y = "Purchase Price [EUR/Veh]", title = paste("Purchase Prices\n", vehSize, "in", yrs)) +
+  scale_x_discrete(labels = function(x) { sub("\\s", "\n", x) }, expand = expansion(mult = c(0.3, 0.3))) +
+  themePanel +
+  theme(
+    panel.spacing = unit(0.7, "lines"),                 # Slightly more room between facets
+    panel.border = element_rect(color = "grey85", fill = NA, linewidth = 0.4),  # Light border
+    strip.text = element_text(margin = margin(t = 4, b = 4)),                   # Ensure facet titles aren't clipped
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  )
+
+
+plot(salesPbarPlots)
+```
+
+```{r, fig.width=22.5, fig.height=10, fig.fullwidth=FALSE}
+
+
+yr <- c(2030)
+trucktechs <- c("Diesel", "BET Large Battery", "BET Small Battery")
+vehicleSize <- "Tractor-Trailer"
+gapScenarios <- c("BETOptimistic", "BETPessimistic", "Medium")
+data <- copy(TCOPerMileage)[period %in% yr & `Fuel Type` %in% trucktechs & `Vehicle Size` == vehicleSize & TCOgapScenario %in% gapScenarios]
+
+#Select Gap scenarios
+data[TCOgapScenario == "BETOptimistic", TCOgapScenario := "Optimistic"]
+data[TCOgapScenario == "BETPessimistic", TCOgapScenario := "Pessimistic"]
+
+data <- data[TCOgapScenario %in% c("Optimistic", "Medium", "Pessimistic")]
+
+data <- data[AM > 6000]
+data <- data[, .(value = sum(value)), by = c("Fuel Type", "TCOgapScenario", "AM")]
+data_wide <- dcast(
+  data,
+  `TCOgapScenario` + AM ~ `Fuel Type`,
+  value.var = "value"
+)
+data_wide <- data_wide[`TCOgapScenario` == "Medium"]
+find_intersections <- function(dt, col1, col2) {
+  dt[, diff := get(col1) - get(col2)]
+  dt[, sign_change := shift(sign(diff), type = "lag") != sign(diff)]
+  dt[sign_change == TRUE, .(AM, TCO = get(col2), `Fuel Type` = col1)]
+}
+
+# Find intersections
+inter1 <- find_intersections(data_wide, "BET Large Battery", "Diesel")
+inter2 <- find_intersections(data_wide, "BET Small Battery", "Diesel")
+
+# Combine results
+intersections <- rbind(inter1, inter2)
+
+
+
+data  <- dcast(
+  data,
+  `Fuel Type` + AM ~ `TCOgapScenario`,
+  value.var = "value"
+)
+
+breakeven <- ggplot(data) +
+  geom_ribbon(
+    aes(x = AM, ymin = `Optimistic`, ymax = `Pessimistic`, fill =  `Fuel Type`),
+    inherit.aes = FALSE,
+    alpha = 0.2
+  ) +
+  geom_line(aes(x = AM, y = Medium, color = `Fuel Type`), linewidth = 1.5
+  ) +
+  geom_vline(
+    data = intersections,
+    aes(xintercept = AM, color = `Fuel Type`),
+    linetype = "dashed", linewidth = 3
+  ) +
+  geom_point(
+    data = intersections,
+    aes(x = AM, y = TCO),
+    shape = 1, size = 10, stroke = 4, fill = NA, color = "black"
+  ) +
+  geom_label(
+ data = intersections,
+ aes(
+   x = AM - 15000,
+   y = TCO - 0.39,
+   label = paste0("Breakeven\n", `Fuel Type`)
+),
+ hjust = 0,
+ vjust = 1,
+ size = 12,
+ color = "black",           # text color
+ fill = "white",          # background color
+ label.size = 0,        # border thickness
+ label.r = unit(0.15, "lines"),  # corner radius
+ fontface = "bold"
+) +
+  labs(
+    x = "Annual mileage [vehkm/yr]",
+    y = "TCO [EUR/vehkm]",
+    title = paste0("TCO over annual mileage\n", vehSize, " in ", yrs))+
+  coord_cartesian(ylim = c(0, 3.3))+ 
+  scale_x_continuous(limits = c(25000, 85000)) +
+  
+  scale_color_manual(values = c("BET Small Battery" = "#1F77B4", "BET Large Battery" = "#9467BD", "Diesel" = "black"),
+                     breaks = c("Diesel", "BET Large Battery", "BET Small Battery")) +  # Reorder the legend items
+  
+  scale_fill_manual(values = c("BET Small Battery" = "#1F77B4", "BET Large Battery" = "#9467BD", "Diesel" = "black"),
+                    breaks = c("Diesel", "BET Large Battery", "BET Small Battery")) +  # Reorder the legend items
+  themePanel
+
+plot(breakeven)
+
+```
+
+
+
+```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
+
+
+trucktechs <- c("BET Large Battery", "BET Small Battery")
+data <- copy(fuelPricesEURperkwh)[period > 2025 & paperScen == "Current Policies"]
+enduseFuelPrices <- data[, .(value = sum(value)), by = c("Energy-Carrier-Parameter-Scenario", "period", "Country", "Unit", "Fuel", "paperScen")]
+enduseFuelPrices[, Parameter := "Enduse"]
+data <- data[Parameter == "Wholesale"]
+data <- rbind(data, enduseFuelPrices)
+
+fuels_wide <- dcast(
+  data, 
+  period + Fuel + Parameter ~ `Energy-Carrier-Parameter-Scenario`, 
+  value.var = "value"
+)
+fuels_wide <- fuels_wide[!Fuel == "Mixed Charging"]
+fuels_wide[, Fuel := factor(Fuel, levels = c("Hydrogen", "CCS", "MCS", "Diesel Mix", "Diesel Fossil", "Diesel Bio", "Diesel Syn"))]
+
+rawBatFCPrices_wide <- dcast(
+  rawBatFCPrices[period > 2025], 
+  period + Parameter + `Fuel Type`~ `Vehicle-Parameter-Scenario`, 
+  value.var = "value"
+)
+
+rawBatFCPrices_wide[, Low := as.numeric(Low)]
+rawBatFCPrices_wide[, High := as.numeric(High)]
+rawBatFCPrices_wide[, Medium := as.numeric(Medium)]
+
+# Create one plot per facet, then stitch them back together
+facet_levels <- c("Energy Carrier Prices", "Vehicle Related Prices", "Resulting TCO", "TCO Breakeven")
+
+HydrogenPrices <- ggplot(
+  fuels_wide[Fuel == "Hydrogen" & Parameter %in% c("Wholesale", "Enduse")], 
+  aes()) +
+  geom_ribbon_pattern(
+    aes(
+      x = period,
+      ymin = `Progressive`,
+      ymax = BAU,
+      fill = Fuel,
+      pattern = Parameter
+    ),
+    alpha = 0.2) +
+  scale_fill_manual(values = paperColors) +
+  coord_cartesian(ylim = c(0, 0.3)) +
+  scale_x_continuous(breaks = seq(2030, 2050, 5), expand = c(0, 0)) +
+  labs(x = "Year", y = "Hydrogen Price [EUR/kWh]", title = "Hydrogen Prices") +
+  themePanel
+
+ElecPrices <- ggplot(
+  fuels_wide[Fuel %in% c("MCS", "CCS") & Parameter %in% c("Wholesale", "Enduse")], 
+  aes()) +
+  geom_ribbon_pattern(
+    aes(
+      x = period,
+      ymin = `Progressive`,
+      ymax = BAU,
+      fill = Fuel,
+      pattern = Parameter
+    ),
+    alpha = 0.2 ) +
+  scale_fill_manual(values = paperColors) +
+  coord_cartesian(ylim = c(0, 0.45)) +
+  scale_x_continuous(breaks = seq(2030, 2050, 5), expand = c(0, 0)) +
+  labs(x = "Year", y = "Electricity Price [EUR/kWh]", title = "Electricity Prices") +
+  themePanel
+
+DieselPrices <- ggplot() +
+  geom_ribbon_pattern(
+    data = fuels_wide[
+      (Fuel %in% c("Diesel Bio", "Diesel Syn", "Diesel Fossil") & Parameter == "Wholesale") |
+        (Fuel == "Diesel Mix" & Parameter == "Enduse")
+    ],
+    aes(
+      x = period,
+      ymin = `Progressive`,  # backticks if name has spaces
+      ymax = BAU,
+      fill = Fuel,
+      pattern = Parameter
+    ),
+    alpha = 0.5) +
+  scale_fill_manual(values = paperColors) +
+  geom_line(
+    data = fuels_wide[Fuel == "Diesel Fossil" & Parameter == "Wholesale"],
+    aes(x = period, y = BAU),
+    color = "black"
+  ) +
+  geom_point(
+    data = fuels_wide[Fuel == "Diesel Fossil" & Parameter == "Wholesale"],
+    aes(x = period, y = BAU),
+    shape = 1,        # solid circle
+    size = 3,        # small dot
+    color = "black"
+  ) +
+  coord_cartesian(ylim = c(0, 0.3)) +
+  scale_x_continuous(breaks = seq(2030, 2050, 5), expand = c(0, 0)) +
+  labs(x = "Year", y = "Diesel Price [EUR/kWh]", title = "Diesel Prices") +
+  themePanel
+
+rawBatFCPrices_wide <- rawBatFCPrices_wide[Parameter == "Fuel cell system costs", Parameter := "Fuel cell\nsystem\nprices"]
+FCPrices <- ggplot(
+  rawBatFCPrices_wide[period > 2020 & Parameter == "Fuel cell\nsystem\nprices"], 
+  aes()) +
+  geom_ribbon(
+    aes(
+      x = period,
+      ymin = Low,
+      ymax = High,
+      fill = Parameter
+    ),
+    alpha = 0.5 ) +
+  geom_line(
+    aes(x = period, y = Medium, color = Parameter), size = 3
+  ) +
+  scale_fill_manual(values = paperColors) +
+  scale_color_manual(values = paperColors) +
+  scale_x_continuous(breaks = seq(2030, 2050, 5), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 220),breaks = seq(0, 220, 20), expand = c(0, 0))+
+  labs(x = "Year", y = "Fuel Cell System Cost [EUR/kW]", title = "Fuel Cell System Prices") +
+  themePanel  
+
+rawBatFCPrices_wide[Parameter == "Battery costs", Parameter := "Battery\nsystem\nprices"]
+BatPrices <- ggplot(
+  rawBatFCPrices_wide[period > 2020 & Parameter == "Battery\nsystem\nprices" & `Fuel Type` == "BET"], 
+  aes()) +
+  geom_ribbon(
+    aes(
+      x = period,
+      ymin = Low,
+      ymax = High,
+      fill = Parameter,
+    ),
+    alpha = 0.5 ) +
+  geom_line(
+    aes(x = period, y = Medium, color = Parameter), size = 3
+  ) +
+  scale_fill_manual(values = paperColors) +
+  scale_color_manual(values = paperColors) +
+  scale_x_continuous(breaks = seq(2030, 2050, 5), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 220), breaks = seq(0, 220, 20), expand = c(0, 0))+
+  labs(x = "Year", y = "Battery System Prices [EUR/kW]", title = "Battery System Prices") +
+  themePanel 
+
+plot(HydrogenPrices)
+plot(ElecPrices)
+plot(DieselPrices)
+plot(BatPrices)
+plot(FCPrices)
+
+```
+
+
+```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
+# Arrange them
+combinedPlotMain <- (
+  (TCObarPlots | breakeven)
+  
+)+ 
+  plot_annotation(tag_levels = "a")
+
+
+combined_plotSupplementary <- (
+  (BatPrices | FCPrices | salesPbarPlots) /
+  (ElecPrices | HydrogenPrices | DieselPrices) 
+)+ 
+  plot_annotation(tag_levels = "a")
+
+
+
+
+ggsave(
+  file.path(folder_path, "plots", "TCOoverview.pdf"),
+  plot = combinedPlotMain,
+  width = 40, height = 45/3, units = "in", device = cairo_pdf, limitsize = FALSE
+)
+
+ggsave(
+  file.path(folder_path, "plots", "Sup_pricesPanel.pdf"),
+  plot = combined_plotSupplementary,
+  width = 40, height = (45/3) * 2, units = "in", device = cairo_pdf, limitsize = FALSE
+)
+
+```

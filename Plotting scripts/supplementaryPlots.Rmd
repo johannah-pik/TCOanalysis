@@ -1,0 +1,1378 @@
+---
+title: "supplementaryPlots"
+author: "Johanna Hoppe"
+date: "2025-05-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)#
+library(ggplot2)
+library(data.table)
+library(RColorBrewer)
+library(ggtext)
+library(ggh4x)
+library(ggforce)
+library(patchwork)
+library(ggpattern)
+```
+
+```{r}
+rm(list=ls())
+mainFolder <- dirname(this.path::this.dir())
+plotFolder <- file.path(mainFolder, "plots", "supplementary")
+source(file.path(mainFolder, "Plotting scripts", "loadAndPrepareData.R"))
+```
+
+# TCO x Annual mileage distribution bar plot 
+```{r, fig.width=15.5, fig.height=5, fig.fullwidth=FALSE}
+
+yr <- c(2030)
+trucktechs <- c("BET large battery", "BET small battery")
+data <- copy(BETvsFCET)[period %in% yr & `Fuel Type` %in% trucktechs & paperScen == "Current Policies"]
+data[, TCOgain := - TCOgap]
+data[, cum_width := 0.999* (cumBinWeightedShareEUR - shift(cumBinWeightedShareEUR, type = "lag")), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
+data[is.na(cum_width), cum_width := (cumBinWeightedShareEUR), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
+
+data[, paperScen := factor(paperScen, 
+                               levels = c("Current Policies"))]
+data[, TCOgapScenario := factor(TCOgapScenario, 
+                               levels = c("Optimistic", "Medium", "Pessimistic"))]
+
+findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
+findZeroPoints[, `Fuel Type` := factor(`Fuel Type`, 
+                               levels = c("BET small battery", "BET large battery"))]
+setorder(findZeroPoints, paperScen, TCOgapScenario, `Fuel Type`, cumBinWeightedShareEUR)
+findZeroPoints[, arrow_y := seq(-0.2, -0.5, length.out = .N), by = c("paperScen", "TCOgapScenario")]
+
+setorder(findZeroPoints, - cumBinWeightedShareEUR)
+findZeroPoints[, `Fuel Type` := factor(`Fuel Type`, levels = c("BET small battery", "BET large battery"))]  
+middle_y <- findZeroPoints[round(nrow(findZeroPoints)/6), arrow_y]
+
+data$facet_order <- as.numeric(factor(data$TCOgapScenario))
+findZeroPoints$facet_order <- as.numeric(factor(findZeroPoints$TCOgapScenario))
+
+# Split data to layer plots for best visibility
+dataPositive <- data[TCOgain > 0]
+dataNegative <- data[TCOgain < 0] 
+dataPositive[, `Fuel Type` := factor(`Fuel Type`, 
+                               levels = c("BET small battery", "BET large battery"))]
+dataNegative[, `Fuel Type` := factor(`Fuel Type`, 
+                               levels = c("BET large battery", "BET small battery"))]
+setorder(dataPositive, `Fuel Type`)
+setorder(dataNegative, `Fuel Type`)
+
+# Create one plot per facet, then stitch them back together
+facet_levels <- unique(data$TCOgapScenario)
+facet_levels <- facet_levels[c(1,3,2)]
+# Primary x-axis breaks
+x_breaks <- c(0, 25, 50, 75, 100)
+# Corresponding secondary axis labels
+sec_labels <- sapply(x_breaks, function(x) {
+  # Find the nearest cumBinWeightedShareEUR
+  idx <- which.min(abs(data$cumBinWeightedShareEUR * 100 - x))
+  # Return corresponding cumBinWeightedVehShare value
+  round(data$cumBinWeightedVehShareEUR[idx] * 100)
+})
+
+plot_list <- lapply(seq_along(facet_levels), function(i) {
+  facet_level <- facet_levels[i]
+  sub_dataPos <- subset(dataPositive, TCOgapScenario == facet_level)
+  sub_dataNeg <- subset(dataNegative, TCOgapScenario == facet_level)
+  sub_zero <- subset(findZeroPoints, TCOgapScenario == facet_level)
+  extra_label <- if (i == 3) {
+  annotate("label", x = 52, y = middle_y, label = "of road km\ncost beneficial", 
+           color = "black", fill = "white", fontface = "bold", size = 4.2, hjust = 0, vjust = 0.5,
+           label.padding = unit(0.3, "cm"), label.size = 0)
+} else {
+  NULL
+}
+  scales <- if (i == 3) {
+  list(
+    scale_color_manual(values = paperColors),
+    scale_fill_manual(values = paperColors)
+  )
+} else {
+  list(
+    scale_color_manual(values = paperColors, guide = "none"),
+    scale_fill_manual(values = paperColors, guide = "none")
+  )
+}
+  ggplot(sub_dataPos) +
+    # 1. Fill only
+    geom_rect(
+      aes(xmin = cumBinWeightedShareEUR * 100 - cum_width * 100, xmax = cumBinWeightedShareEUR * 100,
+          ymin = 0, ymax = TCOgain,
+          fill = `Fuel Type`),
+      color = NA,
+      alpha = 0.5,
+      show.legend = FALSE
+    ) +
+    # 2. Border only
+    geom_rect(
+      aes(xmin = cumBinWeightedShareEUR * 100 - cum_width * 100, xmax = cumBinWeightedShareEUR * 100,
+          ymin = 0, ymax = TCOgain,
+          color = `Fuel Type`),
+      fill = NA,
+      linewidth = 0.001,
+      alpha = 0.005,
+      show.legend = FALSE
+    ) +
+    # 1. Fill only
+    geom_rect(
+      data = sub_dataNeg, 
+      aes(xmin = cumBinWeightedShareEUR * 100 - cum_width * 100, xmax = cumBinWeightedShareEUR * 100,
+          ymin = 0, ymax = TCOgain,
+          fill = `Fuel Type`),
+      color = NA,
+      alpha = 0.5
+    ) +
+    # 2. Border only
+    geom_rect(
+      data = sub_dataNeg,
+      aes(xmin = cumBinWeightedShareEUR * 100 - cum_width * 100, xmax = cumBinWeightedShareEUR * 100,
+          ymin = 0, ymax = TCOgain,
+          color = `Fuel Type`),
+      fill = NA,
+      linewidth = 0.001,
+      show.legend = FALSE,
+      alpha = 0.005
+    ) +
+  geom_point(
+    data = sub_zero,
+    aes(x = cumBinWeightedShareEUR * 100, y = 0, color = `Fuel Type`),  
+    shape = 1,
+    size = 5,
+    stroke = 2,
+    fill = NA
+  ) +
+    geom_vline(data = sub_zero, aes(xintercept = cumBinWeightedShareEUR * 100, color = `Fuel Type`), 
+               linetype = "dashed", linewidth = 1, show.legend = FALSE) +
+    geom_segment(data = sub_zero, aes(x = 0, xend = cumBinWeightedShareEUR * 100, y = arrow_y, yend = arrow_y, color = `Fuel Type`), 
+                 arrow = arrow(length = unit(0.3, "cm"), type = "open"), 
+                 linewidth = 1) +
+    geom_label(data = sub_zero, 
+               aes(x = 50, y = arrow_y, 
+                   label = paste("~", round(cumBinWeightedShareEUR * 100), "%")),
+               color = "black", fill = "white",
+               size = 4.2, fontface = "bold",
+               label.padding = unit(0.1, "cm"),
+               label.size = 0, hjust = 1, vjust = 0.5) +
+    extra_label +
+    geom_hline(yintercept = 0, color = "black", linewidth = 1) +
+    scale_x_continuous(expand = c(0, 0), 
+                       limits = c(0, 101),
+                       breaks = x_breaks,
+                       sec.axis = sec_axis(
+                         transform = ~ .,  
+                         name = if (i == 2) paste0("Share of vehicles in in considered truck markets in ", yr," [%]") else NULL,
+                         labels = sec_labels)) +
+    coord_cartesian(ylim = c(-0.6, 0.6)) +
+    scales +
+    labs(
+      x = if (i == 2) paste0("Share of road km in considered truck markets in ", yr," [%]") else NULL,
+      y = if (i == 1) "DCO gain [EUR/km]" else NULL,
+      title = as.character(facet_level)
+    ) + 
+  themePanel
+})
+
+
+combined <- wrap_plots(plot_list, ncol = 3, guides = "collect") &
+  theme(legend.position = "bottom")
+combined <- combined & theme(
+  legend.margin = margin(t = 20),
+  legend.text = element_text(size = rel(1)),
+  legend.title = element_text(size = rel(1))
+)
+plot(combined)
+
+ggsave(
+  filename = file.path(plotFolder, paste0("BETvsFCETAMdistributionBarPlotCurrentPolicies", yr, ".pdf")),
+  plot = combined,
+  width = 15.5, height = 5, units = "in",
+  dpi = 72,          # Optional but improves embedded text quality
+  bg = "white"        # Avoid transparency issues in PDF/LaTeX
+)
+
+```
+
+```
+
+#Meta plot: Share of economically viable road km over time, Current policies scenario with removed diesel efficiency gains for comparison
+```{r, fig.width=27, fig.height=12, fig.fullwidth=FALSE}
+scenario1 <- "Sensitivity | Removed diesel efficiency gains | Current Policies"
+scenario2 <- "Removed Policies"
+trucktechs <- c("BET small battery", "BET large battery", "FCET")
+data <- copy(TCOdrivingProfiles)[`Fuel Type` %in% trucktechs & paperScen %in% c(scenario1, scenario2)]
+data[paperScen == "Sensitivity | Removed diesel efficiency gains | Current Policies", paperScen := "Current Policies\nRemoved diesel\nefficiency gains"]
+
+findZeroPoints <- data[ , .SD[which.min(abs(TCOgap))], by = .(period, `Fuel Type`, paperScen, TCOgapScenario)][
+  , .(period, `Fuel Type`, paperScen, TCOgapScenario, share)
+]
+setnames(findZeroPoints, c("paperScen", "TCOgapScenario"), c("Policy scenario", "Sensitivity scenario"))
+
+p <- ggplot(
+  findZeroPoints[period >= 2030], 
+  aes(color = `Fuel Type`, linetype = `Policy scenario`)
+) +
+  geom_line(aes(x = period, y = share), linewidth = 1.5) +
+  
+  scale_color_manual(values =  paperColors) +
+scale_linetype_manual(values = c(
+  "Current Policies\nRemoved diesel\nefficiency gains" = "solid",
+  "Removed Policies" = "dashed"
+)) +
+  # Facet settings: No spacing & fixed scales
+  facet_grid2(
+    #rows = vars(paperScen),
+    cols = vars(`Sensitivity scenario`),
+    scales = "fixed",
+    axes = "all"  # <- this makes all axes (x and y) visible
+  ) +
+  # Title and labels
+  labs(
+    x = "Year",
+    y = "Economically viable road km [%]")+
+  coord_cartesian(ylim = c(0, 100))+ 
+  themePanel
+plot(p)
+
+ggsave(file.path(plotFolder, paste0("Sup_AMdistributionMetaPlotEUR_sensDieselefficiencyGains.pdf")), plot = p, device = cairo_pdf, width = 27, height = 9, units = "in")
+
+```
+
+# Prices overview panel plot
+```{r, fig.width=45, fig.height=10, fig.fullwidth=FALSE}
+# Select plot data
+yrs <- c(2050)
+vehSize <- "Tractor-trailer"
+overviewTechs <- c("Diesel", "FCET", "BET large battery", "BET small battery")
+```
+
+## sales Prices
+```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
+salesPricedata <- copy(salesPrices)[period %in% yrs &  `Fuel Type` %in% overviewTechs & `Vehicle Size` %in% vehSize]
+salesPricedata[`Fuel Type` == "BET large battery", `Fuel Type` := "BET\nlarge\nbattery"]
+salesPricedata[`Fuel Type` == "BET small battery", `Fuel Type` := "BET\nsmall\nbattery"]
+salesPricedata[, `Fuel Type` := factor(`Fuel Type`, levels = c("Diesel", "FCET", "BET\nlarge\nbattery", "BET\nsmall\nbattery"))]
+salesPricedata[, `Vehicle-Parameter-Scenario` := factor(`Vehicle-Parameter-Scenario`, levels = c("Low", "Medium", "High"))]
+salesPricedata[, Parameter := factor(Parameter, levels = c("H2 tank", "Fuel cell system", "Battery", "Vehicle body\nincl. engine"))]
+
+# Stacked Bar Plot
+salesPbarPlots <- ggplot(salesPricedata, aes(x = `Vehicle-Parameter-Scenario`)) +
+  geom_bar(aes(y = value, fill = Parameter), position = "stack", stat = "identity", width = 0.8) +
+  scale_fill_manual(values = paperColors) + 
+  facet_wrap(~ `Fuel Type`, nrow = 1) +
+  labs(x = "", y = "Purchase price [EUR/Veh]", title = paste0("Purchase prices\n", vehSize, " (", yrs, ")")) +
+  scale_x_discrete(labels = function(x) { sub("\\s", "\n", x) }, expand = expansion(mult = c(0.3, 0.3))) +
+  themePanel +
+  theme(
+    panel.spacing = unit(0.7, "lines"),                 # Slightly more room between facets
+    panel.border = element_rect(color = "grey85", fill = NA, linewidth = 0.4),  # Light border
+    strip.text = element_text(margin = margin(t = 4, b = 4)),                   # Ensure facet titles aren't clipped
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  )
+
+
+plot(salesPbarPlots)
+```
+
+## Battery and fuel Cell System prices
+```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
+rawBatFCPrices_wide <- dcast(
+  rawBatFCPrices[period > 2025], 
+  period + Parameter + `Fuel Type`~ `Vehicle-Parameter-Scenario`, 
+  value.var = "value"
+)
+
+rawBatFCPrices_wide[, Low := as.numeric(Low)]
+rawBatFCPrices_wide[, High := as.numeric(High)]
+rawBatFCPrices_wide[, Medium := as.numeric(Medium)]
+
+rawBatFCPrices_wide <- rawBatFCPrices_wide[Parameter == "Fuel cell system costs", Parameter := "Fuel cell\nsystem\nprices"]
+FCPrices <- ggplot(
+  rawBatFCPrices_wide[period > 2020 & Parameter == "Fuel cell\nsystem\nprices"], 
+  aes()) +
+  geom_ribbon(
+    aes(
+      x = period,
+      ymin = Low,
+      ymax = High,
+      fill = Parameter
+    ),
+    alpha = 0.5 ) +
+  geom_line(
+    aes(x = period, y = Medium, color = Parameter), size = 3
+  ) +
+  scale_fill_manual(values = paperColors) +
+  scale_color_manual(values = paperColors) +
+  scale_x_continuous(breaks = seq(2030, 2050, 5), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 220),breaks = seq(0, 220, 20), expand = c(0, 0))+
+  labs(x = "Year", y = "Fuel cell system cost [EUR/kW]", title = "Fuel cell system prices") +
+  themePanel  
+
+rawBatFCPrices_wide[Parameter == "Battery costs", Parameter := "Battery\nsystem\nprices"]
+BatPrices <- ggplot(
+  rawBatFCPrices_wide[period > 2020 & Parameter == "Battery\nsystem\nprices" & `Fuel Type` == "BET"], 
+  aes()) +
+  geom_ribbon(
+    aes(
+      x = period,
+      ymin = Low,
+      ymax = High,
+      fill = Parameter,
+    ),
+    alpha = 0.5 ) +
+  geom_line(
+    aes(x = period, y = Medium, color = Parameter), size = 3
+  ) +
+  scale_fill_manual(values = paperColors) +
+  scale_color_manual(values = paperColors) +
+  scale_x_continuous(breaks = seq(2030, 2050, 5), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 220), breaks = seq(0, 220, 20), expand = c(0, 0))+
+  labs(x = "Year", y = "Battery system prices [EUR/kW]", title = "Battery system prices") +
+  themePanel 
+
+plot(BatPrices)
+plot(FCPrices)
+```
+
+
+## energy carrier prices enduse vs wholesale 
+```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
+data <- copy(fuelPricesEURperkwh)[period > 2025 & paperScen == "Current Policies"]
+enduseFuelPrices <- data[, .(value = sum(value)), by = c("Energy-Carrier-Parameter-Scenario", "period", "Country", "Unit", "Fuel", "paperScen")]
+enduseFuelPrices[, Parameter := "Enduse"]
+data <- data[Parameter == "Wholesale"]
+data <- rbind(data, enduseFuelPrices)
+
+fuels_wide <- dcast(
+  data, 
+  period + Fuel + Parameter ~ `Energy-Carrier-Parameter-Scenario`, 
+  value.var = "value"
+)
+fuels_wide <- fuels_wide[!Fuel == "Mixed Charging"]
+fuels_wide[, Fuel := factor(Fuel, levels = c("Hydrogen", "CCS", "MCS", "Diesel Mix", "Diesel Fossil", "Diesel Bio", "Diesel Syn"))]
+
+HydrogenPrices <- ggplot(
+  fuels_wide[Fuel == "Hydrogen" & Parameter %in% c("Wholesale", "Enduse")], 
+  aes()) +
+  geom_ribbon_pattern(
+    aes(
+      x = period,
+      ymin = `Progressive`,
+      ymax = BAU,
+      fill = Fuel,
+      pattern = Parameter
+    ),
+    alpha = 0.2) +
+  scale_fill_manual(values = paperColors) +
+  coord_cartesian(ylim = c(0, 0.3)) +
+  scale_x_continuous(breaks = seq(2030, 2050, 5), expand = c(0, 0)) +
+  labs(x = "Year", y = "Hydrogen\nPrice [EUR/kWh]", title = "Wholesale vs. enduse price trajectory") +
+    guides(
+    fill = guide_legend(override.aes = list(pattern = "none")),
+    pattern = guide_legend(title = "Parameter")
+  ) +
+  themePanel
+
+ElecPrices <- ggplot(
+  fuels_wide[Fuel %in% c("MCS", "CCS") & Parameter %in% c("Wholesale", "Enduse")], 
+  aes()) +
+  geom_ribbon_pattern(
+    aes(
+      x = period,
+      ymin = `Progressive`,
+      ymax = BAU,
+      fill = Fuel,
+      pattern = Parameter
+    ),
+    alpha = 0.5 ) +
+  scale_fill_manual(values = paperColors) +
+  coord_cartesian(ylim = c(0, 0.45)) +
+  scale_x_continuous(breaks = seq(2030, 2050, 5), expand = c(0, 0)) +
+  labs(x = "Year", y = "Electricity\nPrice [EUR/kWh]", title = "Wholesale vs. enduse price trajectory") +
+    guides(
+    fill = guide_legend(override.aes = list(pattern = "none")),
+    pattern = guide_legend(title = "Parameter")
+  ) +
+  themePanel
+
+fuels_wide[Fuel == "Diesel Bio", Fuel := "Bio"]
+fuels_wide[Fuel == "Diesel Syn", Fuel := "Syn"]
+fuels_wide[Fuel == "Diesel Fossil", Fuel := "Fossil"]
+fuels_wide[Fuel == "Diesel Mix", Fuel := "Mix"]
+fuels_wide[, Fuel := factor(Fuel, levels = c("Fossil", "Bio", "Syn", "Mix"))]
+
+DieselPrices <- ggplot() +
+  geom_ribbon_pattern(
+    data = fuels_wide[
+      (Fuel %in% c("Bio", "Syn", "Fossil") & Parameter == "Wholesale") |
+        (Fuel == "Mix" & Parameter == "Enduse")
+    ],
+    aes(
+      x = period,
+      ymin = `Progressive`,  # backticks if name has spaces
+      ymax = BAU,
+      fill = Fuel,
+      pattern = Parameter
+    ),
+    alpha = 0.5) +
+  scale_fill_manual(values = paperColors) +
+  geom_line(
+    data = fuels_wide[Fuel == "Fossil" & Parameter == "Wholesale"],
+    aes(x = period, y = BAU),
+    color = "black"
+  ) +
+  geom_point(
+    data = fuels_wide[Fuel == "Fossil" & Parameter == "Wholesale"],
+    aes(x = period, y = BAU),
+    shape = 1,        # solid circle
+    size = 3,        # small dot
+    color = "black"
+  ) +
+  coord_cartesian(ylim = c(0, 0.3)) +
+  scale_x_continuous(breaks = seq(2030, 2050, 5), expand = c(0, 0)) +
+  labs(x = "Year", y = "Diesel\nprice [EUR/kWh]", title = "Wholesale vs. enduse price trajectory") +
+    guides(
+    fill = guide_legend(override.aes = list(pattern = "none")),
+    pattern = guide_legend(title = "Parameter")
+  ) +
+  themePanel
+
+
+
+plot(HydrogenPrices)
+plot(ElecPrices)
+plot(DieselPrices)
+```
+
+## energy carrier prices enduse stacked bar plots
+```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
+data <- copy(fuelPricesEURperkwh)[period == 2030 & paperScen == "Current Policies"]
+rose5 <- c(
+  "#F6BDC0",  # light rose
+  "#F4A6B0",  # soft rose
+  "#E07A89",  # muted rose
+  "#C94A64",  # strong rose
+  "#7A1E48"   # deep wine rose
+)
+#stacked categories
+data[Parameter %in% c("Network Costs", 
+                      "Network fees savings potential"), Parameter := "General network costs"]
+data[Parameter %in% c("Taxes, Fees, Levies and charges - MCS",
+                      "Taxes, Fees, Levies and charges - Depot"), Parameter := "Taxes, fees, levies,\nand charges"]
+data[Parameter %in% c("Total Diesel Mark-Up"), Parameter := "Total diesel markup"]
+data <- data[, .(value = sum(value)), by = c("Energy-Carrier-Parameter-Scenario", "period", "Country", "Unit", "Fuel", "paperScen", "Parameter")]
+
+# Stacked Bar Plot
+# Hydrogen
+hydrogen <- data[Fuel == "Hydrogen"]
+hydrogen[Parameter == "Station Overhead, Profit and Mark-Up", Parameter := "Station overhead,\nprofit and mark-up"]
+hydrogen[Parameter == "Taxes, Fees, Levies and charges", Parameter := "Taxes, fees, levies,\nand charges"]
+hydrogen[, Parameter := factor(Parameter, levels = c("Taxes, fees, levies,\nand charges", "Station overhead,\nprofit and mark-up", "Station", "Transport and distribution", "Wholesale"))]
+hydrogenBarPlots <- ggplot(hydrogen, aes(x = `Energy-Carrier-Parameter-Scenario`)) +
+  geom_bar(aes(y = value, fill = Parameter), position = "stack", stat = "identity", width = 0.8) +
+ scale_fill_manual(values = rose5) + 
+  labs(x = "", y = "Enduse hydrogen\nprice [EUR/kWh]", title = "Hydrogen: Enduse price components (2030)") +
+  scale_x_discrete(labels = function(x) { sub("\\s", "\n", x) }, expand = expansion(mult = c(0.3, 0.3))) +
+  themePanel +
+  theme(
+    panel.spacing = unit(0.7, "lines"),                 # Slightly more room between facets
+    panel.border = element_rect(color = "grey85", fill = NA, linewidth = 0.4),  # Light border
+    strip.text = element_text(margin = margin(t = 4, b = 4)),                   # Ensure facet titles aren't clipped
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  )
+
+plot(hydrogenBarPlots)
+
+# Electricity
+electricity <- data[Fuel %in% c("MCS", "CCS", "Mixed Charging")]
+purple7 <- c(
+  "#E6E0F8",  # very light lavender
+  "#C9B3F0",  # light purple
+  "#AD85E8",  # soft purple
+  "#9160E0",  # muted medium purple
+  "#6F3CB8",  # strong purple
+  "#4D2290",  # deep purple
+  "#2A0068"   # very deep violet
+)
+electricity[Parameter %in% c("Network fees savings potential", "Network Costs"), 
+            Parameter := "General network costs"]
+electricity[Parameter %in% c("Taxes, Fees, Levies and charges", "Taxes, Fees, Levies and charges - MCS", "Taxes, Fees, Levies and charges - Depot"), 
+            Parameter := "Taxes, fees, levies,\nand charges"]
+electricity[Parameter == "Station Overhead, Profit and Mark-Up", Parameter := "Station overhead,\nprofit and mark-up"]
+electricity[Fuel == "Mixed Charging", Fuel := "Mixed"]
+# Sum up for "General network costs"
+electricity <- electricity[, .(value = sum(value)), by = c("Energy-Carrier-Parameter-Scenario", "period", "Country", "Unit", "Fuel", "paperScen", "Parameter")]
+electricity[, Parameter := factor(Parameter, levels = c("Taxes, fees, levies,\nand charges", "Station overhead,\nprofit and mark-up", "Grid extension", "Station", "General network costs", "Wholesale"))]
+electricityBarPlots <- ggplot(electricity, aes(x = `Energy-Carrier-Parameter-Scenario`)) +
+  geom_bar(aes(y = value, fill = Parameter), position = "stack", stat = "identity", width = 0.8) +
+ scale_fill_manual(values = purple7) + 
+  facet_wrap(~ Fuel, nrow = 1) +
+  labs(x = "", y = "Enduse electricity\nprice [EUR/kWh]", title = "Electricity: Enduse price components (2030)") +
+  scale_x_discrete(labels = function(x) { sub("\\s", "\n", x) }, expand = expansion(mult = c(0.3, 0.3))) +
+  themePanel +
+  theme(
+    panel.spacing = unit(0.7, "lines"),                 # Slightly more room between facets
+    panel.border = element_rect(color = "grey85", fill = NA, linewidth = 0.4),  # Light border
+    strip.text = element_text(margin = margin(t = 4, b = 4)),                   # Ensure facet titles aren't clipped
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  )
+
+plot(electricityBarPlots)
+
+# Diesel
+diesel <- data[Fuel %in% c("Diesel Bio", "Diesel Syn", "Diesel Fossil", "Diesel Mix")]
+green7 <- c(
+  "#C6E0C6",  # light green
+  "#86B88E",  # muted medium green
+  "#46774E",  # dark green
+  "#26502E"   # deep forest green
+)
+diesel[Parameter == "Excise Duty", Parameter := "Excise duty"]
+diesel[Parameter == "Total Diesel Mark-Up", Parameter := "Total diesel markup"]
+diesel[, Parameter := factor(Parameter, levels = c("CO2 tax", "Excise duty", "Total diesel markup", "Transport and distribution", "Wholesale"))]
+diesel[Fuel == "Diesel Bio", Fuel := "Bio"]
+diesel[Fuel == "Diesel Syn", Fuel := "Syn"]
+diesel[Fuel == "Diesel Fossil", Fuel := "Fossil"]
+diesel[Fuel == "Diesel Mix", Fuel := "Mix"]
+diesel[, Fuel := factor(Fuel, levels = c("Fossil", "Bio", "Syn", "Mix"))]
+
+dieselBarPlots <- ggplot(diesel, aes(x = `Energy-Carrier-Parameter-Scenario`)) +
+  geom_bar(aes(y = value, fill = Parameter), position = "stack", stat = "identity", width = 0.8) +
+ scale_fill_manual(values = green7) + 
+  facet_wrap(~ Fuel, nrow = 1) +
+  labs(x = "", y = "Enduse diesel\nprice [EUR/kWh]", title = "Diesel: Enduse price components (2030)") +
+  scale_x_discrete(labels = function(x) { sub("\\s", "\n", x) }, expand = expansion(mult = c(0.3, 0.3))) +
+  themePanel +
+  theme(
+    panel.spacing = unit(0.7, "lines"),                 # Slightly more room between facets
+    panel.border = element_rect(color = "grey85", fill = NA, linewidth = 0.4),  # Light border
+    strip.text = element_text(margin = margin(t = 4, b = 4)),                   # Ensure facet titles aren't clipped
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  )
+
+
+plot(dieselBarPlots)
+```
+
+```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
+
+
+combined_plotCAPEX <- (
+  (BatPrices | FCPrices | salesPbarPlots)
+)+ 
+  plot_annotation(tag_levels = "a")
+
+ggsave(
+  file.path(plotFolder, "Sup_pricesPanelCAPEX.pdf"),
+  plot = combined_plotCAPEX,
+  width = 40, height = (45/6) * 2, units = "in", device = cairo_pdf, limitsize = FALSE
+)
+
+```
+
+
+```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
+
+
+combined_plotSupplementary <- (
+  (hydrogenBarPlots | HydrogenPrices) /
+  (electricityBarPlots | ElecPrices) /
+  (dieselBarPlots | DieselPrices) 
+)+ 
+  plot_annotation(tag_levels = "a")
+
+ggsave(
+  file.path(plotFolder, "Sup_pricesPanelFuel.pdf"),
+  plot = combined_plotSupplementary,
+  width = 35, height = (50/3) * 2, units = "in", device = cairo_pdf, limitsize = FALSE
+)
+
+```
+
+# Mileage data
+```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
+# old mileage data
+oldAMdataPath <- "C:/Users/johannah/Documents/Paper/TCO/ISI driving profiles/export_veh_km.csv"
+oldAMdata <- fread(file = oldAMdataPath, header = TRUE, sep = ",", dec=".")
+oldAMdata[, V1 := NULL]
+oldAMdata[, period := substr(vehicleid, 1, 4)]
+oldAMdata[, avkt := as.numeric(avkt)]
+setnames(oldAMdata, "GKtype", "Vehicle Size")
+oldAMdata[`Vehicle Size` == "tractor-trailer", `Vehicle Size` := "Tractor-trailer"]
+oldAMdata[`Vehicle Size` == "rigid", `Vehicle Size` := "Rigid"]
+setnames(oldAMdata, "country", "Country")
+
+oldAMdata <- oldAMdata[!`Vehicle Size` == "other"]
+
+pathToNewMilageData <- file.path(mainFolder, "data", "Mileage")
+files <- list.files(pathToNewMilageData, full.names = TRUE)
+
+readMileageFile <- function(path){
+  
+  region <- gsub(".*\\/", "", path)
+  region <- gsub("_.*csv", "", region)
+  
+  yr <- gsub(".*\\/", "", path)
+  yr <- gsub("^.._", "", yr)
+  yr <- gsub("_.*csv", "", yr)
+  data <- fread(path)[, Country := region][, period := as.numeric(yr)]
+}
+
+newAMdata <- rbindlist(lapply(files, readMileageFile))
+# 4173 and 4174 in ES and 4287 4288 4289 in NL are na
+newAMdata <- newAMdata[!is.na(jfl)]
+setnames(newAMdata, c("tfl_av", "tfl_max", "jfl", "type"),
+         c("dvkt_av", "dvkt_max", "avkt", "Vehicle Size"))
+newAMdata[`Vehicle Size` == "rig", `Vehicle Size` := "Rigid"]
+newAMdata[`Vehicle Size` == "tt", `Vehicle Size` := "Tractor-trailer"]
+
+plotData <- mileageData[period == 2030]
+plotData[, avkt := avkt * 1e-3] #1000 km
+plotData[, meanMaxDailyMileage := mean(dvkt_max), by = c("Country", "period", "Vehicle Size", "avkt_binned")]
+
+mileageDensity <- ggplot(data = plotData[avkt < 300], aes(x = avkt)) + 
+  geom_histogram(aes(y = after_stat(ncount), fill = `Vehicle Size`), col = "black", bins = 30) + 
+  facet_grid(Country ~ `Vehicle Size`) + 
+  coord_cartesian(xlim = c(0, 300)) + 
+  xlab("annual mileage in 1000 km") +
+  ylab("normalised density") +
+  scale_fill_manual(values = paperColors) +
+  scale_y_continuous(breaks = c(1.0), labels = c("1.0")) +
+  themePanel +
+  theme(legend.position = "none")
+
+plotDataLegend <- copy(plotData[`Vehicle Size` == "Rigid" & Country == "DE"])
+
+# Create a variable for legend categories
+plotDataLegend[, PointType := "Individual trucks"]
+# This is only for the first geom
+binAverages <- plotDataLegend[, .(binMean = binMean[1], meanMaxDailyMileage = meanMaxDailyMileage[1]), 
+                              by = binMean]
+binAverages[, PointType := "Bin averages"]
+
+# Combine the two for plotting
+legendData <- rbind(
+  plotDataLegend[, .(x = avkt, y = dvkt_max * 1e-3, PointType)],
+  binAverages[, .(x = binMean * 1e-3, y = meanMaxDailyMileage * 1e-3, PointType)]
+)
+
+maxDistanceScatter <- ggplot() +
+  # Red transparent points for individual trucks
+  geom_point(data = legendData[PointType == "Individual trucks"],
+             aes(x = x, y = y, shape = PointType, color = PointType),
+             alpha = 0.3, size = 2) +
+  # Black solid points for bin averages
+  geom_point(data = legendData[PointType == "Bin averages"],
+             aes(x = x, y = y, shape = PointType, color = PointType),
+             alpha = 1, size = 2) +
+  scale_color_manual(values = c("Individual trucks" = "#F08080", "Bin averages" = "black")) +
+  scale_shape_manual(values = c("Individual trucks" = 15, "Bin averages" = 16)) +
+  xlab("Annual mileage (100 km)") +
+  ylab("Max daily mileage (100 km)") +
+  labs(title = "Maximum Daily vs Annual Truck Mileage\nGermany (Rigid Trucks)") +
+  themePanel +
+  guides(
+    color = guide_legend(title = NULL, override.aes = list(size = 6)),
+    shape = guide_legend(title = NULL, override.aes = list(size = 6))
+  )
+
+plot(maxDistanceScatter)
+
+
+
+
+
+ggsave(
+  file.path(plotFolder, "Sup_mileageDensity.pdf"),
+  plot = mileageDensity,
+  width = 40, height = (45/3) * 2, units = "in", device = cairo_pdf, limitsize = FALSE
+)
+
+ggsave(
+  file.path(plotFolder, "Sup_MaxDailyMileageScatter.pdf"),
+  plot = maxDistanceScatter,
+  width = 15, height = 10, units = "in", device = cairo_pdf, limitsize = FALSE
+)
+
+```
+
+# Feasibility TCO x Annual mileage distribution bar plot 
+```{r, fig.width=30, fig.height=10, fig.fullwidth=FALSE}
+
+
+yr <- c(2030)
+trucktechs <- c("BET small battery", "BET large battery") #, "BET small battery", "FCET"
+data <- copy(feasibility)[period %in% yr & `Fuel Type` %in% trucktechs & paperScen == "Current Policies" & `infrastructure-scenario` == "On time"]
+setorder(data, "Fuel Type", "TCOgapScenario", "period", "TCOgap")
+data[, TCOgain := - TCOgap]
+data[, cum_width := 0.999 * (share - shift(share, type = "lag")), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
+data[is.na(cum_width), cum_width := (share), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
+
+data[, paperScen := factor(paperScen, 
+                               levels = c("Current Policies"))]
+data[, TCOgapScenario := factor(TCOgapScenario, 
+                               levels = c("Optimistic", "Medium", "Pessimistic"))]
+data[, `Fuel Type` := factor(`Fuel Type`, 
+                               levels = c("BET small battery", "BET large battery"))]
+setorder(data, `Fuel Type`)
+
+totFeas <- data[TCOgain > 0, .(totFeasCostBenShare = sum(feasShareKmEUR)), by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
+totFeas[is.na(totFeasCostBenShare), totFeasCostBenShare := 0]
+findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
+findZeroPoints <- merge(findZeroPoints, totFeas, by = c("period", "Fuel Type", "paperScen", "TCOgapScenario"))
+setorder(findZeroPoints, paperScen, TCOgapScenario, `Fuel Type`, share)
+findZeroPoints[, arrow_y := seq(-0.2, -0.5, length.out = .N), by = c("paperScen", "TCOgapScenario")]
+
+setorder(findZeroPoints, - share)
+findZeroPoints[, `Fuel Type` := factor(`Fuel Type`, levels = c("BET small battery", "BET large battery", "FCET"))]  
+middle_y <- -0.35
+
+data$facet_order <- as.numeric(factor(data$TCOgapScenario))
+findZeroPoints$facet_order <- as.numeric(factor(findZeroPoints$TCOgapScenario))
+
+# Create one plot per facet, then stitch them back together
+facet_levels <- unique(data$TCOgapScenario)
+facet_levels <- facet_levels[c(2,1,3)]
+plot_list <- lapply(seq_along(facet_levels), function(i) {
+  facet_level <- facet_levels[i]
+  sub_data <- subset(data, TCOgapScenario == facet_level)
+  sub_zero <- subset(findZeroPoints, TCOgapScenario == facet_level)
+extra_label <- if (i == 3) {
+  annotate("label", x = 52, y = middle_y, label = "of road km\ncost beneficial\nand feasible", 
+           color = "black", fill = "white", fontface = "bold", size = 12, hjust = 0, vjust = 0.5,
+           label.padding = unit(0.3, "cm"), label.size = 0)
+} else {
+  NULL
+}
+  
+  
+ggplot(sub_data) +
+    geom_segment(aes(
+      x = abs(share - cum_width),
+      xend = share - feasShareKmEUR,
+      y = 0,
+      yend = 0,
+      color = `Fuel Type`
+    ), linewidth = 0.8) +
+    geom_rect(aes(
+      xmin = share - cum_width,
+      xmax = share - feasShareKmEUR,
+      ymin = 0,
+      ymax = 0,
+      fill = `Fuel Type`,
+      color = `Fuel Type`
+    ), linewidth = 0.02, alpha = 0.2) +
+   geom_segment(aes(
+      x = share - feasShareKmEUR,
+      xend = share,
+      y = TCOgain,
+      yend = TCOgain,
+      color = `Fuel Type`
+    ), linewidth = 0.8) +
+    geom_rect(aes(
+      xmin = share - feasShareKmEUR,
+      xmax = share,
+      ymin = 0,
+      ymax = TCOgain,
+      fill = `Fuel Type`,
+      color = `Fuel Type`
+    ), linewidth = 0.02, alpha = 0.2) +
+  geom_point(
+      data = sub_zero,
+      aes(x = share, y = 0, color = `Fuel Type`),  
+      shape = 1,
+      size = 10,
+      stroke = 4,
+      fill = NA
+    ) +
+  geom_vline(data = sub_zero, aes(xintercept = share, color = `Fuel Type`), 
+               linetype = "dashed", linewidth = 2) +
+    geom_segment(data = sub_zero, aes(x = 0, xend = share, y = arrow_y, yend = arrow_y, color = `Fuel Type`), 
+                 arrow = arrow(length = unit(0.3, "cm"), type = "open"), 
+                 linewidth = 2) +
+    geom_label(data = sub_zero, aes(x = 50, y = arrow_y, 
+                   label = paste("~", round(totFeasCostBenShare), "%")),
+               color = "black", fill = "white",
+               size = 12, fontface = "bold",
+               label.padding = unit(0.1, "cm"),
+               label.size = 0, hjust = 1, vjust = 0.5) +
+    extra_label +
+    geom_hline(yintercept = 0, color = "black", linewidth = 2) +
+    scale_x_continuous(expand = c(0, 0), limits = c(0, 1.05 * max(data$share, na.rm = TRUE))) +
+    coord_cartesian(ylim = c(-0.7, 0.7)) +
+    scale_color_manual(values =  paperColors) +
+    scale_fill_manual(values = paperColors) +
+    labs(
+      x = if (i == 2) "Share of road km in considered truck markets [%]" else NULL,
+      y = if (i == 1) "Feasible DCO gain [EUR/km]" else NULL,
+      title = as.character(facet_level)
+    ) + 
+  themePanel
+})
+
+
+
+combined <- wrap_plots(plot_list, ncol = 3, guides = "collect") &
+  theme(legend.position = "bottom")
+combined <- combined & theme(
+  legend.margin = margin(t = 20),
+  legend.text = element_text(size = rel(1)),
+  legend.title = element_text(size = rel(1))
+)
+
+plot(combined)
+
+ggsave(
+  file.path(plotFolder, "sup_FeasAMdistributionBarPlotEURCurrentPolicies.pdf"),
+  plot = combined,
+  width = 30, height = 10, units = "in", device = cairo_pdf
+)
+
+
+```
+
+
+# Country TCO x Annual mileage distribution bar plot 
+```{r, fig.width=30, fig.height=10, fig.fullwidth=FALSE}
+region <- "DE"
+yr <- c(2030)
+trucktechs <- c("BET large battery", "BET small battery", "FCET")
+data <- copy(TCOdrivingProfiles)[Country == region & period %in% yr & `Fuel Type` %in% trucktechs & paperScen == "Current Policies"]
+setorder(data, "Fuel Type", "paperScen", "TCOgapScenario", "period", "TCOgap")
+data[, TCOgain := - TCOgap]
+data[, cum_width := 0.999* (shareCountry - shift(shareCountry, type = "lag")), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
+data[is.na(cum_width), cum_width := (shareCountry), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
+
+data[, paperScen := factor(paperScen, 
+                               levels = c("Current Policies"))]
+data[, TCOgapScenario := factor(TCOgapScenario, 
+                               levels = c("Optimistic", "Medium", "Pessimistic"))]
+data[, `Fuel Type` := factor(`Fuel Type`, 
+                               levels = c("BET small battery", "BET large battery", "FCET"))]
+setorder(data, `Fuel Type`)
+
+findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
+setorder(findZeroPoints, paperScen, TCOgapScenario, `Fuel Type`, shareCountry)
+findZeroPoints[, arrow_y := seq(-0.2, -0.5, length.out = .N), by = c("paperScen", "TCOgapScenario")]
+
+setorder(findZeroPoints, - shareCountry)
+findZeroPoints[, `Fuel Type` := factor(`Fuel Type`, levels = c("BET small battery", "BET large battery", "FCET"))]  
+middle_y <- findZeroPoints[round(nrow(findZeroPoints)/6), arrow_y]
+
+data$facet_order <- as.numeric(factor(data$TCOgapScenario))
+findZeroPoints$facet_order <- as.numeric(factor(findZeroPoints$TCOgapScenario))
+
+# Create one plot per facet, then stitch them back together
+facet_levels <- unique(data$TCOgapScenario)
+facet_levels <- facet_levels[c(2,1,3)]
+plot_list <- lapply(seq_along(facet_levels), function(i) {
+  facet_level <- facet_levels[i]
+  sub_data <- subset(data, TCOgapScenario == facet_level)
+  sub_zero <- subset(findZeroPoints, TCOgapScenario == facet_level)
+  extra_label <- if (i == 3) {
+  annotate("label", x = 52, y = middle_y, label = "of road km\ncost\nbeneficial", 
+           color = "black", fill = "white", fontface = "bold", size = 12, hjust = 0, vjust = 0.5,
+           label.padding = unit(0.3, "cm"), label.size = 0)
+} else {
+  NULL
+}
+  
+  
+  ggplot(sub_data) +
+    geom_segment(aes(
+      x = abs(shareCountry - cum_width),
+      xend = shareCountry,
+      y = TCOgain,
+      yend = TCOgain,
+      color = `Fuel Type`
+    ), linewidth = 0.8) +
+    geom_rect(aes(
+      xmin = shareCountry - cum_width,
+      xmax = shareCountry,
+     ymin = 0,
+      ymax = TCOgain,
+      fill = `Fuel Type`,
+      color = `Fuel Type`
+    ), linewidth = 0.02, alpha = 0.2) +
+    geom_point(
+      data = sub_zero,
+      aes(x = shareCountry, y = 0, color = `Fuel Type`),  
+      shape = 1,
+      size = 10,
+      stroke = 4,
+      fill = NA
+    ) +
+    geom_vline(data = sub_zero, aes(xintercept = shareCountry, color = `Fuel Type`), 
+               linetype = "dashed", linewidth = 2) +
+    geom_segment(data = sub_zero, aes(x = 0, xend = shareCountry, y = arrow_y, yend = arrow_y, color = `Fuel Type`), 
+                 arrow = arrow(length = unit(0.3, "cm"), type = "open"), 
+                 linewidth = 2) +
+    geom_label(data = sub_zero, 
+               aes(x = 50, y = arrow_y, 
+                   label = paste("~", round(shareCountry), "%")),
+               color = "black", fill = "white",
+               size = 12, fontface = "bold",
+               label.padding = unit(0.1, "cm"),
+               label.size = 0, hjust = 1, vjust = 0.5) +
+    extra_label +
+    geom_hline(yintercept = 0, color = "black", linewidth = 2) +
+    scale_x_continuous(expand = c(0, 0), limits = c(0, 1.05 * max(data$shareCountry, na.rm = TRUE))) +
+    coord_cartesian(ylim = c(-0.7, 0.7)) +
+    scale_color_manual(values =  paperColors) +
+    scale_fill_manual(values = paperColors) +
+    labs(
+      x = if (i == 2) paste0("Share of road km in ", region, "[%]") else NULL,
+      y = if (i == 1) "DCO gain [EUR/km]" else NULL,
+      title = as.character(facet_level)
+    ) + 
+  themePanel
+})
+library(patchwork)
+
+combined <- wrap_plots(plot_list, ncol = 3, guides = "collect") &
+  theme(legend.position = "bottom")
+combined <- combined & theme(
+  legend.margin = margin(t = 20),
+  legend.text = element_text(size = rel(1)),
+  legend.title = element_text(size = rel(1))
+)
+ggsave(
+  filename = file.path(plotFolder, paste0("sup_AMdistributionBarPlot", region, "CurrentPolicies.pdf")),
+  plot = combined,
+  width = 30, height = 10, units = "in",
+  device = cairo_pdf,
+  dpi = 300,          # Optional but improves embedded text quality
+  bg = "white"        # Avoid transparency issues in PDF/LaTeX
+)
+plot(combined)
+
+```
+
+
+# Country Feasibility TCO x Annual mileage distribution bar plot 
+```{r, fig.width=30, fig.height=10, fig.fullwidth=FALSE}
+region <- "DE"
+yr <- c(2030)
+trucktechs <- c("BET small battery", "BET large battery") #, "BET small battery", "FCET"
+data <- copy(feasibility)[Country == region & period %in% yr & `Fuel Type` %in% trucktechs & paperScen == "Current Policies" & `infrastructure-scenario` == "On time"]
+setorder(data, "Fuel Type", "paperScen", "TCOgapScenario", "period", "TCOgap")
+data[, TCOgain := - TCOgap]
+data[, cum_width := 0.999 * (shareCountry - shift(shareCountry, type = "lag")), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
+data[is.na(cum_width), cum_width := (shareCountry), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
+
+data[, paperScen := factor(paperScen, 
+                               levels = c("Current Policies"))]
+data[, TCOgapScenario := factor(TCOgapScenario, 
+                               levels = c("Optimistic", "Medium", "Pessimistic"))]
+data[, `Fuel Type` := factor(`Fuel Type`, 
+                               levels = c("BET small battery", "BET large battery"))]
+setorder(data, `Fuel Type`)
+totFeas <- data[TCOgain > 0, .(totFeasCostBenShare = sum(feasShareKmCountry)), by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
+totFeas[is.na(totFeasCostBenShare), totFeasCostBenShare := 0]
+findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
+findZeroPoints <- merge(findZeroPoints, totFeas, by = c("period", "Fuel Type", "paperScen", "TCOgapScenario"))
+setorder(findZeroPoints, paperScen, TCOgapScenario, `Fuel Type`, shareCountry)
+findZeroPoints[, arrow_y := seq(-0.2, -0.5, length.out = .N), by = c("paperScen", "TCOgapScenario")]
+
+setorder(findZeroPoints, - shareCountry)
+findZeroPoints[, `Fuel Type` := factor(`Fuel Type`, levels = c("BET small battery", "BET large battery", "FCET"))]  
+middle_y <- -0.35
+
+data$facet_order <- as.numeric(factor(data$TCOgapScenario))
+findZeroPoints$facet_order <- as.numeric(factor(findZeroPoints$TCOgapScenario))
+
+# Create one plot per facet, then stitch them back together
+facet_levels <- unique(data$TCOgapScenario)
+facet_levels <- facet_levels[c(2,1,3)]
+plot_list <- lapply(seq_along(facet_levels), function(i) {
+  facet_level <- facet_levels[i]
+  sub_data <- subset(data, TCOgapScenario == facet_level)
+  sub_zero <- subset(findZeroPoints, TCOgapScenario == facet_level)
+extra_label <- if (i == 3) {
+  annotate("label", x = 52, y = middle_y, label = "of road km\ncost beneficial\nand feasible", 
+           color = "black", fill = "white", fontface = "bold", size = 12, hjust = 0, vjust = 0.5,
+           label.padding = unit(0.3, "cm"), label.size = 0)
+} else {
+  NULL
+}
+  
+  
+ggplot(sub_data) +
+    geom_segment(aes(
+      x = abs(shareCountry - cum_width),
+      xend = shareCountry - feasShareKmCountry,
+      y = 0,
+      yend = 0,
+      color = `Fuel Type`
+    ), linewidth = 0.8) +
+    geom_rect(aes(
+      xmin = shareCountry - cum_width,
+      xmax = shareCountry - feasShareKmCountry,
+      ymin = 0,
+      ymax = 0,
+      fill = `Fuel Type`,
+      color = `Fuel Type`
+    ), linewidth = 0.02, alpha = 0.2) +
+   geom_segment(aes(
+      x = shareCountry - feasShareKmCountry,
+      xend = shareCountry,
+      y = TCOgain,
+      yend = TCOgain,
+      color = `Fuel Type`
+    ), linewidth = 0.8) +
+    geom_rect(aes(
+      xmin = shareCountry - feasShareKmCountry,
+      xmax = shareCountry,
+      ymin = 0,
+      ymax = TCOgain,
+      fill = `Fuel Type`,
+      color = `Fuel Type`
+    ), linewidth = 0.02, alpha = 0.2) +
+  geom_vline(data = sub_zero, aes(xintercept = shareCountry, color = `Fuel Type`), 
+               linetype = "dashed", linewidth = 2) +
+    geom_segment(data = sub_zero, aes(x = 0, xend = shareCountry, y = arrow_y, yend = arrow_y, color = `Fuel Type`), 
+                 arrow = arrow(length = unit(0.3, "cm"), type = "open"), 
+                 linewidth = 2) +
+    geom_label(data = sub_zero, aes(x = 50, y = arrow_y, 
+                   label = paste("~", round(totFeasCostBenShare), "%")),
+               color = "black", fill = "white",
+               size = 12, fontface = "bold",
+               label.padding = unit(0.1, "cm"),
+               label.size = 0, hjust = 1, vjust = 0.5) +
+    extra_label +
+    geom_hline(yintercept = 0, color = "black", linewidth = 2) +
+    scale_x_continuous(expand = c(0, 0), limits = c(0, 1.05 * max(data$share, na.rm = TRUE))) +
+    coord_cartesian(ylim = c(-0.7, 0.7)) +
+    scale_color_manual(values =  paperColors) +
+    scale_fill_manual(values = paperColors) +
+    labs(
+      x = if (i == 2) paste0("Share of road km in ", region, "[%]") else NULL,
+      y = if (i == 1) "Feasible DCO gain [EUR/km]" else NULL,
+      title = as.character(facet_level)
+    ) + 
+  themePanel
+})
+library(patchwork)
+
+combined <- wrap_plots(plot_list, ncol = 3, guides = "collect") &
+  theme(legend.position = "bottom")
+combined <- combined & theme(
+  legend.margin = margin(t = 20),
+  legend.text = element_text(size = rel(1)),
+  legend.title = element_text(size = rel(1))
+)
+
+plot(combined)
+
+ggsave(
+  file.path(plotFolder, paste0("sup_FeasAMdistributionBarPlot", region, "CurrentPolicies.pdf")),
+  plot = combined,
+  width = 30, height = 10, units = "in", device = cairo_pdf
+)
+
+
+```
+
+# feasible TCO x Annual mileage distribution bar plot 
+```{r, fig.width=30, fig.height=10, fig.fullwidth=FALSE}
+yr <- c(2030, 2040, 2050)
+trucktechs <- c("BET large battery", "BET small battery", "FCET")
+data <- copy(reducedBinnedWeightedMileageFeasibility)[period %in% yr & `Fuel Type` %in% trucktechs & paperScen == "Current Policies" & `infrastructure-scenario` == "Base" & TCOgapScenario == "Medium"]
+data[, TCOgain := - TCOgap]
+data[, cum_width := 0.999* (cumFeasWeightedShareEUR - shift(cumFeasWeightedShareEUR, type = "lag")), by = c("paperScen", "TCOgapScenario", "period", "Fuel Type")]
+data[is.na(cum_width), cum_width := (cumFeasWeightedShareEUR), by = c("paperScen", "TCOgapScenario", "period", "Fuel Type")]
+
+data[, paperScen := factor(paperScen, 
+                               levels = c("Current Policies"))]
+data[, TCOgapScenario := factor(TCOgapScenario, 
+                               levels = c("Medium"))]
+data[, `Fuel Type` := factor(`Fuel Type`, 
+                               levels = c("BET small battery", "BET large battery"))]
+setorder(data, `Fuel Type`)
+
+findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
+setorder(findZeroPoints, paperScen, TCOgapScenario, period, `Fuel Type`, cumFeasWeightedShareEUR)
+findZeroPoints[, arrow_y := seq(-0.2, -0.5, length.out = .N), by = c("paperScen", "TCOgapScenario", "period")]
+
+setorder(findZeroPoints, - cumFeasWeightedShareEUR)
+findZeroPoints[, `Fuel Type` := factor(`Fuel Type`, levels = c("BET small battery", "BET large battery"))]  
+middle_y <- sum(unique(findZeroPoints$arrow_y))/2
+
+# Create one plot per facet, then stitch them back together
+facet_levels <- unique(data$period)
+
+plot_list <- lapply(seq_along(facet_levels), function(i) {
+  facet_level <- facet_levels[i]
+  sub_data <- subset(data, period == facet_level)
+  sub_zero <- subset(findZeroPoints, period == facet_level)
+  extra_label <- if (i == 3) {
+  annotate("label", x = 49, y = middle_y, label = "of road km\nfeasible and\ncost beneficial", 
+           color = "black", fill = "white", fontface = "bold", size = 12, hjust = 0, vjust = 0.5,
+           label.padding = unit(0.3, "cm"), label.size = 0)
+} else {
+  NULL
+}
+  
+  
+  ggplot(sub_data) +
+    # 1. Fill only
+    geom_rect(
+      aes(xmin = cumFeasWeightedShareEUR - cum_width, xmax = cumFeasWeightedShareEUR,
+          ymin = 0, ymax = TCOgain,
+          fill = `Fuel Type`),
+      color = NA,
+      alpha = 0.3
+    ) +
+    
+    # 2. Border only
+    geom_rect(
+      aes(xmin = cumFeasWeightedShareEUR - cum_width, xmax = cumFeasWeightedShareEUR,
+          ymin = 0, ymax = TCOgain,
+          color = `Fuel Type`),
+      fill = NA,
+      linewidth = 0.001,
+      alpha = 0.005
+    ) +
+  geom_point(
+    data = sub_zero,
+    aes(x = cumFeasWeightedShareEUR, y = 0, color = `Fuel Type`),  
+    shape = 1,
+    size = 10,
+    stroke = 4,
+    fill = NA
+  ) +
+    geom_vline(data = sub_zero, aes(xintercept = cumFeasWeightedShareEUR, color = `Fuel Type`), 
+               linetype = "dashed", linewidth = 2) +
+    geom_segment(data = sub_zero, aes(x = 0, xend = cumFeasWeightedShareEUR, y = arrow_y, yend = arrow_y, color = `Fuel Type`), 
+                 arrow = arrow(length = unit(0.3, "cm"), type = "open"), 
+                 linewidth = 2) +
+    geom_label(data = sub_zero, 
+               aes(x = 47, y = arrow_y, 
+                   label = paste("~", round(cumFeasWeightedShareEUR), "%")),
+               color = "black", fill = "white",
+               size = 12, fontface = "bold",
+               label.padding = unit(0.1, "cm"),
+               label.size = 0, hjust = 1, vjust = 0.5) +
+    extra_label +
+    geom_hline(yintercept = 0, color = "black", linewidth = 2) +
+    scale_x_continuous(expand = c(0, 0), limits = c(0, 1.05 * max(data$cumFeasWeightedShareEUR, na.rm = TRUE))) +
+    coord_cartesian(ylim = c(-0.6, 0.6)) +
+    scale_color_manual(values =  paperColors) +
+    scale_fill_manual(values = paperColors) +
+    labs(
+      x = if (i == 2) "Share of road km in considered truck markets [%]" else NULL,
+      y = if (i == 1) "DCO gain [EUR/km]" else NULL,
+      title = as.character(facet_level)
+    ) + 
+  themePanel
+})
+
+combined <- wrap_plots(plot_list, ncol = 3, guides = "collect") &
+  theme(legend.position = "bottom")
+combined <- combined & theme(
+  legend.margin = margin(t = 20),
+  legend.text = element_text(size = rel(1)),
+  legend.title = element_text(size = rel(1))
+)
+
+plot(combined)
+
+ggsave(
+  filename = file.path(plotFolder, "sup_FeasCostBenAMdistributionBarPlotEURCurrentPolicies.pdf"),
+  plot = combined,
+  width = 30, height = 10, units = "in",
+ # device = cairo_pdf,
+  dpi = 72,          # Optional but improves embedded text quality
+  bg = "white"        # Avoid transparency issues in PDF/LaTeX
+)
+```
+
+# TCO overview panel plots
+## TCO bar plots
+# TCO overview panel plots
+
+```{r, fig.width=22.5, fig.height=10, fig.fullwidth=FALSE}
+# Select plot data
+yrs <- c(2030)
+vehSize <- "Tractor-trailer"
+operationMode <- c("Regional")
+barplotTechs <- c("Diesel", "FCET", "BET large battery", "BET small battery")
+TCOgapScen <- "Medium"
+barPlotData <- copy(TCOdata)[period == yrs & `Vehicle Size` == vehSize & Operation == operationMode & `Fuel Type` %in% barplotTechs & TCOgapScenario == TCOgapScen]
+
+barPlotData[`Fuel Type` == "BET large battery", `Fuel Type` := "BET\nlarge battery"]
+barPlotData[`Fuel Type` == "BET small battery", `Fuel Type` := "BET\nsmall battery"]
+barPlotData[, `Fuel Type` := factor(`Fuel Type`, levels = c("Diesel", "FCET", "BET\nlarge battery", "BET\nsmall battery"))]
+# Step 1: Compute sum per Fuel Type
+TCOSum <- barPlotData[, .(value = sum(value)), by = `Fuel Type`]
+
+# Step 2: Compute differences to Diesel
+diesel_val <- TCOSum[`Fuel Type` == "Diesel", value]
+TCOSum[, diff := value - diesel_val]
+
+# Step 3: Create segment data for arrows (exclude Diesel)
+arrow_data <- TCOSum[`Fuel Type` != "Diesel"]
+arrow_data[, `"TCOgapScenario"` := "Medium"]  # x-position
+arrow_data[, x := "Medium"]
+arrow_data[, xend := "Medium"]
+arrow_data[, y := diesel_val]
+arrow_data[, yend := value]
+
+# Step 4: Plot
+TCObarPlots <- ggplot(barPlotData, aes(x = `TCOgapScenario`)) +
+  geom_bar(aes(y = value, fill = Parameter), position = "stack", stat = "identity", width = 0.6) +
+  scale_fill_manual(values = paperColors) +
+ geom_hline(yintercept = diesel_val, linetype = "dashed", color = "black", size = 1) +
+geom_segment(
+ data = arrow_data,
+ aes(x = x, xend = xend, y = y, yend = yend),
+ arrow = arrow(length = unit(0.4, "cm"), type = "open", ends = "last", angle = 40),
+ color = "black",
+ linewidth = 3
+) +
+geom_label(
+ data = arrow_data,
+ aes(
+   x = xend,
+   y = (y + yend) / 2,
+   label = "DCO"
+),
+ hjust = -0.1,
+ vjust = 0.5,
+size = 12,
+ color = "black",           # text color
+ fill = "white",          # background color
+ label.size = 0,        # border thickness
+ label.r = unit(0.15, "lines"),  # corner radius
+ fontface = "bold"
+) +
+  facet_wrap(~ `Fuel Type`, nrow = 1) +
+  labs(x = "", y = "TCO [EUR/vehkm]", title = paste("TCO\n", operationMode, vehSize, "in", yrs)) +
+  scale_x_discrete(labels = function(x) { sub("\\s", "\n", x) }) +
+  themePanel +
+  theme(
+    panel.spacing = unit(0.5, "lines"),
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  )
+
+
+plot(TCObarPlots)
+```
+
+## Breakeven visualization
+```{r, fig.width=22.5, fig.height=10, fig.fullwidth=FALSE}
+
+yr <- c(2030)
+trucktechs <- c("Diesel", "BET large battery", "BET small battery")
+vehicleSize <- "Tractor-trailer"
+gapScenarios <- c("BETOptimistic", "BETPessimistic", "Medium")
+data <- copy(TCOPerMileage)[period %in% yr & `Fuel Type` %in% trucktechs & `Vehicle Size` == vehicleSize & TCOgapScenario %in% gapScenarios]
+
+#Select Gap scenarios
+data[TCOgapScenario == "BETOptimistic", TCOgapScenario := "Optimistic"]
+data[TCOgapScenario == "BETPessimistic", TCOgapScenario := "Pessimistic"]
+
+data <- data[TCOgapScenario %in% c("Optimistic", "Medium", "Pessimistic")]
+
+data <- data[AM > 6000]
+data <- data[, .(value = sum(value)), by = c("Fuel Type", "TCOgapScenario", "AM")]
+data_wide <- dcast(
+  data,
+  `TCOgapScenario` + AM ~ `Fuel Type`,
+  value.var = "value"
+)
+data_wide <- data_wide[`TCOgapScenario` == "Medium"]
+find_intersections <- function(dt, col1, col2) {
+  dt[, diff := get(col1) - get(col2)]
+  dt[, sign_change := shift(sign(diff), type = "lag") != sign(diff)]
+  dt[sign_change == TRUE, .(AM, TCO = get(col2), `Fuel Type` = col1)]
+}
+
+# Find intersections
+inter1 <- find_intersections(data_wide, "BET large battery", "Diesel")
+inter2 <- find_intersections(data_wide, "BET small battery", "Diesel")
+
+# Combine results
+intersections <- rbind(inter1, inter2)
+
+data  <- dcast(
+  data,
+  `Fuel Type` + AM ~ `TCOgapScenario`,
+  value.var = "value"
+)
+
+breakeven <- ggplot(data) +
+  geom_ribbon(
+    aes(x = AM, ymin = `Optimistic`, ymax = `Pessimistic`, fill =  `Fuel Type`),
+    inherit.aes = FALSE,
+    alpha = 0.2
+  ) +
+  geom_line(aes(x = AM, y = Medium, color = `Fuel Type`), linewidth = 1.5
+  ) +
+  geom_vline(
+    data = intersections,
+    aes(xintercept = AM, color = `Fuel Type`),
+    linetype = "dashed", linewidth = 3
+  ) +
+  geom_point(
+      data = intersections,
+      aes(x = AM, y = TCO, color = `Fuel Type`),  
+      shape = 1,
+      size = 10,
+      stroke = 4,
+      fill = NA
+    ) +
+  geom_label(
+ data = intersections,
+ aes(
+   x = AM - 15000,
+   y = TCO - 0.39,
+   label = paste0("Breakeven\n", `Fuel Type`)
+),
+ hjust = 0,
+ vjust = 1,
+ size = 12,
+ color = "black",           # text color
+ fill = "white",          # background color
+ label.size = 0,        # border thickness
+ label.r = unit(0.15, "lines"),  # corner radius
+ fontface = "bold"
+) +
+  labs(
+    x = "Annual mileage [vehkm/yr]",
+    y = "TCO [EUR/vehkm]",
+    title = paste0("TCO over annual mileage\n", vehicleSize, " in ", yr))+
+  coord_cartesian(ylim = c(0, 3.3))+ 
+  scale_x_continuous(limits = c(25000, 85000)) +
+  
+  scale_color_manual(values = paperColors,
+                     breaks = c("Diesel", "BET large battery", "BET small battery")) +  # Reorder the legend items
+  
+  scale_fill_manual(values = paperColors,
+                    breaks = c("Diesel", "BET large battery", "BET small battery")) +  # Reorder the legend items
+  themePanel
+
+plot(breakeven)
+
+```
+
+```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
+# Arrange them
+combinedPlotMain <- (
+  (TCObarPlots | breakeven)
+  
+)+ 
+  plot_annotation(tag_levels = "a")
+
+
+ggsave(
+  file.path(plotFolder, "TCOoverview.pdf"),
+  plot = combinedPlotMain,
+  width = 40, height = 45/3, units = "in", device = cairo_pdf, limitsize = FALSE
+)
+```
+

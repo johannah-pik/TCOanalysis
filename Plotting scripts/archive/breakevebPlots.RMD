@@ -1,0 +1,146 @@
+---
+title: "Annual mileage distribution plots EUR"
+author: "Johanna Hoppe"
+date: "2025-02-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)#
+library(ggplot2)
+library(data.table)
+library(RColorBrewer)
+library(ggtext)
+library(ggh4x)
+library(scales) 
+```
+
+```{r, fig.width=30, fig.height=20, fig.fullwidth=FALSE}
+breakevenPlotData <- breakeven[period == 2030 & paperScen %in% c("Current Policies")]
+
+setnames(breakevenPlotData, "ACEAscen", "Sensitivity Scenario")
+breakevenPlotData[, `Sensitivity Scenario` := factor(`Sensitivity Scenario`, 
+                               levels = c("Optimistic", "Medium", "Pessimistic"))]
+p <- ggplot(breakevenPlotData, aes(x = Country, y = AMb, color = `Fuel Type`, shape = `Vehicle Size`)) +
+  geom_point(size = 5) +
+  theme_minimal() +
+  labs(
+    title = "Breakeven annual mileage",
+    x = "Country",
+    y = "Breakeven annual mileage",
+    color = "Fuel Type",
+    shape = "Vehicle Size"
+  ) + 
+  facet_wrap(~ `Sensitivity Scenario`) + 
+  coord_cartesian(ylim = c(0, 510000)) +
+  scale_color_manual(values = paperColors) +
+  scale_y_continuous(labels = label_number(accuracy = 1)) + 
+  scale_x_discrete(labels = function(x) { sub("\\s", "\n", x) }, expand = expansion(mult = c(0.3, 0.3))) +
+  themePanel +
+     theme(
+     panel.spacing = unit(0.7, "lines"),                 # Slightly more room between facets
+     panel.border = element_rect(color = "grey85", fill = NA, linewidth = 0.4),  # Light border
+     strip.text = element_text(margin = margin(t = 4, b = 4)),                   # Ensure facet titles aren't clipped
+     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+   )
+
+dir <- dirname(getwd())
+ggsave(
+  file.path(dir, "plots", "breakevenAM_country.pdf"),
+  plot = p,
+  width = 30, height = 10, units = "in", device = cairo_pdf
+)
+
+
+```
+
+```{r, fig.width=16, fig.height=10, fig.fullwidth=FALSE}
+# Get full combination of countries and all period values
+breakevenPlotData <- breakeven[`Vehicle Size` == "Tractor-Trailer" & `Fuel Type` == "BET Long"]
+countries <- unique(breakevenPlotData$Country)
+periods <- unique(breakevenPlotData$period)  # Or whatever breaks you use
+breakevenPlotData <- breakevenPlotData[, c("Country", "period", "paperScen", "ACEAscen", "AMb")]
+# Create a dummy grid for all combinations
+dummy <- expand.grid(
+  Country = unique(breakevenPlotData$Country),
+  period = unique(breakevenPlotData$period),
+  paperScen = unique(breakevenPlotData$paperScen),
+  ACEAscen = unique(breakevenPlotData$ACEAscen)
+)
+# Filter values that are too high to be shown
+breakevenPlotData <- breakevenPlotData[AMb < 200000]
+
+# Combine with real data
+breakeven_full <- merge(breakevenPlotData, dummy, by = c("Country", "period", "paperScen", "ACEAscen"), all.y = TRUE)
+setnames(breakeven_full, c("ACEAscen", "paperScen"), c("Sensitivity scenario", "Policy scenario"))
+
+
+
+p <- ggplot(
+  breakeven_full[!`Policy scenario` == "Urban Depot Charging"], 
+  aes(color = `Policy scenario`, linetype = `Sensitivity scenario`)
+) +
+  geom_line(aes(x = period, y = AMb), linewidth = 0.8) +
+  
+  scale_color_manual(values = c("Current Policies" = "#8C564B", "Removed Policies" = "#BCBD22"),
+                     breaks = c("Current Policies", "Removed Policies")) +  # Reorder the legend items
+  
+  # Facet settings: No spacing & fixed scales
+  facet_wrap(~ Country, ncol = 3, scales = "fixed") +  
+  
+  # Title and labels
+  labs(
+    x = "Year",
+    y = "Breakeven annual mileage",
+    title = "Annual Mileage for cost parity with conventional diesel truck\nBET Long | Tractor Trailer") +
+  coord_cartesian(ylim = c(0, 100000))+ 
+
+  # Theme modifications
+  theme(
+    plot.title = element_text(size = 22, face = "bold", hjust = 0.5),
+    plot.caption = element_text(size = 14, hjust = 0),
+    axis.title.x = element_text(size = 18, margin = margin(t = 12)),
+    axis.title.y = element_text(size = 18, margin = margin(r = 12)),
+    axis.text = element_text(size = 14, color = "black"),
+    axis.ticks = element_line(color = "black", size = 0.5),
+    axis.line = element_line(color = "black", size = 0.8),
+
+    # Panel border and visibility for all facets
+    panel.border = element_rect(color = "black", fill = NA, size = 0.8),
+    panel.spacing = unit(1.2, "lines"),  # Space between facets
+    panel.grid = element_blank(),  # Remove grid lines
+
+    legend.title = element_text(size = 18),
+    legend.text = element_text(size = 16),
+    legend.position = "bottom",
+
+    # Facet settings
+    strip.text = element_text(
+      size = 20,
+      face = "bold",
+      color = "black",
+      margin = margin(t = 6, b = 6)  # Add breathing room
+    ),
+    strip.background = element_rect(
+      fill = "#F5F5F5",  # Soft grey background
+      color = NA         # No border
+    ),
+    panel.background = element_rect(fill = "white"),
+    plot.background = element_rect(fill = "white"),
+
+    # Force x-axis to be drawn in every facet
+    axis.text.x = element_text(size = 14, color = "black"),  # Make sure x-axis text is visible
+    axis.ticks.x = element_line(color = "black", size = 0.5)  # Ensure x-axis ticks are visible
+  )
+plot(p)
+dir <- dirname(getwd())
+ggsave(file.path(dir, "plots", paste0("BreakevenPlot.svg")), plot = p, device = "svg", width = 27, height = 9, units = "in")
+
+
+```
+
+
+
+
+
+

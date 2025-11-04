@@ -1,0 +1,839 @@
+scenOverview <- function(baseZise, paperColors) {
+  tileWidth   <- baseTextSize * 2   
+  tileHeight  <- baseTextSize * 0.5   
+  tileSpacing <- baseTextSize * 0.01
+  rowSpacing  <- baseTextSize * 0.01
+  cornerRadius <- 0.15
+  
+  nRows <- 6
+  stepVert <- tileHeight + rowSpacing
+  rowPositions <- seq(from = nRows, by = -stepVert, length.out = nRows)
+  topHeaderY <- rowPositions[1] + stepVert
+  colPositions <- cumsum(c(0, rep(tileWidth + tileSpacing, 3)))
+  
+  colLabels <- c(
+    "BET/FCET",
+    "ICET\ncounterpart",
+    "DCO scenario"
+  )
+  rowLabels <- c(
+    "Vehicle\nparameters", "Energy carrier\nparameters",
+    "Vehicle\nparameters", "Energy carrier\nparameters",
+    "Vehicle\nparameters", "Energy carrier\nparameters"
+  )
+  
+  combos <- data.frame(
+    zet = c("LC_HTM", "PROG",
+            "MC_MTM", "BAU",
+            "HC_LTM", "BAU"),
+    diesel = c("HC_LTM", "BAU",
+               "MC_MTM", "BAU",
+               "LC_HTM", "PROG"),
+    stringsAsFactors = FALSE
+  )
+  
+  leftDf <- data.frame(
+    colX = rep(colPositions[2:3], each = nrow(combos)),
+    scenarios = c(combos$zet, combos$diesel),
+    y = rep(rowPositions, times = 2),
+    stringsAsFactors = FALSE
+  )
+  
+  rowHeaderDf <- data.frame(
+    colX = colPositions[1],
+    label = rowLabels,
+    y = rowPositions,
+    stringsAsFactors = FALSE
+  )
+  
+  topHeaderDf <- data.frame(
+    colX = colPositions[2:4],             
+    label = colLabels,                     
+    y = rep(topHeaderY, length(colLabels)),
+    stringsAsFactors = FALSE
+  )
+  
+  # DCO column
+  pairs <- matrix(c(1,2, 3,4, 5,6), ncol = 2, byrow = TRUE)
+  dcoYCenter <- apply(pairs, 1, function(p) mean(rowPositions[p]))
+  dcoYMin <- apply(pairs, 1, function(p) min(rowPositions[p]) - tileHeight/2)
+  dcoYMax <- apply(pairs, 1, function(p) max(rowPositions[p]) + tileHeight/2)
+  dcoCol <- c("Optimistic", "Medium", "Pessimistic")
+  
+  dcoDf <- data.frame(
+    dco = dcoCol,
+    yCenter = dcoYCenter,
+    yMin = dcoYMin,
+    yMax = dcoYMax,
+    xCenter = colPositions[4],
+    stringsAsFactors = FALSE
+  )
+  
+  xMargin <- tileWidth * 0.5
+  xLimits <- c(min(colPositions) - tileWidth/2 - xMargin,
+               max(colPositions) + tileWidth/2 + xMargin)
+  
+  yMarginTop <- tileHeight * 0.5
+  yMarginBottom <- tileHeight * 0.5
+  yLimits <- c(min(rowPositions) - tileHeight/2 - yMarginBottom,
+               topHeaderY + tileHeight/2 + yMarginTop)
+  
+  scenariosPlot <- ggplot() +
+    
+    # Top Header
+    funkyheatmap::geom_rounded_rect(
+      data = topHeaderDf,
+      aes(xmin = colX - tileWidth/2, xmax = colX + tileWidth/2,
+          ymin = y - tileHeight/2, ymax = y + tileHeight/2),
+      fill = "grey80", color = "white", radius = cornerRadius
+    ) +
+    geom_text(
+      data = topHeaderDf,
+      aes(x = colX, y = y, label = label),
+      fontface = "bold", size = relSize(1), lineheight = 0.9
+    ) +
+    
+    # Row Header
+    funkyheatmap::geom_rounded_rect(
+      data = rowHeaderDf,
+      aes(xmin = colX - tileWidth/2, xmax = colX + tileWidth/2,
+          ymin = y - tileHeight/2, ymax = y + tileHeight/2),
+      fill = "grey80", color = "white", radius = cornerRadius
+    ) +
+    geom_text(
+      data = rowHeaderDf,
+      aes(x = colX, y = y, label = label),
+      fontface = "bold", size = relSize(1), lineheight = 0.9
+    ) +
+    
+    # Left two columns
+    funkyheatmap::geom_rounded_rect(
+      data = leftDf,
+      aes(xmin = colX - tileWidth/2, xmax = colX + tileWidth/2,
+          ymin = y - tileHeight/2, ymax = y + tileHeight/2,
+          fill = scenarios),
+      color = "white", radius = cornerRadius
+    ) +
+    geom_text(
+      data = leftDf,
+      aes(x = colX, y = y, label = scenarios),
+      size = relSize(1.0), lineheight = 1
+    ) +
+    
+    # DCO column
+    funkyheatmap::geom_rounded_rect(
+      data = dcoDf,
+      aes(xmin = xCenter - tileWidth/2, xmax = xCenter + tileWidth/2,
+          ymin = yMin, ymax = yMax, fill = dco),
+      color = "white", radius = cornerRadius
+    ) +
+    geom_text(
+      data = dcoDf,
+      aes(x = xCenter, y = yCenter, label = dco),
+      color = "white", fontface = "bold", size = relSize(1.0)
+    ) +
+    
+    scale_x_continuous(breaks = colPositions, labels = NULL, limits = xLimits) +
+    scale_y_continuous(breaks = NULL, limits = yLimits) +
+    scale_fill_manual(values = paperColors) +
+    coord_cartesian() +
+    theme_minimal(base_size = baseTextSize) +
+    theme(
+      panel.grid = element_blank(),
+      axis.title = element_blank(),
+      axis.text = element_blank(),
+      legend.position = "none"
+    )
+  
+  return(scenariosPlot)
+}
+
+examplaryUtilization <- function(country, reducedBinnedWeightedMileage, baseTextSize, themePanel) {
+
+  exampleCountry <- country
+  widthSize <- 0.7 
+  heightSize <- 0.8
+  
+  # ----- stack effect ----- 
+  nShadow <- 6    # Amount of plots 
+  offsetX <- 0.02 * widthSize 
+  offsetY <- 0.02 * heightSize
+  
+  # ----- Plot ----- 
+  foregroundData <- copy(reducedBinnedWeightedMileage[binMean < 500000 & country == exampleCountry]) 
+  
+  xLevels <- levels(foregroundData$avktBinned)
+  xLimPlot <- c(0.5, length(xLevels) + 0.5)
+  yLimPlot <- range(foregroundData$binWeightedShareEUR)
+  
+  fullPlot <- gTree(children = gList())
+  
+  # Foreground plot
+  xBreaks <- xLevels[seq(1, length(xLevels), by = 3)]
+  
+  numRanges <- lapply(xBreaks, function(lbl) {
+    as.numeric(unlist(strsplit(gsub("\\[|\\]|\\(|\\)", "", lbl), ",")))
+  })
+  
+  # Build rounded labels in thousands
+  xLabels <- sapply(numRanges, function(r) {
+    paste0(round(r[1] / 1000), "–", round(r[2] / 1000), "k")
+  })
+  
+  mileageDensity <- ggplot(foregroundData, aes(x = avktBinned, y = binWeightedShareEUR, fill = truckClass)) +
+    geom_bar(stat = "identity", position = "identity", alpha = 0.6, color = "white") +
+    facet_wrap(~country, scales = "free_y", ncol = 1) +
+    scale_x_discrete(breaks = xBreaks, labels = xLabels) +
+    labs(
+      x = "Annual mileage [km/yr]",
+      y = "Weighted share",
+      fill = NULL
+    ) +
+    themePanel +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1, size = rel(1) * 0.8),
+      legend.position = "bottom",
+      legend.title = element_text(face = "bold"),
+      legend.text = element_text(lineheight = 0.9),
+      panel.border = element_rect(color = "black", fill = NA, size = 1.2),
+      axis.title.x = element_text(margin = margin(t = 4)),
+      axis.title.y = element_text(margin = margin(r = 4)),
+      legend.margin = margin(t = -2, unit = "pt"),
+      legend.box.margin = margin(t = -2, unit = "pt"),
+      plot.margin = margin(t = 8, r = 4, b = 8, l = 4, unit = "pt"),
+      panel.background = element_rect(fill = NA, color = NA),
+      plot.background  = element_rect(fill = NA, color = NA)
+    ) +
+    guides(
+      fill = guide_legend(
+        keyheight = unit(0.4, "cm"),
+        keywidth = unit(0.4, "cm"),
+        override.aes = list(alpha = 0.6)
+      )
+    )
+  
+  # Background stacked plots
+  for (i in seq(nShadow, 1)) {
+    alphaVal <- ifelse(i == 1, 1, 0.3)
+    
+    shadow <- rectGrob(
+      x = 0.5 + i * offsetX,
+      y = 0.5 - i * offsetY,
+      width = widthSize,
+      height = heightSize,
+      gp = gpar(fill = "grey95", col = "grey85", alpha = alphaVal)
+    )
+    
+    fullPlot <- addGrob(fullPlot, shadow)
+  }
+  
+  # Transfer to grob for assembly
+  foregroundGrob <- ggplotGrob(mileageDensity)
+  foregroundGrob$vp <- viewport(
+    x = 0.5, y = 0.5,
+    width = widthSize * 0.8,
+    height = heightSize * 0.8
+  )
+  
+  fullPlot <- addGrob(fullPlot, foregroundGrob)
+  return(fullPlot)
+}
+
+dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScenario) {
+  # - Prepare data -------------------------------------------------------------
+  barPlotData <- copy(TCO)[period == yr & truckClass == vehSize & country == exampleCountry & paperScen == paperScenario]
+  # filter DCO scenarios
+  truckSide <- merge(
+    barPlotData,
+    unique(DCOscenarios[, .(truckTech, truckTCOscenario, DCOscenario)]),
+    by.x = c("truckTechnology", "TCOscenario"),
+    by.y = c("truckTech", "truckTCOscenario"),
+    all = FALSE
+  )
+  counterSide <- merge(
+    barPlotData,
+    unique(DCOscenarios[, .(counterTech, counterTechTCOscenario, DCOscenario)]),
+    by.x = c("truckTechnology", "TCOscenario"),
+    by.y = c("counterTech", "counterTechTCOscenario"),
+    all = FALSE
+  )
+  barPlotData <- rbind(truckSide, counterSide)
+  # Rename for slim legend and axis labelling
+  barPlotData[parameter == "Vehicle body\nincl. engine", parameter := "Vehicle body incl. engine"]
+  barPlotData[parameter == "M&R + Tires", parameter := "M&R + tires"]
+  newOrder <- c("CO2 tax", "Toll charge", "Vehicle tax", "Fuel cost", 
+                "M&R + tires", "H2 tank", "Fuel cell system", "Battery", "Vehicle body incl. engine")
+  validNewOrder <- intersect(newOrder, unique(barPlotData$parameter))
+  
+  droplevels(barPlotData)
+  barPlotData[, parameter := factor(parameter, 
+                                 levels = validNewOrder)]
+  barPlotData$TCOscenario <- gsub("x", "\nx\n", barPlotData$TCOscenario)
+  barPlotData[truckTechnology == "BET large battery", truckTechnology := "BET\nlarge\nbattery"]
+  barPlotData[truckTechnology == "BET small battery", truckTechnology := "BET\nsmall\nbattery"]
+  barPlotData[, `truckTechnology` := factor(truckTechnology, levels = c("ICET", "FCET", "BET\nlarge\nbattery", "BET\nsmall\nbattery"))]
+  # Step 1: Compute sum per truckTechnology
+  TCOSum <- barPlotData[, .(value = sum(value)), by = c("truckTechnology", "TCOscenario", "DCOscenario")]
+  # Step 2: Compute differences to ICET
+  TCOSum[, diff := value - value[`truckTechnology` == "ICET"], by = "DCOscenario"]
+  dieselVal <- TCOSum[`truckTechnology` == "ICET"]
+  # Step 3: Create segment data for arrows (exclude ICET)
+  arrowData <- TCOSum[`truckTechnology` != "ICET"]
+  arrowData[, x := TCOscenario]
+  arrowData[, xend := TCOscenario]
+  arrowData[, y := value, by = "DCOscenario"]
+  arrowData[, yend := value - diff]
+  
+  # - Plot -------------------------------------------------------------
+  # Create one plot per facet, then stitch them back together
+  facetLevels <- unique(barPlotData$DCOscenario)
+  facetLevels <- facetLevels[c(2,3,1)]
+  plotList <- lapply(seq_along(facetLevels), function(i) {
+    
+    facetLevel <- facetLevels[i]
+    
+    subBarPlotData <- subset(barPlotData, DCOscenario == facetLevel)
+    subArrowData <- subset(arrowData, DCOscenario == facetLevel)
+    subDieselVal <- subset(dieselVal, DCOscenario == facetLevel)
+    
+    TCObarPlots <- ggplot(subBarPlotData, aes(x = `TCOscenario`)) +
+      geom_bar(aes(y = value, fill = parameter), position = "stack", stat = "identity", width = 0.6) +
+      scale_fill_manual(values = paperColors) +
+      geom_hline(yintercept = subDieselVal$value, linetype = "dashed", color = "black", size = 1) +
+      geom_segment(
+        data = subArrowData,
+        aes(x = x, xend = xend, y = y, yend = yend),
+        arrow = arrow(
+          length = unit(0.25, "cm"),  
+          type = "closed",            
+          ends = "last",
+          angle = 25                 
+        ),
+        color = "black",
+        linewidth = 0.6              
+      ) +
+      geom_label(data = subArrowData,
+                 aes(x = xend, y = (y + yend) / 2, label = "DCO"),
+                 hjust = -0.1,
+                 vjust = 0.5,
+                 size = 4,
+                 color = "black",           
+                 fill = "white",          
+                 label.size = 0,       
+                 label.r = unit(0.15, "lines"),  
+                 fontface = "bold") +
+      facet_wrap(~ `truckTechnology`, nrow = 1, scales = "free_x") +
+      coord_cartesian(ylim = c(0, 1.3)) +
+      labs(
+        x = if (i == 2) paste0("Vehicle and energy carrier parameter scenario") else NULL,
+        y = if (i == 1) "TCO [EUR/km]" else NULL,
+        title = as.character(facetLevel),
+        fill = NULL
+      ) +  
+      themePanel})
+  
+  TCOtoDCOexample <- wrap_plots(
+    plotList,
+    ncol = 3,
+    guides = "collect"
+  ) &
+    guides(
+      fill = guide_legend(
+        nrow = 2,
+        keyheight = unit(0.4, "cm"),
+        keywidth  = unit(0.4, "cm"),
+        override.aes = list(alpha = 0.6)
+      )
+    ) &
+    theme(
+      legend.position   = "bottom",
+      legend.key.size   = unit(1, "lines"),  # global scaling
+      legend.margin     = margin(t = 20),
+      legend.text       = element_text(size = rel(1)),
+      legend.title      = element_text(size = rel(1)),
+      panel.background  = element_rect(fill = "transparent", colour = NA),
+      plot.background   = element_rect(fill = "transparent", colour = NA),
+      legend.background = element_rect(fill = "transparent", colour = NA)
+    )
+  #Create and draw grop
+  TCOtoDCO_grob <- patchworkGrob(TCOtoDCOexample)
+  grid.newpage()
+  grid.draw(TCOtoDCO_grob)
+  
+  widthSize <- 0.9 
+  heightSize <- 0.9
+  
+  # - Shadow plots 
+  nShadow <- 15    # Amount of background plots
+  offsetX <- 0.005 * widthSize 
+  offsetY <- 0.005 * heightSize
+  
+  shadows <- gTree(children=gList())
+  for (i in seq(nShadow, 1)) {
+    a <- ifelse(i == 1, 1, 0.3)
+    
+    shadow <- rectGrob(
+      x = 0.5 + i * offsetX,
+      y = 0.5 - i * offsetY,
+      width  = widthSize,
+      height = heightSize,
+      gp = gpar(fill = "grey95", col = "grey85", alpha = a)
+    )
+    
+    shadows <- addGrob(shadows, shadow)
+  }
+  
+  TCOtoDCO_grob$vp <- viewport(x = 0.497, y = 0.45, width = widthSize*0.99, height = heightSize*0.9)
+  TCOtoDCO <- addGrob(shadows, TCOtoDCO_grob)
+
+  grid.newpage()
+  grid.draw(TCOtoDCO)
+  
+  ellipsis <- textGrob(
+    "...",
+    x = unit(0.98, "npc"),  
+    y = unit(0.02, "npc"),  
+    just = c("right", "bottom"),
+    gp = gpar(col = "black", fontsize = 30, fontface = "bold", alpha = 0.5)
+  )
+  
+  titleGrob <- textGrob(
+    paste("Utilization 160000 km/yr |", vehSize, " | ", yr, " | Germany"),
+    x = 0.5,                # centered horizontally
+    y = 0.87,               # slightly above the top of the plot
+    just = c("center", "bottom"),
+    gp = gpar(fontsize = 14, fontface = "bold", col = "black")
+  )
+  
+  # Combine your TCOtoDCO grob with title and ellipsis
+  TCOtoDCOAnnotated <- grobTree(
+    TCOtoDCO,
+    titleGrob,
+    ellipsis
+  )
+  return(TCOtoDCOAnnotated)
+}
+
+amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenario) {
+  
+  data <- copy(DCOmileageDistributionShares)[period %in% yr & paperScen == paperScenario]
+  data[, cumWidth := 0.999 * (cumBinWeightedShareEUR - shift(cumBinWeightedShareEUR, type = "lag")),
+       by = c("paperScen", "DCOscenario", "truckTechnology")]
+  data[is.na(cumWidth), cumWidth := (cumBinWeightedShareEUR),
+       by = c("paperScen", "DCOscenario", "truckTechnology")]
+  
+  findZeroPoints <- data[, .SD[which.min(abs(value))],
+                         by = .(period, truckTechnology, paperScen, DCOscenario)]
+  findZeroPoints[, truckTechnology := factor(truckTechnology,
+                                             levels = c("BET small battery", "BET large battery", "FCET"))]
+  setorder(findZeroPoints, paperScen, DCOscenario, truckTechnology, -cumBinWeightedShareEUR)
+  findZeroPoints[, arrowY := seq(-0.2, -0.5, length.out = .N),
+                 by = c("paperScen", "DCOscenario")]
+  middleY <- findZeroPoints[round(nrow(findZeroPoints) / 6), arrowY]
+  
+  data$facetOrder <- as.numeric(factor(data$DCOscenario))
+  findZeroPoints$facetOrder <- as.numeric(factor(findZeroPoints$DCOscenario))
+  
+  # Split data
+  dataPositive <- data[value > 0]
+  dataNegative <- data[value < 0]
+  dataPositive[, truckTechnology := factor(truckTechnology,
+                                           levels = c("BET small battery", "BET large battery", "FCET"))]
+  dataNegative[, truckTechnology := factor(truckTechnology,
+                                           levels = c("FCET", "BET large battery", "BET small battery"))]
+  setorder(dataPositive, truckTechnology)
+  setorder(dataNegative, truckTechnology)
+  
+  facetLevels <- c("Optimistic", "Medium", "Pessimistic")
+  xBreaks <- c(0, 25, 50, 75, 100)
+  
+  secLabels <- sapply(xBreaks, function(x) {
+    idx <- which.min(abs(data$cumBinWeightedShareEUR * 100 - x))
+    round(data$cumBinWeightedVehShareEUR[idx] * 100)
+  })
+  
+  plotList <- lapply(seq_along(facetLevels), function(i) {
+    facetLevel <- facetLevels[i]
+    subDataPos <- subset(dataPositive, DCOscenario == facetLevel)
+    subDataNeg <- subset(dataNegative, DCOscenario == facetLevel)
+    subZero <- subset(findZeroPoints, DCOscenario == facetLevel)
+    
+    extraLabel <- if (i == 3) {
+      annotate("label", x = 42, y = middleY, label = "of road km\ncost beneficial",
+               color = "black", fill = "white", fontface = "bold", size = relSize(0.85),
+               hjust = 0, vjust = 0.5, label.padding = unit(0.3, "cm"), linewidth = 0)
+    } else NULL
+    
+    scales <- if (i == 3) {
+      list(scale_color_manual(values = paperColors, name = NULL,  guide = guide_legend(nrow = 1, keywidth = unit(1.4, "cm"),   # width of color boxes
+                              keyheight = unit(1, "cm") )),
+           scale_fill_manual(values = paperColors, name = NULL, guide = guide_legend(nrow = 1, keyheight = unit(1, "cm"),
+                                                                                     keywidth  = unit(1.4, "cm")))
+      )
+    } else {
+      list(scale_color_manual(values = paperColors, guide = "none"),
+           scale_fill_manual(values = paperColors, guide = "none"))
+    }
+    
+    ggplot(subDataPos) +
+      geom_rect(
+        aes(xmin = cumBinWeightedShareEUR * 100 - cumWidth * 100,
+            xmax = cumBinWeightedShareEUR * 100, ymin = 0, ymax = value,
+            fill = truckTechnology),
+        color = NA, alpha = 0.5, show.legend = FALSE
+      ) +
+      geom_rect(
+        aes(xmin = cumBinWeightedShareEUR * 100 - cumWidth * 100,
+            xmax = cumBinWeightedShareEUR * 100, ymin = 0, ymax = value,
+            color = truckTechnology),
+        fill = NA, linewidth = 0.001, alpha = 0.005, show.legend = FALSE
+      ) +
+      geom_rect(
+        data = subDataNeg,
+        aes(xmin = cumBinWeightedShareEUR * 100 - cumWidth * 100,
+            xmax = cumBinWeightedShareEUR * 100, ymin = 0, ymax = value,
+            fill = truckTechnology),
+        color = NA, alpha = 0.5
+      ) +
+      geom_rect(
+        data = subDataNeg,
+        aes(xmin = cumBinWeightedShareEUR * 100 - cumWidth * 100,
+            xmax = cumBinWeightedShareEUR * 100, ymin = 0, ymax = value,
+            color = truckTechnology),
+        fill = NA, linewidth = 0.001, show.legend = FALSE, alpha = 0.005
+      ) +
+      geom_point(
+        data = subZero,
+        aes(x = cumBinWeightedShareEUR * 100, y = 0, color = truckTechnology),
+        shape = 1, size = 5, stroke = 2, fill = NA
+      ) +
+      geom_vline(data = subZero,
+                 aes(xintercept = cumBinWeightedShareEUR * 100, color = truckTechnology),
+                 linetype = "dashed", linewidth = 1, show.legend = FALSE) +
+      geom_segment(data = subZero,
+                   aes(x = 0, xend = cumBinWeightedShareEUR * 100,
+                       y = arrowY, yend = arrowY, color = truckTechnology),
+                   arrow = arrow(length = unit(0.3, "cm"), type = "open"),
+                   linewidth = 1) +
+      geom_label(data = subZero,
+                 aes(x = 40, y = arrowY,
+                     label = paste("~", round(cumBinWeightedShareEUR * 100), "%")),
+                 color = "black", fill = "white",
+                 size = 4.2, fontface = "bold",
+                 label.padding = unit(0.1, "cm"),
+                 linewidth = 0, hjust = 1, vjust = 0.5) +
+      extraLabel +
+      geom_hline(yintercept = 0, color = "black", linewidth = 1) +
+      scale_x_continuous(expand = c(0, 0), limits = c(0, 101), breaks = xBreaks) +
+      coord_cartesian(ylim = c(-0.6, 0.6)) +
+      scales +
+      labs(
+        x = if (i == 3) "Road freight activity [%]" else NULL,
+        y = if (i == 2) paste0("DCO in ", yr, " [EUR/km]") else NULL
+      ) +
+      themePanel +
+      theme(
+        axis.text.x = if (i < 3) element_blank() else element_text(),  
+        axis.ticks.x = if (i < 3) element_blank() else element_line()
+      )
+  })
+  
+  
+  combined <- wrap_plots(plotList, ncol = 1, guides = "collect") +
+    plot_annotation(
+      theme = theme(
+        legend.position = "bottom",
+        legend.margin = margin(t = 20),
+        legend.text = element_text(size = rel(1)),
+        legend.title = element_text(size = rel(1))
+      )
+    )
+  
+  return(combined)
+}
+
+
+metaPlot <- function(DCOmilageDistributionShares, paperScenario) {
+  
+  data <- copy(DCOmilageDistributionShares)[paperScen == paperScenario]
+  findZeroPoints <- data[ , .SD[which.min(abs(value))], by = .(period, truckTechnology, paperScen, DCOscenario)][
+    , .(period, `truckTechnology`, paperScen, DCOscenario, cumBinWeightedShareEUR)
+  ]
+  findZeroPoints[, DCOscenario := factor(DCOscenario, levels = c("Optimistic", "Medium", "Pessimistic"))]
+  
+  p1 <- ggplot(findZeroPoints[DCOscenario == "Optimistic"], 
+               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology)) +
+    geom_line(linewidth = 1) +
+    scale_color_manual(values = paperColors, guide = "none") +  # legend removed
+    geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = 0.8) +
+    labs(y = NULL, x = NULL) +
+    scale_x_continuous(breaks = NULL, labels = NULL) +
+    scale_y_continuous(limits = c(0, 102)) +
+    themePanel
+  
+  p2 <- ggplot(findZeroPoints[DCOscenario == "Medium"], 
+               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology)) +
+    geom_line(linewidth = 1) +
+    scale_color_manual(values = paperColors, guide = "none") +  # legend removed
+    geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = 0.8) +
+    labs(y = "Economically viable road freight activity [%]", x = NULL) +
+    scale_x_continuous(breaks = NULL, labels = NULL) +
+    scale_y_continuous(limits = c(0, 102)) +
+    themePanel
+  
+  p3 <- ggplot(findZeroPoints[DCOscenario == "Pessimistic"], 
+               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology)) +
+    geom_line(linewidth = 1) +
+    scale_color_manual(values = paperColors, guide = "none") +  # legend removed
+    geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = 0.8) +
+    labs(x = "Year", y = NULL) +
+    scale_x_continuous(breaks = seq(min(findZeroPoints$period),
+                                    max(findZeroPoints$period), by = 10)) +
+    scale_y_continuous(limits = c(0, 102)) +
+    themePanel
+  
+  # Combine plots
+  combined <- wrap_plots(p1, p2, p3, ncol = 1, heights = c(1, 1, 1))
+  return(combined)
+}
+
+
+
+
+capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenario, vehType, region) {
+  yrs <- c(2030, 2040, 2050)
+  DCO <- copy(DCO)[, share := value_truck / value_counter * 100]
+  plotCapex <- DCO[unit == "EUR/veh yr" & paperScen == scenario & truckClass == vehType & country == region & period %in% yrs]
+  plotCapex <- dcast(
+    plotCapex[, c("truckTechnology", "period", "DCOscenario", "share")],
+    truckTechnology + period ~ DCOscenario,
+    value.var = "share"
+  )
+  plotOpex <- DCO[!unit == "EUR/veh yr" & paperScen == scenario & truckClass == vehType & country == region & period %in% yrs]
+  plotOpex <- dcast(
+    plotOpex[, c("truckTechnology", "period", "DCOscenario", "share")],
+    truckTechnology + period ~ DCOscenario,
+    value.var = "share"
+  )
+  # Desaturated reversed viridis palette
+  viridisNeutral <- rev(desaturate(viridisLite::viridis(100), amount = 0.9))
+  
+  plotBreakeven <- breakeven[
+    paperScen == scenario &
+      truckClass == vehType &
+      period %in% yrs &
+      country == region
+  ]
+  syntheticalBreakeven[, breakevenBin := cut(
+    breakeven,
+    breaks = c(0, 10000, 25000, 50000, 100000, 200000, 300000),
+    labels = c("<10k", "10–25k", "25–50k", "50–100k", "100–200k", "200–300k"),
+    include.lowest = TRUE,
+    right = FALSE
+  )]
+  
+  colorMap <- colorspace::sequential_hcl(6, palette = "Sunset", power = 1.3, rev = TRUE)
+
+  dodgeWidth <- 0.7
+  periods <- sort(unique(plotCapex$period))
+  
+  capexShare <- ggplot(plotCapex, aes(x = factor(period),
+                                      color = truckTechnology,
+                                      group = truckTechnology)) +
+    # period boxes
+    geom_rect(
+      data = data.frame(period = periods),
+      aes(
+        xmin = as.numeric(factor(period)) - 0.5,
+        xmax = as.numeric(factor(period)) + 0.5,
+        ymin = -Inf,
+        ymax = Inf
+      ),
+      inherit.aes = FALSE,
+      color = "grey95",   
+      fill = NA,         
+      linewidth = 0.25
+    ) +
+    # bars
+    geom_linerange(
+      aes(ymin = Pessimistic, ymax = Optimistic),
+      linewidth = 3.5, alpha = 0.3,
+      position = position_dodge(width = dodgeWidth)
+    ) +
+    # medium scenario markers
+    geom_point(
+      aes(y = Medium),
+      shape = 18,             
+      size = 3,             
+      stroke = 1,           
+      position = position_dodge(width = dodgeWidth)
+    ) +
+    # ICET bottom line
+    geom_hline(yintercept = 100, color = "grey50", linewidth = 0.8) +
+    annotate(
+      "text",
+      x = 3,
+      y = 103,
+      label = "ICET",
+      hjust = 0.5,
+      vjust = 0,
+      color = "grey50",
+      size = relSize(0.8)
+    ) +
+    scale_x_discrete(expand = c(0, 0)) +
+    scale_color_manual(values = paperColors, guide = guide_legend(title.position = "top")) +
+    labs(
+      x = "Period",
+      y = "CAPEX [% rel. to ICET]",
+      color = "Truck\ntechnology",
+      title = ""
+    ) +
+    themePanel +
+    theme(
+      legend.position = "bottom",
+      legend.box.just = "left",  
+      legend.box = "horizontal",
+      legend.direction = "vertical", 
+      legend.title = element_text(hjust = 0.5),
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor.x = element_blank(),
+      panel.grid.major.y = element_line(color = "grey90", linewidth = 0.8),
+      panel.grid.minor.y = element_line(color = "grey95", linewidth = 0.25)
+    )
+
+  opexShare <- ggplot(plotOpex, aes(x = factor(period))) +
+    # period boxes
+    geom_rect(
+      data = data.frame(period = periods),
+      aes(
+        xmin = as.numeric(factor(period)) - 0.5,
+        xmax = as.numeric(factor(period)) + 0.5,
+        ymin = -Inf,
+        ymax = Inf
+      ),
+      inherit.aes = FALSE,
+      color = "grey95",   
+      fill = NA,          
+      linewidth = 0.25
+    ) +
+    # bars
+    geom_linerange(
+      aes(ymin = Pessimistic, ymax = Optimistic, color = truckTechnology,
+                         group = truckTechnology),
+      linewidth = 3.5, alpha = 0.3,
+      position = position_dodge(width = dodgeWidth),
+      show.legend = FALSE
+    ) +
+    # medium scenario markers
+    geom_point(
+      aes(y = Medium, color = truckTechnology,
+          group = truckTechnology),
+      shape = 18,            
+      size = 3,             
+      fill = "white",         
+      stroke = 1,          
+      position = position_dodge(width = dodgeWidth),
+      show.legend = FALSE
+    ) +
+    # ICET bottom line
+    geom_hline(yintercept = 100, color = "grey50", linewidth = 0.8) +
+    annotate(
+      "text",
+      x = 3,
+      y = 103,
+      label = "ICET",
+      hjust = 0.5,
+      vjust = 0,
+      color = "grey50",
+      size = relSize(0.8)
+    ) +
+    scale_x_discrete(expand = c(0, 0)) +
+    scale_color_manual(values = paperColors) +
+    labs(
+      x = "Period",
+      y = "OPEX [% rel. to ICET]",
+      title = ""
+    ) +
+    themePanel +
+    theme(
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor.x = element_blank(),
+      panel.grid.major.y = element_line(color = "grey90", linewidth = 0.8),
+      panel.grid.minor.y = element_line(color = "grey95", linewidth = 0.25)
+    ) 
+  
+  breakevenHeatMap <- ggplot(syntheticalBreakeven, aes(x = opexDiff, y = capexDiff, fill = breakevenBin)) +
+    geom_tile() +
+    scale_fill_manual(
+      values =  colorMap,
+      name = "Breakeven mileage\n[vehkm/yr]",
+      drop = FALSE,
+      guide = guide_legend(title.position = "top")
+    ) +
+    scale_x_continuous(expand = c(0, 0)) +
+    scale_y_continuous(expand = c(0, 0), breaks = seq(5000, 30000, by = 5000),
+                       labels = function(x) paste0(x / 1000, "k")) +
+    coord_cartesian(xlim = c(0.1, 0.6), ylim = c(500, 29500)) +
+    geom_line(
+      data = plotBreakeven,
+      aes(
+        x = opexDiff,
+        y = capexDiff,
+        linetype = DCOscenario,
+        color = truckTechnology
+      ),
+      linewidth = 1,
+      inherit.aes = FALSE,
+      show.legend = c(color = FALSE) 
+    ) +
+    geom_point(
+      data = plotBreakeven,
+      aes(
+        x = opexDiff,
+        y = capexDiff,
+        color = truckTechnology,
+        shape = factor(period)
+      ),
+      size = 3,
+      inherit.aes = FALSE,
+      show.legend = c(color = FALSE, shape = TRUE) 
+    ) +
+    scale_color_manual(values = paperColors) +
+    scale_linetype_manual(values = c("solid", "dotted", "longdash"), guide = guide_legend(title.position = "top")) +
+    scale_shape_manual(values = c(16, 17, 18), guide = guide_legend(title.position = "top")
+    ) +
+    labs(
+      x = "OPEX advantage\n(ICET – alt) [€/vehkm]",
+      y = "CAPEX disadvantage\n(alt – ICET) [€/veh yr]",
+      shape = "Period",
+      linetype = "DCO\nScenario"
+    ) +
+    themePanel +
+    theme(legend.position = "bottom",
+          legend.box.just = "left",  
+          legend.box = "horizontal",
+          legend.direction = "vertical", 
+          legend.title = element_text(hjust = 0.5))
+  
+  combinedCapexOpexAnalysis <- (
+    (capexShare | opexShare | breakevenHeatMap) +
+      plot_layout(widths = c(1, 1, 1), guides = "collect") &
+      theme(
+        legend.position = "bottom"
+      ) &
+      guides(
+        color = guide_legend(nrow = 3, order = 1),
+        shape = guide_legend(nrow = 3, order = 2),
+        linetype = guide_legend(nrow = 3, order = 3)
+      )
+  ) + 
+    plot_annotation(tag_levels = "a") &
+    theme(
+      plot.tag = element_text(size = baseTextSize*0.7, face = "bold")  # adjust size here
+    )
+  
+  return(combinedCapexOpexAnalysis)
+}
+
+
+

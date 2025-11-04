@@ -1,0 +1,594 @@
+---
+title: "Main plots"
+author: "Johanna Hoppe"
+date: "2025-02-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)#
+library(ggplot2)
+library(data.table)
+library(RColorBrewer)
+library(ggtext)
+library(ggh4x)
+library(ggforce)
+library(patchwork)
+library(scales)
+library(colorspace)
+library(viridisLite)
+library(cowplot)
+library(funkyheatmap)
+library(stringr)
+library(grid)
+library(tibble)
+
+rm(list=ls())
+mainFolder <- dirname(this.path::this.dir())
+dataFolder <-  file.path(mainFolder, "data")
+plotFolder <- file.path(mainFolder, "plots", "main")
+source(file.path(mainFolder, "Plotting scripts", "functions.R"))
+source(file.path(mainFolder, "Plotting scripts", "plotFunctions.R"))
+source(file.path(mainFolder, "Plotting scripts", "plotSettings.R"))
+
+annualMileage <- data.table(truckClass = c("Rigid", "Rigid", "Rigid", "Tractor-trailer", "Tractor-trailer", "Tractor-trailer"),
+                            operation = c("Urban", "Regional", "Long-haul", "Urban", "Regional", "Long-haul"),
+                            am = c(30000, 85000, 140000, 40000, 90000, 160000))
+
+DCOscenarios <- tribble(
+  ~truckTech,         ~truckTCOscenario, ~counterTech, ~counterTechTCOscenario, ~DCOscenario,
+  "BET small battery", "LC_HTMxPROG",    "ICET",       "HC_LTMxBAU",            "Optimistic",
+  "BET large battery", "LC_HTMxPROG",    "ICET",       "HC_LTMxBAU",            "Optimistic",
+  "FCET",              "LC_HTMxPROG",    "ICET",       "HC_LTMxBAU",            "Optimistic",
+  "BET small battery", "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "Medium",
+  "BET large battery", "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "Medium",
+  "FCET",              "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "Medium",
+  "BET small battery", "HC_LTMxBAU",     "ICET",       "LC_HTMxPROG",           "Pessimistic",
+  "BET large battery", "HC_LTMxBAU",     "ICET",       "LC_HTMxPROG",           "Pessimistic",
+  "FCET",              "HC_LTMxBAU",     "ICET",       "LC_HTMxPROG",           "Pessimistic"
+)
+setDT(DCOscenarios)
+
+
+```
+
+# Introductory plot panel
+## Scenario overview
+```{r, fig.width=8, fig.height=5, fig.fullwidth=FALSE}
+scenariosPlot <- scenOverview(baseZise, paperColors)
+print(scenariosPlot)
+```
+## Visualization utilization profiles
+```{r, fig.width=5, fig.height=5, fig.fullwidth=FALSE}
+#load data
+reducedBinnedWeightedMileage <- prepareMileageData(dataFolder, bin = TRUE, reduce = TRUE)
+exampleCountry <- "DE" 
+
+utilizationExample <- examplaryUtilization(exampleCountry, reducedBinnedWeightedMileage, baseTextSize, themePanel)
+
+grid.newpage()
+grid.draw(utilizationExample)
+
+```
+## Exemplary TCO barplot
+```{r, fig.width=16, fig.height=7, fig.fullwidth=FALSE}
+#select data
+paperScenario <- "Current policies"  
+yr <- c(2030)
+vehSize <- "Tractor-trailer"
+modeOfoperation <- "Long-haul"
+am <- annualMileage[truckClass == vehSize & operation == modeOfoperation]$am
+exampleCountry <- "DE" 
+#load data
+TCOdata <- loadTCO(dataFolder)
+TCO <- applyMileage(am, TCOdata)
+TCO <- groupParameters(TCO)
+
+TCOtoDCOexample <- dcoBarPlot(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScenario)
+
+grid.newpage()
+grid.draw(TCOtoDCOexample)
+
+```
+## Panel
+```{r, fig.width=7.09, fig.height=7.4, fig.fullwidth=FALSE}
+gScenarios <- ggplotGrob(scenariosPlot)
+
+row1 <- plot_grid(
+  utilizationExample, gScenarios,
+  ncol = 2,
+  rel_widths = c(5, 8)
+)
+
+row2 <- plot_grid(
+  TCOtoDCOexample,
+  ncol = 1
+)
+
+introPanel <- plot_grid(
+  row1, row2,
+  ncol = 1,
+  rel_heights = c(4.5, 7)
+)
+
+xMiddle <- 6.45 / 15.5
+triangleWidth  <- 0.06      
+triangleHeight <- 0.017      
+triangleY <- 8.3 / 13
+
+# Create the triangle grob
+triangleGrob <- polygonGrob(
+  x = c(xMiddle - triangleWidth / 2, xMiddle + triangleWidth / 2, xMiddle),
+  y = c(triangleY, triangleY, triangleY - triangleHeight),
+  gp = gpar(fill = "black", col = NA, alpha = 0.3)
+)
+
+annotatedPanel <- ggdraw(introPanel) +
+  draw_label(
+    "×",
+    x = 6.45 / 15.5,
+    y = 10 / 13,
+    size = 30,
+    fontface = "bold",
+    color = "black",
+    alpha = 0.3
+  ) +
+  draw_grob(triangleGrob) +
+  draw_plot_label(
+    label = c("a", "b", "c"),
+    x = c(0, 6 / 15.5, 0),       
+    y = c(1, 1, 7.75 / 13 + 0.005),           
+    hjust = 0, vjust = 1,
+    size = 16,
+    fontface = "bold",
+    color = "black"
+  ) +
+  draw_plot_label(
+    label = c(
+      "Country- and truck type specific\nutilizaton profiles",
+      "Scenario based approach",
+      "Country- and truck type specific differential cost of ownership (DCO)"
+    ),
+    x = c(0.03, 6 / 15.5 + 0.03, 0.03),
+    y = c(0.995, 0.995, 7.75 / 13),
+    hjust = 0, vjust = 1,
+    size = 14,
+    fontface = "plain",
+    color = "black"
+  )
+
+annotatedPanel
+
+ggsave(
+  filename = file.path(plotFolder, paste0("introPanel.pdf")),
+  plot = annotatedPanel,
+  width = 7.1,
+  height = 7.4,
+  units = "in",
+  device = cairo_pdf
+)
+
+```
+
+# TCO x Annual mileage distribution bar plot 
+```{r, fig.width= 5, fig.height= 8.5, fig.fullwidth=FALSE}
+yr <- c(2030)
+paperScenario <- "Current policies"
+
+TCOdata <- loadTCO(dataFolder)
+mileageDistribution <- prepareMileageData(dataFolder)
+DCOdata <- getDCO(DCOscenarios, TCOdata)
+setnames(mileageDistribution, "binMean", "annualM")
+DCOmilageDistribution <- applyMileage(mileageDistribution, DCOdata)
+DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribution, focus = "EUR")
+
+TCOxAnnualMileage <- amDistributionBarPlot(DCOmilageDistributionShares, yr, paperScenario)
+
+MetaTCOxAnnualMileage <- metaPlot(DCOmilageDistributionShares, paperScenario)
+
+```
+
+# Combine meta and mileage dstribution plot
+```{r, fig.width=7.09, fig.height=8.5, fig.fullwidth=FALSE}
+legend <- get_legend(
+  TCOxAnnualMileage +
+    theme(
+      legend.position = "bottom",
+      legend.justification = "left",   # start from left in its own box
+      legend.box.just = "left"
+    )
+)
+
+# 2. Remove legends from the plots
+TCOxAnnualMileagePlot_noleg <- TCOxAnnualMileage + theme(legend.position = "none")
+metaPlot_noleg <- MetaTCOxAnnualMileage + theme(legend.position = "none")
+
+# 3. Combine the plots side by side
+combined <- plot_grid(
+  TCOxAnnualMileagePlot_noleg,
+  metaPlot_noleg,
+  ncol = 2,
+  rel_widths = c(1.2, 0.8),
+  align = "v",
+  labels = c("a", "b"),
+  label_size = baseTextSize,
+  label_fontface = "bold",
+  label_x = 0.02,
+  label_y = 1.02,
+  hjust = 0, vjust = 1
+) +
+  theme(plot.margin = margin(t = 10, r = 5, b = 5, l = 15))
+
+# 4. Shift legend slightly to the right using a spacer
+legend_shifted <- plot_grid(
+  NULL,      # empty spacer
+  legend,
+  ncol = 2,
+  rel_widths = c(0.05, 0.3)  # First number: empty space on the left.Second number:space the legend occupies.
+)
+
+# 5. Combine plots and shifted legend vertically
+finalPlot <- plot_grid(
+  combined,
+  legend_shifted,
+  ncol = 1,
+  rel_heights = c(1, 0.1)  
+)
+finalPlot_with_labels <- ggdraw(finalPlot) +
+  draw_label(
+    "Optimistic", x = 0.02, y = 0.775, angle = 90,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1.2,
+    hjust = 0
+  ) +
+  draw_label(
+    "Medium", x = 0.02, y = 0.525, angle = 90,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1.2,
+    hjust = 0
+  ) +
+  draw_label(
+    "Pessimistic", x = 0.02, y = 0.235, angle = 90,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1.2,
+    hjust = 0
+  )
+
+
+# 6. Display final plot
+plot(finalPlot_with_labels)
+
+ggsave(
+  filename = file.path(plotFolder, paste0("EconomicallyViableActivity.pdf")),
+  plot     = finalPlot_with_labels,
+  device   = cairo_pdf,
+  width    = 7.09,          # in inches ≈ 180 mm / 25.4
+  height   = 8.3,          # in inches (adjust aspect ratio as appropriate)
+  units    = "in",
+  dpi      = 300           # ensures minimum resolution for any raster elements
+)
+```
+
+
+
+# CO₂ Price Required to Bridge the Differential Cost of Ownership
+```{r, fig.width=15.5, fig.height=14, fig.fullwidth=FALSE}
+# REWORK
+#Interesting Sensitivity Scenarios: "Current Policies without CO2 Price", "Sensitivity | Removed Policies except for bio/syn fuel mandates", "Removed Policies" 
+
+paperScen <- "Removed policies"
+yr <- c(2030, 2040, 2050)
+trucktechs <- c("BET small battery", "BET large battery")
+dieselFuel <- "Diesel Mix"
+
+TCOdata <- loadTCO(dataFolder)
+mileageDistribution <- prepareMileageData(dataFolder)
+DCOdata <- getDCO(DCOscenarios, TCOdata)
+setnames(mileageDistribution, "binMean", "annualM")
+DCOmilageDistribution <- applyMileage(mileageDistribution, DCOdata)
+DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribution, focus = "EUR")
+gapCo2price <- calculateSwitchCO2price(DCOmilageDistributionShares, dataFolder)
+
+
+data <- copy(gapCO2Price)[period %in% yr & `truckTechnology` %in% trucktechs & paperScen == sensitivityScen & Fuel == dieselFuel]
+data[, DCOscenario := factor(DCOscenario, 
+                               levels = c("Optimistic", "Medium", "Pessimistic"))]
+
+data[, cum_width := 0.999* (cumBinWeightedShareEUR * 100 - shift(cumBinWeightedShareEUR * 100, type = "lag")), by = c("DCOscenario", "truckTechnology", "period")]
+data[is.na(cum_width), cum_width := (cumBinWeightedShareEUR * 100), by = c("DCOscenario", "truckTechnology", "period")]
+co2PriceCurrentPol <- co2PriceCurrentPol[period %in% yr]
+
+findZeroPoints <-  data[ , .SD[which.min(abs(Co2PriceToCloseGap))], by = .(period, `truckTechnology`, DCOscenario)]
+setorder(findZeroPoints, DCOscenario, cumBinWeightedShareEUR)
+findZeroPoints[, arrow_y := seq(-0.6, -0.9, length.out = .N), by = "DCOscenario"]
+
+setorder(findZeroPoints, - cumBinWeightedShareEUR)
+data[, `truckTechnology` := factor(`truckTechnology`, levels = c("BET large battery", "BET small battery"))]
+findZeroPoints[, `truckTechnology` := factor(`truckTechnology`, levels = c("BET large battery", "BET small battery"))]  
+middle_y <- findZeroPoints[round(nrow(findZeroPoints)/6), arrow_y]
+
+# Create one plot per facet, then stitch them back together
+facet_levels <- unique(data$period)
+plot_list <- lapply(seq_along(facet_levels), function(i) {
+  facet_level <- facet_levels[i]
+  sub_data <- subset(data, period == facet_level)
+  sub_CO2 <- subset(co2PriceCurrentPol, period == facet_level)
+  if (i == 3) {
+    extraLabel <- annotate("label", x = 5, y = as.numeric(sub_CO2$value) + 15, label = "CO2 price\nCurrent Policies scenario", 
+                           color = "black", fill = "white", fontface = "bold", size = 4.2, hjust = 0, vjust = 0, 
+                           label.padding = unit(0.3, "cm"), label.size = 0)} else {
+                             extraLabel <- NULL
+                           }
+  
+  test <- ggplot(sub_data) +
+    geom_segment(aes(
+      x = abs(cumBinWeightedShareEUR * 100 - cum_width),
+      xend = cumBinWeightedShareEUR * 100,
+      y = Co2PriceToCloseGap,
+      yend = Co2PriceToCloseGap,
+      color = `truckTechnology`
+    ), linewidth = 0.8) +
+    geom_rect(aes(
+      xmin = cumBinWeightedShareEUR * 100 - cum_width,
+      xmax = cumBinWeightedShareEUR * 100,
+      ymin = 0,
+      ymax = Co2PriceToCloseGap,
+      fill = `truckTechnology`,
+      color = `truckTechnology`
+    ), linewidth = 0.02, alpha = 0.25) +
+    geom_hline(yintercept = 0, color = "black", size = 1) +
+     geom_hline(yintercept = as.numeric(sub_CO2$value), color = "lightgreen", size = 1) +
+    extraLabel +
+
+    scale_x_continuous(expand = c(0, 0), limits = c(0, 1.05 * max(data$cumBinWeightedShareEUR * 100, na.rm = TRUE))) +
+    coord_cartesian(ylim = c(-600, 1050)) +
+    scale_color_manual(values = paperColors) +
+    scale_fill_manual(values = paperColors) +
+    labs(
+      x = if (i == 2) "Share of road km in considered truck markets [%]" else NULL,
+      y = if (i == 1) "CO2 price to bridge DCO [EUR/tCO2]" else NULL,
+      title = paste0(unique(sub_data$paperScen), "\n", facet_level)
+    ) +
+    facet_wrap(~DCOscenario, ncol = 1) +
+    themePanel +
+    theme(
+      strip.text = element_text(face = "bold")
+    )
+})
+library(patchwork)
+
+combined <- wrap_plots(plot_list, ncol = 3, guides = "collect") &
+  theme(legend.position = "bottom")
+combined <- combined & theme(
+  legend.margin = margin(t = 20),
+  legend.text = element_text(size = rel(1)),
+  legend.title = element_text(size = rel(1))
+)
+
+dir <- dirname(getwd())
+ggsave(
+  file.path(plotFolder, paste0("CO2price.pdf")),
+  plot = combined,
+  width = 15.5, height = 14, units = "in", device = cairo_pdf
+)
+plot(combined)
+```
+
+# CAPEX to OPEX and shares
+```{r, fig.width=7.09, fig.height=5, fig.fullwidth=FALSE}
+
+scenario <- "Current policies"
+vehType <- "Tractor-trailer"
+TCOdata <- loadTCO(dataFolder)
+region <- "EUR"
+DCO <- getDCO(DCOscenarios, TCOdata, keep = TRUE)
+breakeven <- caluclateAnnualMileageBreakeven(DCO)
+syntheticalBreakeven <- caluclateSyntheticalBreakeven()
+capexVsOpex <- capexVsOpexOverviewPlot(DCO, breakeven, syntheticalBreakeven, scenario, vehType, region)
+
+plot(capexVsOpex)
+
+
+
+
+
+
+```
+
+```{r, fig.width=15.5, fig.height=6.5, fig.fullwidth=FALSE}
+
+
+plot(combined_CAPEXOPEXanalysis)
+
+ggsave(
+  file.path(plotFolder, "CAPEXOPEXanalysis.pdf"),
+  plot = combined_CAPEXOPEXanalysis,
+  width = 15.5, height = 6.5, units = "in", device = cairo_pdf
+)
+
+```
+
+# Max daily milage x share of road km  
+```{r, fig.width=15.5, fig.height=5, fig.fullwidth=FALSE}
+
+vehType <- "Tractor-trailer"
+infScenario <- "Base"
+rangeAnalysis[, period := factor(period, levels = unique(rangeAnalysis$period))]
+
+#Interpolation fucntion
+interpolate_directRange <- function(data, cumShareFeas_target, period_target, scenario_target) {
+  # Filter the data
+  sub <- data[`infrastructure-scenario` == scenario_target & period == period_target]
+  
+  # Order by cumShareFeas to ensure interpolation works
+  setorder(sub, cumShareFeas)
+  
+  # Ensure target is within range
+  if (cumShareFeas_target < min(sub$cumShareFeas) || cumShareFeas_target > max(sub$cumShareFeas)) {
+    stop("Target cumShareFeas is outside the range of available data.")
+  }
+  
+  # Find the two nearest points
+  idx <- which(sub$cumShareFeas <= cumShareFeas_target)
+  i <- max(idx)
+  
+  if (i == nrow(sub)) i <- i - 1  # avoid going out of bounds
+  
+  x1 <- sub$cumShareFeas[i]
+  y1 <- sub$directRange[i]
+  x2 <- sub$cumShareFeas[i + 1]
+  y2 <- sub$directRange[i + 1]
+  
+  # Linear interpolation
+  y_interp <- y1 + (y2 - y1) * (cumShareFeas_target - x1) / (x2 - x1)
+  return(y_interp)
+}
+
+# Create a custom blue palette: dark -> light -> dark
+# Create a light-to-dark blue palette
+n_periods <- length(unique(rangeAnalysis$period))
+blues <- colorRampPalette(c("#9ECAE1", "#08306B"))(n_periods)
+
+#setnames(ranges, "drivingRange", "directRange")
+annot_filter <- ranges[truckClass == "Tractor-trailer" &
+                       `truckTechnology` %in% c("BET SB", "BET LB") &
+                       `vehicle-parameter-scenario` == "medium" &
+                         period %in% c(2030, 2050)]
+
+annot_filter[, `:=`(
+  period = as.character(period),
+  directRange = as.numeric(directRange)
+)]
+
+rangeAnalysis[, `:=`(
+  period = as.character(period),
+  directRange = as.numeric(directRange)
+)]
+
+# Now merge
+annotPoints <- merge(
+  annot_filter,
+  rangeAnalysis,
+  by = c("directRange", "period"),
+  all.x = TRUE
+)
+annotPoints[`truckTechnology` == "BET LB", `truckTechnology` := "Large\nbattery"]
+annotPoints[`truckTechnology` == "BET SB", `truckTechnology` := "Small\nbattery"]
+annotPoints[, `truckTechnology` := factor(`truckTechnology`, levels = unique(annotPoints$`truckTechnology`))]
+
+bordercolor = "black"
+
+# Plot
+p <- ggplot() +
+  geom_line(data = rangeAnalysis[`infrastructure-scenario` == infScenario],
+            aes(x = cumShareFeas * 100, y = directRange, 
+            group = period), color = "darkgrey", size = 0.8) +
+  # MCS build-up
+  geom_line(data = rangeAnalysis[`infrastructure-scenario` == infScenario & period %in% c(2030, 2035)],
+            aes(x = cumShareFeas * 100, y = directRange, 
+            group = period), color = "black", size = 1.2, alpha = 0.5) +
+  # No MCS
+  geom_line(data = rangeAnalysisNoMCS,  aes(x = cumShareFeas * 100, y = directRange), color = "black", size = 1.2, alpha = 0.5) +
+  # Overlay black text without border
+  geom_text(
+    data = data.frame(x = 77, y = 850, label = "Without MCS"),
+    aes(x = x, y = y, label = label),
+    color = "black",       # Black text
+    size = 4.2,
+    angle = 22,
+    fontface = "bold"
+  ) +
+  # Full MCS
+  geom_line(data = rangeAnalysisfullMCS,  aes(x = cumShareFeas * 100, y = directRange), color = "black", size = 1.2, alpha = 0.6) +
+  # Overlay black text without border
+  geom_text(
+    data = data.frame(x = 91, y = 511, label = "Core Network"),
+    aes(x = x, y = y, label = label),
+    color = "black",       # Black text
+    size = 4.2,
+    angle = 41,
+    fontface = "bold"
+  ) +
+  geom_text(
+    data = data.frame(x = 70, y = 675, label = "2030"),
+    aes(x = x, y = y, label = label),
+    color = "black",       # Black text
+    size = 4.2,
+    angle = 15,
+    fontface = "bold"
+  ) +
+  geom_text(
+  data = data.frame(x = 80, y = 515, label = "2035"),
+    aes(x = x, y = y, label = label),
+    color = "black",       # Black text
+    size = 4.2,
+    angle = 15,
+  fontface = "bold"
+  ) +
+  # Add arrows from considered variants
+  geom_segment(data = annotPoints[`infrastructure-scenario` == infScenario],
+               aes(x = 0, xend = cumShareFeas * 100,
+                   y = directRange, yend = directRange,
+                   color = `truckTechnology`),
+                  arrow = arrow(length = unit(0.3, "cm"), type = "closed"),  # thicker, solid arrowhead
+                  lineend = "round", size = 1) +
+  geom_segment(data = annotPoints[`infrastructure-scenario` == infScenario],
+               aes(x = cumShareFeas * 100, xend = cumShareFeas * 100,
+                   y = directRange, yend = 140, color = `truckTechnology`),  # assuming y-axis bottom is 140
+               arrow = arrow(length = unit(0.3, "cm"), type = "closed"),  # thicker, solid arrowhead
+                  lineend = "round", size = 1) +
+  xlab("Share of annual road km in considered truck markets\nthat can be covered at a given direct driving range [%]") +
+  ylab("Direct driving range [km]") +
+  coord_cartesian(xlim = c(0, 100), ylim = c(150, 1100)) +
+  scale_x_continuous(limits = c(0, 100),
+                     expand = expansion(mult = c(0, 0.01))) +
+  scale_y_continuous(limits = c(140, 1010),
+                     expand = expansion(mult = c(0, 0.01))) +
+  scale_color_manual(values = paperColors) +
+  themePanel
+
+plot(p)
+
+t <- ggplot(mileage, aes(y = dvkt_max)) +
+  geom_density(
+    aes(x = after_stat(density / max(density))),  # normalized density on x-axis
+    stat = "density",
+    fill = "darkgrey",
+    color = NA
+  ) +
+  labs(
+    x = "Normalized density",
+    y = "Maximum daily\nvehicle km travelled"
+  ) +
+  scale_x_continuous(
+    limits = c(0, 1),
+    breaks = c(0, 1),  # only show 0 and 1
+    expand = expansion(mult = c(0, 0.01))
+  ) +
+  scale_y_continuous(
+    limits = c(140, 1100),
+    expand = expansion(mult = c(0, 0.01))
+  ) +
+  themePanel
+
+
+combined_plotMileage <- (
+  (t | p) +
+  plot_layout(widths = c(1, 8)) 
+)+ 
+  plot_annotation(tag_levels = "a")
+
+  
+plot(combined_plotMileage)
+
+
+ggsave(
+  file.path(plotFolder, "FeasMaxMileage.pdf"),
+  plot = combined_plotMileage,
+  width = 15.5, height = 5, units = "in", device = cairo_pdf
+)
+
+```
