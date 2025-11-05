@@ -154,8 +154,8 @@ examplaryUtilization <- function(country, reducedBinnedWeightedMileage, baseText
   widthSize <- 0.7 
   heightSize <- 0.8
   
-  # ----- stack effect ----- 
-  nShadow <- 6    # Amount of plots 
+  #stack effect
+  nShadow <- 6   
   offsetX <- 0.02 * widthSize 
   offsetY <- 0.02 * heightSize
   
@@ -195,19 +195,17 @@ examplaryUtilization <- function(country, reducedBinnedWeightedMileage, baseText
       legend.position = "bottom",
       legend.title = element_text(face = "bold"),
       legend.text = element_text(lineheight = 0.9),
-      panel.border = element_rect(color = "black", fill = NA, size = 1.2),
+      #panel.border = element_rect(color = "black", fill = NA, size = 1.2),
       axis.title.x = element_text(margin = margin(t = 4)),
       axis.title.y = element_text(margin = margin(r = 4)),
-      legend.margin = margin(t = -2, unit = "pt"),
-      legend.box.margin = margin(t = -2, unit = "pt"),
-      plot.margin = margin(t = 8, r = 4, b = 8, l = 4, unit = "pt"),
+      plot.margin = margin(t = 1, r = 1, b = 1, l = 1, unit = "pt"),
       panel.background = element_rect(fill = NA, color = NA),
       plot.background  = element_rect(fill = NA, color = NA)
     ) +
     guides(
       fill = guide_legend(
-        keyheight = unit(0.4, "cm"),
-        keywidth = unit(0.4, "cm"),
+        keyheight = unit(0.2, "cm"),
+        keywidth = unit(0.2, "cm"),
         override.aes = list(alpha = 0.6)
       )
     )
@@ -232,7 +230,7 @@ examplaryUtilization <- function(country, reducedBinnedWeightedMileage, baseText
   foregroundGrob$vp <- viewport(
     x = 0.5, y = 0.5,
     width = widthSize * 0.8,
-    height = heightSize * 0.8
+    height = heightSize * 0.9
   )
   
   fullPlot <- addGrob(fullPlot, foregroundGrob)
@@ -299,12 +297,12 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
     TCObarPlots <- ggplot(subBarPlotData, aes(x = `TCOscenario`)) +
       geom_bar(aes(y = value, fill = parameter), position = "stack", stat = "identity", width = 0.6) +
       scale_fill_manual(values = paperColors) +
-      geom_hline(yintercept = subDieselVal$value, linetype = "dashed", color = "black", size = 1) +
+      geom_hline(yintercept = subDieselVal$value, linetype = "dashed", color = "black", size = 0.7) +
       geom_segment(
         data = subArrowData,
         aes(x = x, xend = xend, y = y, yend = yend),
         arrow = arrow(
-          length = unit(0.25, "cm"),  
+          length = unit(0.1, "cm"),  
           type = "closed",            
           ends = "last",
           angle = 25                 
@@ -314,9 +312,10 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
       ) +
       geom_label(data = subArrowData,
                  aes(x = xend, y = (y + yend) / 2, label = "DCO"),
+                 position = position_nudge(x = 0.05),
                  hjust = -0.1,
                  vjust = 0.5,
-                 size = 4,
+                 size = relSize(0.8),
                  color = "black",           
                  fill = "white",          
                  label.size = 0,       
@@ -340,15 +339,14 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
     guides(
       fill = guide_legend(
         nrow = 2,
-        keyheight = unit(0.4, "cm"),
-        keywidth  = unit(0.4, "cm"),
+        keyheight = unit(0.2, "cm"),
+        keywidth  = unit(0.2, "cm"),
         override.aes = list(alpha = 0.6)
       )
     ) &
     theme(
       legend.position   = "bottom",
       legend.key.size   = unit(1, "lines"),  # global scaling
-      legend.margin     = margin(t = 20),
       legend.text       = element_text(size = rel(1)),
       legend.title      = element_text(size = rel(1)),
       panel.background  = element_rect(fill = "transparent", colour = NA),
@@ -364,7 +362,7 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
   heightSize <- 0.9
   
   # - Shadow plots 
-  nShadow <- 15    # Amount of background plots
+  nShadow <- 10    # Amount of background plots
   offsetX <- 0.005 * widthSize 
   offsetY <- 0.005 * heightSize
   
@@ -383,7 +381,7 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
     shadows <- addGrob(shadows, shadow)
   }
   
-  TCOtoDCO_grob$vp <- viewport(x = 0.497, y = 0.45, width = widthSize*0.99, height = heightSize*0.9)
+  TCOtoDCO_grob$vp <- viewport(x = 0.497, y = 0.45, width = widthSize, height = heightSize*0.95)
   TCOtoDCO <- addGrob(shadows, TCOtoDCO_grob)
 
   grid.newpage()
@@ -394,7 +392,7 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
     x = unit(0.98, "npc"),  
     y = unit(0.02, "npc"),  
     just = c("right", "bottom"),
-    gp = gpar(col = "black", fontsize = 30, fontface = "bold", alpha = 0.5)
+    gp = gpar(col = "black", fontsize = baseTextSize*1.8, fontface = "bold", alpha = 0.5)
   )
   
   titleGrob <- textGrob(
@@ -402,7 +400,7 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
     x = 0.5,                # centered horizontally
     y = 0.87,               # slightly above the top of the plot
     just = c("center", "bottom"),
-    gp = gpar(fontsize = 14, fontface = "bold", col = "black")
+    gp = gpar(fontsize = baseTextSize *1.2 , fontface = "bold", col = "black")
   )
   
   # Combine your TCOtoDCO grob with title and ellipsis
@@ -460,15 +458,15 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
     
     extraLabel <- if (i == 3) {
       annotate("label", x = 42, y = middleY, label = "of road km\ncost beneficial",
-               color = "black", fill = "white", fontface = "bold", size = relSize(0.85),
-               hjust = 0, vjust = 0.5, label.padding = unit(0.3, "cm"), linewidth = 0)
+               color = "black", fill = "white", fontface = "bold", size = relSize(1.2),
+               hjust = 0, vjust = 0.5, linewidth = 0)
     } else NULL
     
     scales <- if (i == 3) {
-      list(scale_color_manual(values = paperColors, name = NULL,  guide = guide_legend(nrow = 1, keywidth = unit(1.4, "cm"),   # width of color boxes
-                              keyheight = unit(1, "cm") )),
-           scale_fill_manual(values = paperColors, name = NULL, guide = guide_legend(nrow = 1, keyheight = unit(1, "cm"),
-                                                                                     keywidth  = unit(1.4, "cm")))
+      list(scale_color_manual(values = paperColors, name = NULL,  guide = guide_legend(nrow = 1, keywidth = unit(0.4, "cm"),   
+                              keyheight = unit(0.2, "cm") )),
+           scale_fill_manual(values = paperColors, name = NULL, guide = guide_legend(nrow = 1, keyheight = unit(0.2, "cm"),
+                                                                                     keywidth  = unit(0.4, "cm")))
       )
     } else {
       list(scale_color_manual(values = paperColors, guide = "none"),
@@ -519,7 +517,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
                  aes(x = 40, y = arrowY,
                      label = paste("~", round(cumBinWeightedShareEUR * 100), "%")),
                  color = "black", fill = "white",
-                 size = 4.2, fontface = "bold",
+                 size = relSize(1.2), fontface = "bold",
                  label.padding = unit(0.1, "cm"),
                  linewidth = 0, hjust = 1, vjust = 0.5) +
       extraLabel +
@@ -664,8 +662,8 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
     geom_point(
       aes(y = Medium),
       shape = 18,             
-      size = 3,             
-      stroke = 1,           
+      size = 2.5,             
+      stroke = 0.1,           
       position = position_dodge(width = dodgeWidth)
     ) +
     # ICET bottom line
@@ -729,9 +727,8 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       aes(y = Medium, color = truckTechnology,
           group = truckTechnology),
       shape = 18,            
-      size = 3,             
-      fill = "white",         
-      stroke = 1,          
+      size = 2.5,             
+      stroke = 0.1,          
       position = position_dodge(width = dodgeWidth),
       show.legend = FALSE
     ) +

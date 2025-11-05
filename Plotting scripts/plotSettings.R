@@ -37,11 +37,11 @@ paperColors <- c(
   "Pessimistic"= "#607d8b"
 )
 
-baseTextSize <- 14
+baseTextSize <- 7
 themePanel <- theme_minimal(base_size = baseTextSize) +
   theme(
-    axis.text.y = element_text(size = rel(1)),
-    axis.text.x = element_text(size = rel(1)),       
+    axis.text.y = element_text(size = rel(0.9)),
+    axis.text.x = element_text(size = rel(0.9)),       
     axis.ticks.y = element_line(),
     axis.ticks.x = element_line(),                   
     axis.line.y = element_line(),
@@ -49,14 +49,14 @@ themePanel <- theme_minimal(base_size = baseTextSize) +
     panel.grid = element_blank(),
     panel.spacing = unit(0, "lines"),
     plot.title = element_text(size = rel(1), face = "bold", hjust = 0.5),
-    axis.title.y = element_text(size = rel(0.8), margin = margin(r = 12)),
-    axis.title.x = element_text(size = rel(0.8), margin = margin(t = 12)),
+    axis.title.y = element_text(size = rel(1)), # , margin = margin(r = 12)
+    axis.title.x = element_text(size = rel(1)),#, margin = margin(t = 12)
     strip.text = element_text(face = "bold"),
-    legend.key.width = unit(1, "cm"),       
-    legend.key.height = unit(0.3, "cm"),
-    axis.text = element_text(size = rel(0.7)),
-    legend.text  = element_text(size = rel(0.7)),   
-    legend.title = element_text(size = rel(0.8))
+    legend.key.width = unit(0.2, "cm"),       
+    legend.key.height = unit(0.2, "cm"),
+    axis.text = element_text(size = rel(1)),
+    legend.text  = element_text(size = rel(1)),   
+    legend.title = element_text(size = rel(1))
   )
 
   

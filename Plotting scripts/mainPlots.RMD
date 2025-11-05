@@ -54,12 +54,12 @@ setDT(DCOscenarios)
 
 # Introductory plot panel
 ## Scenario overview
-```{r, fig.width=8, fig.height=5, fig.fullwidth=FALSE}
+```{r, fig.width=4, fig.height=2.2, fig.fullwidth=FALSE}
 scenariosPlot <- scenOverview(baseZise, paperColors)
 print(scenariosPlot)
 ```
 ## Visualization utilization profiles
-```{r, fig.width=5, fig.height=5, fig.fullwidth=FALSE}
+```{r, fig.width=3, fig.height=2.2, fig.fullwidth=FALSE}
 #load data
 reducedBinnedWeightedMileage <- prepareMileageData(dataFolder, bin = TRUE, reduce = TRUE)
 exampleCountry <- "DE" 
@@ -71,7 +71,7 @@ grid.draw(utilizationExample)
 
 ```
 ## Exemplary TCO barplot
-```{r, fig.width=16, fig.height=7, fig.fullwidth=FALSE}
+```{r, fig.width=7.05, fig.height=3.5, fig.fullwidth=FALSE}
 #select data
 paperScenario <- "Current policies"  
 yr <- c(2030)
@@ -91,13 +91,13 @@ grid.draw(TCOtoDCOexample)
 
 ```
 ## Panel
-```{r, fig.width=7.09, fig.height=7.4, fig.fullwidth=FALSE}
+```{r, fig.width=7.09, fig.height=6.2, fig.fullwidth=FALSE}
 gScenarios <- ggplotGrob(scenariosPlot)
 
 row1 <- plot_grid(
   utilizationExample, gScenarios,
   ncol = 2,
-  rel_widths = c(5, 8)
+  rel_widths = c(3, 3.5)
 )
 
 row2 <- plot_grid(
@@ -105,13 +105,18 @@ row2 <- plot_grid(
   ncol = 1
 )
 
-introPanel <- plot_grid(
-  row1, row2,
-  ncol = 1,
-  rel_heights = c(4.5, 7)
-)
+whiteSpace <- ggdraw() + theme_void() + 
+  theme(plot.background = element_rect(fill = "white", color = NA))
 
-xMiddle <- 6.45 / 15.5
+introPanel <- plot_grid(
+  whiteSpace,
+  row1,
+  whiteSpace,
+  row2,
+  ncol = 1,
+  rel_heights = c(0.2, 2, 0.2, 3.5)
+)
+xMiddle <- 0.485
 triangleWidth  <- 0.06      
 triangleHeight <- 0.017      
 triangleY <- 8.3 / 13
@@ -126,9 +131,9 @@ triangleGrob <- polygonGrob(
 annotatedPanel <- ggdraw(introPanel) +
   draw_label(
     "×",
-    x = 6.45 / 15.5,
+    x = xMiddle,
     y = 10 / 13,
-    size = 30,
+    size = 20,
     fontface = "bold",
     color = "black",
     alpha = 0.3
@@ -136,10 +141,10 @@ annotatedPanel <- ggdraw(introPanel) +
   draw_grob(triangleGrob) +
   draw_plot_label(
     label = c("a", "b", "c"),
-    x = c(0, 6 / 15.5, 0),       
+    x = c(0, xMiddle - 0.025, 0),       
     y = c(1, 1, 7.75 / 13 + 0.005),           
     hjust = 0, vjust = 1,
-    size = 16,
+    size = baseTextSize,
     fontface = "bold",
     color = "black"
   ) +
@@ -149,10 +154,10 @@ annotatedPanel <- ggdraw(introPanel) +
       "Scenario based approach",
       "Country- and truck type specific differential cost of ownership (DCO)"
     ),
-    x = c(0.03, 6 / 15.5 + 0.03, 0.03),
+    x = c(0.03, xMiddle, 0.03),
     y = c(0.995, 0.995, 7.75 / 13),
     hjust = 0, vjust = 1,
-    size = 14,
+    size = baseTextSize * 1.2,
     fontface = "plain",
     color = "black"
   )
@@ -189,7 +194,7 @@ MetaTCOxAnnualMileage <- metaPlot(DCOmilageDistributionShares, paperScenario)
 ```
 
 # Combine meta and mileage dstribution plot
-```{r, fig.width=7.09, fig.height=8.5, fig.fullwidth=FALSE}
+```{r, fig.width=4.5, fig.height=5.5, fig.fullwidth=FALSE}
 legend <- get_legend(
   TCOxAnnualMileage +
     theme(
@@ -265,8 +270,8 @@ ggsave(
   filename = file.path(plotFolder, paste0("EconomicallyViableActivity.pdf")),
   plot     = finalPlot_with_labels,
   device   = cairo_pdf,
-  width    = 7.09,          # in inches ≈ 180 mm / 25.4
-  height   = 8.3,          # in inches (adjust aspect ratio as appropriate)
+  width    = 4.5,          # in inches ≈ 180 mm / 25.4
+  height   = 5.5,          # in inches (adjust aspect ratio as appropriate)
   units    = "in",
   dpi      = 300           # ensures minimum resolution for any raster elements
 )
@@ -378,7 +383,7 @@ plot(combined)
 ```
 
 # CAPEX to OPEX and shares
-```{r, fig.width=7.09, fig.height=5, fig.fullwidth=FALSE}
+```{r, fig.width=7.09, fig.height=3.5, fig.fullwidth=FALSE}
 
 scenario <- "Current policies"
 vehType <- "Tractor-trailer"
@@ -391,26 +396,17 @@ capexVsOpex <- capexVsOpexOverviewPlot(DCO, breakeven, syntheticalBreakeven, sce
 
 plot(capexVsOpex)
 
-
-
-
-
-
-```
-
-```{r, fig.width=15.5, fig.height=6.5, fig.fullwidth=FALSE}
-
-
-plot(combined_CAPEXOPEXanalysis)
-
 ggsave(
-  file.path(plotFolder, "CAPEXOPEXanalysis.pdf"),
-  plot = combined_CAPEXOPEXanalysis,
-  width = 15.5, height = 6.5, units = "in", device = cairo_pdf
+  filename = file.path(plotFolder, paste0("CAPEvsOPEX.pdf")),
+  plot     = capexVsOpex,
+  device   = cairo_pdf,
+  width    = 7.09,          # in inches ≈ 180 mm / 25.4
+  height   = 3.5,          # in inches (adjust aspect ratio as appropriate)
+  units    = "in",
+  dpi      = 300           # ensures minimum resolution for any raster elements
 )
 
 ```
-
 # Max daily milage x share of road km  
 ```{r, fig.width=15.5, fig.height=5, fig.fullwidth=FALSE}
 
