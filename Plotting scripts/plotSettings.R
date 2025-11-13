@@ -38,25 +38,25 @@ paperColors <- c(
 )
 
 baseTextSize <- 7
+baseLineWidth <- 0.5
 themePanel <- theme_minimal(base_size = baseTextSize) +
   theme(
-    axis.text.y = element_text(size = rel(0.9)),
-    axis.text.x = element_text(size = rel(0.9)),       
+    axis.title.x  = element_text(size = baseTextSize, lineheight = 0.8),
+    axis.title.y  = element_text(size = baseTextSize, lineheight = 0.8),
+    axis.text     = element_text(size = baseTextSize * 0.8),
     axis.ticks.y = element_line(),
     axis.ticks.x = element_line(),                   
     axis.line.y = element_line(),
     axis.line.x = element_line(),                   
     panel.grid = element_blank(),
     panel.spacing = unit(0, "lines"),
-    plot.title = element_text(size = rel(1), face = "bold", hjust = 0.5),
-    axis.title.y = element_text(size = rel(1)), # , margin = margin(r = 12)
-    axis.title.x = element_text(size = rel(1)),#, margin = margin(t = 12)
-    strip.text = element_text(face = "bold"),
+    plot.title    = element_text(size = baseTextSize, face = "bold", hjust = 0.5),
+    strip.text    = element_text(size = baseTextSize, face = "bold"),
     legend.key.width = unit(0.2, "cm"),       
     legend.key.height = unit(0.2, "cm"),
-    axis.text = element_text(size = rel(1)),
-    legend.text  = element_text(size = rel(1)),   
-    legend.title = element_text(size = rel(1))
+    legend.title  = element_text(size = baseTextSize),
+    legend.text   = element_text(size = baseTextSize),
+    plot.margin   = margin(t = 15, r = 5, b = 5, l = 5)
   )
 
   

@@ -195,7 +195,6 @@ examplaryUtilization <- function(country, reducedBinnedWeightedMileage, baseText
       legend.position = "bottom",
       legend.title = element_text(face = "bold"),
       legend.text = element_text(lineheight = 0.9),
-      #panel.border = element_rect(color = "black", fill = NA, size = 1.2),
       axis.title.x = element_text(margin = margin(t = 4)),
       axis.title.y = element_text(margin = margin(r = 4)),
       plot.margin = margin(t = 1, r = 1, b = 1, l = 1, unit = "pt"),
@@ -308,7 +307,7 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
           angle = 25                 
         ),
         color = "black",
-        linewidth = 0.6              
+        linewidth = baseLineWidth              
       ) +
       geom_label(data = subArrowData,
                  aes(x = xend, y = (y + yend) / 2, label = "DCO"),
@@ -415,16 +414,16 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
 amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenario) {
   
   data <- copy(DCOmileageDistributionShares)[period %in% yr & paperScen == paperScenario]
-  data[, cumWidth := 0.999 * (cumBinWeightedShareEUR - shift(cumBinWeightedShareEUR, type = "lag")),
+  data[, cumWidth := 0.999 * (cumShare - shift(cumShare, type = "lag")),
        by = c("paperScen", "DCOscenario", "truckTechnology")]
-  data[is.na(cumWidth), cumWidth := (cumBinWeightedShareEUR),
+  data[is.na(cumWidth), cumWidth := (cumShare),
        by = c("paperScen", "DCOscenario", "truckTechnology")]
   
   findZeroPoints <- data[, .SD[which.min(abs(value))],
                          by = .(period, truckTechnology, paperScen, DCOscenario)]
   findZeroPoints[, truckTechnology := factor(truckTechnology,
                                              levels = c("BET small battery", "BET large battery", "FCET"))]
-  setorder(findZeroPoints, paperScen, DCOscenario, truckTechnology, -cumBinWeightedShareEUR)
+  setorder(findZeroPoints, paperScen, DCOscenario, truckTechnology, -cumShare)
   findZeroPoints[, arrowY := seq(-0.2, -0.5, length.out = .N),
                  by = c("paperScen", "DCOscenario")]
   middleY <- findZeroPoints[round(nrow(findZeroPoints) / 6), arrowY]
@@ -446,7 +445,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
   xBreaks <- c(0, 25, 50, 75, 100)
   
   secLabels <- sapply(xBreaks, function(x) {
-    idx <- which.min(abs(data$cumBinWeightedShareEUR * 100 - x))
+    idx <- which.min(abs(data$cumShare * 100 - x))
     round(data$cumBinWeightedVehShareEUR[idx] * 100)
   })
   
@@ -458,7 +457,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
     
     extraLabel <- if (i == 3) {
       annotate("label", x = 42, y = middleY, label = "of road km\ncost beneficial",
-               color = "black", fill = "white", fontface = "bold", size = relSize(1.2),
+               color = "black", fill = "white", fontface = "bold", size = relSize(1.1),
                hjust = 0, vjust = 0.5, linewidth = 0)
     } else NULL
     
@@ -475,53 +474,53 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
     
     ggplot(subDataPos) +
       geom_rect(
-        aes(xmin = cumBinWeightedShareEUR * 100 - cumWidth * 100,
-            xmax = cumBinWeightedShareEUR * 100, ymin = 0, ymax = value,
+        aes(xmin = cumShare * 100 - cumWidth * 100,
+            xmax = cumShare * 100, ymin = 0, ymax = value,
             fill = truckTechnology),
         color = NA, alpha = 0.5, show.legend = FALSE
       ) +
       geom_rect(
-        aes(xmin = cumBinWeightedShareEUR * 100 - cumWidth * 100,
-            xmax = cumBinWeightedShareEUR * 100, ymin = 0, ymax = value,
+        aes(xmin = cumShare * 100 - cumWidth * 100,
+            xmax = cumShare * 100, ymin = 0, ymax = value,
             color = truckTechnology),
-        fill = NA, linewidth = 0.001, alpha = 0.005, show.legend = FALSE
+        fill = NA, linewidth = 0.002 * baseLineWidth, alpha = 0.005, show.legend = FALSE
       ) +
       geom_rect(
         data = subDataNeg,
-        aes(xmin = cumBinWeightedShareEUR * 100 - cumWidth * 100,
-            xmax = cumBinWeightedShareEUR * 100, ymin = 0, ymax = value,
+        aes(xmin = cumShare * 100 - cumWidth * 100,
+            xmax = cumShare * 100, ymin = 0, ymax = value,
             fill = truckTechnology),
         color = NA, alpha = 0.5
       ) +
       geom_rect(
         data = subDataNeg,
-        aes(xmin = cumBinWeightedShareEUR * 100 - cumWidth * 100,
-            xmax = cumBinWeightedShareEUR * 100, ymin = 0, ymax = value,
+        aes(xmin = cumShare * 100 - cumWidth * 100,
+            xmax = cumShare * 100, ymin = 0, ymax = value,
             color = truckTechnology),
-        fill = NA, linewidth = 0.001, show.legend = FALSE, alpha = 0.005
+        fill = NA, linewidth = 0.002 * baseLineWidth, show.legend = FALSE, alpha = 0.005
       ) +
       geom_point(
         data = subZero,
-        aes(x = cumBinWeightedShareEUR * 100, y = 0, color = truckTechnology),
-        shape = 1, size = 5, stroke = 2, fill = NA
+        aes(x = cumShare * 100, y = 0, color = truckTechnology),
+        shape = 1, size = 3, stroke = 0.8, fill = NA
       ) +
       geom_vline(data = subZero,
-                 aes(xintercept = cumBinWeightedShareEUR * 100, color = truckTechnology),
-                 linetype = "dashed", linewidth = 1, show.legend = FALSE) +
+                 aes(xintercept = cumShare * 100, color = truckTechnology),
+                 linetype = "dashed", linewidth = baseLineWidth, show.legend = FALSE) +
       geom_segment(data = subZero,
-                   aes(x = 0, xend = cumBinWeightedShareEUR * 100,
+                   aes(x = 0, xend = cumShare * 100,
                        y = arrowY, yend = arrowY, color = truckTechnology),
-                   arrow = arrow(length = unit(0.3, "cm"), type = "open"),
-                   linewidth = 1) +
+                   arrow = arrow(length = unit(0.2, "cm"), type = "open"),
+                   linewidth = baseLineWidth) +
       geom_label(data = subZero,
                  aes(x = 40, y = arrowY,
-                     label = paste("~", round(cumBinWeightedShareEUR * 100), "%")),
+                     label = paste("~", round(cumShare * 100), "%")),
                  color = "black", fill = "white",
-                 size = relSize(1.2), fontface = "bold",
+                 size = relSize(1.1), fontface = "bold",
                  label.padding = unit(0.1, "cm"),
                  linewidth = 0, hjust = 1, vjust = 0.5) +
       extraLabel +
-      geom_hline(yintercept = 0, color = "black", linewidth = 1) +
+      geom_hline(yintercept = 0, color = "black", linewidth = baseLineWidth) +
       scale_x_continuous(expand = c(0, 0), limits = c(0, 101), breaks = xBreaks) +
       coord_cartesian(ylim = c(-0.6, 0.6)) +
       scales +
@@ -529,11 +528,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
         x = if (i == 3) "Road freight activity [%]" else NULL,
         y = if (i == 2) paste0("DCO in ", yr, " [EUR/km]") else NULL
       ) +
-      themePanel +
-      theme(
-        axis.text.x = if (i < 3) element_blank() else element_text(),  
-        axis.ticks.x = if (i < 3) element_blank() else element_line()
-      )
+      themePanel 
   })
   
   
@@ -555,35 +550,39 @@ metaPlot <- function(DCOmilageDistributionShares, paperScenario) {
   
   data <- copy(DCOmilageDistributionShares)[paperScen == paperScenario]
   findZeroPoints <- data[ , .SD[which.min(abs(value))], by = .(period, truckTechnology, paperScen, DCOscenario)][
-    , .(period, `truckTechnology`, paperScen, DCOscenario, cumBinWeightedShareEUR)
+    , .(period, `truckTechnology`, paperScen, DCOscenario, cumShare)
   ]
   findZeroPoints[, DCOscenario := factor(DCOscenario, levels = c("Optimistic", "Medium", "Pessimistic"))]
   
   p1 <- ggplot(findZeroPoints[DCOscenario == "Optimistic"], 
-               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology)) +
-    geom_line(linewidth = 1) +
+               aes(x = period, y = cumShare * 100, color = truckTechnology)) +
+    geom_line(linewidth = baseLineWidth) +
     scale_color_manual(values = paperColors, guide = "none") +  # legend removed
-    geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = 0.8) +
+    geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = baseLineWidth) +
     labs(y = NULL, x = NULL) +
-    scale_x_continuous(breaks = NULL, labels = NULL) +
+    #scale_x_continuous(breaks = NULL, labels = NULL) +
+    scale_x_continuous(breaks = seq(min(findZeroPoints$period),
+                                    max(findZeroPoints$period), by = 10)) +
     scale_y_continuous(limits = c(0, 102)) +
     themePanel
   
   p2 <- ggplot(findZeroPoints[DCOscenario == "Medium"], 
-               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology)) +
-    geom_line(linewidth = 1) +
+               aes(x = period, y = cumShare * 100, color = truckTechnology)) +
+    geom_line(linewidth = baseLineWidth) +
     scale_color_manual(values = paperColors, guide = "none") +  # legend removed
-    geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = 0.8) +
+    geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = baseLineWidth) +
     labs(y = "Economically viable road freight activity [%]", x = NULL) +
-    scale_x_continuous(breaks = NULL, labels = NULL) +
+    #scale_x_continuous(breaks = NULL, labels = NULL) +
+    scale_x_continuous(breaks = seq(min(findZeroPoints$period),
+                                    max(findZeroPoints$period), by = 10)) +
     scale_y_continuous(limits = c(0, 102)) +
     themePanel
   
   p3 <- ggplot(findZeroPoints[DCOscenario == "Pessimistic"], 
-               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology)) +
-    geom_line(linewidth = 1) +
+               aes(x = period, y = cumShare * 100, color = truckTechnology)) +
+    geom_line(linewidth = baseLineWidth) +
     scale_color_manual(values = paperColors, guide = "none") +  # legend removed
-    geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = 0.8) +
+    geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = baseLineWidth) +
     labs(x = "Year", y = NULL) +
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
                                     max(findZeroPoints$period), by = 10)) +
@@ -595,7 +594,157 @@ metaPlot <- function(DCOmilageDistributionShares, paperScenario) {
   return(combined)
 }
 
+plotRangeAnalysis <- function(ranges, infrastructure) {
+    
+  ranges <- ranges[truckClass == "Tractor-trailer" &
+                      `truckTechnology` %in% c("BET small battery", "BET large battery") &
+                      `vehicleParameterScenario` == "MC_MTM" &
+                      period %in% c(2030, 2050)]
+  setnames(ranges, "value", "directRange")
+  rangeComparison <- merge(
+    ranges,
+    rangeAnalysis$buildUp,
+    by = c("directRange", "period"),
+    all.x = TRUE
+  )
+  rangeComparison[`truckTechnology` == "BET large battery", `truckTechnology` := "Large\nbattery"]
+  rangeComparison[`truckTechnology` == "BET small battery", `truckTechnology` := "Small\nbattery"]
+  rangeComparison[, `truckTechnology` := factor(`truckTechnology`, levels = unique(rangeComparison$`truckTechnology`))]
+  rangeComparison[, period := factor(period, levels = unique(rangeComparison$period))]
+  
+  
+  p <- ggplot() +
+    
+    # direct driving range over freight activity for different periods and MCS coverage
+    geom_line(data = rangeAnalysis$buildUp,
+              aes(x = cumShareFeas * 100, y = directRange, 
+                  group = period), color = "darkgrey", linewidth = 0.5 * baseLineWidth) +
+    # direct driving range over freight activity for different periods and MCS coverage
+    # Markers for 2030 and 2035
+    geom_line(data = rangeAnalysis$buildUp[period %in% c(2030, 2035)],
+              aes(x = cumShareFeas * 100, y = directRange, 
+                  group = period), color = "black", linewidth = 0.5 * baseLineWidth, alpha = 0.5) +
+    # Border no MCS: direct driving range over freight activity for different periods
+    geom_line(data = rangeAnalysis$noMCS,  aes(x = cumShareFeas * 100, y = directRange), color = "black", linewidth = 0.5 * baseLineWidth, alpha = 0.5) +
+    # Label border no MCS
+    geom_text(
+      data = data.frame(x = 77, y = 850, label = "Without MCS"),
+      aes(x = x, y = y, label = label),
+      color = "black",       
+      size = relSize(0.5),
+      angle = 20,
+      fontface = "bold"
+    ) +
+    # Border full MCS: direct driving range over freight activity for different periods
+    geom_line(data = rangeAnalysis$fullMCS,  aes(x = cumShareFeas * 100, y = directRange), color = "black", linewidth = 0.5 * baseLineWidth, alpha = 0.5) +
+    # Label border full MCS
+    geom_text(
+      data = data.frame(x = 91, y = 511, label = "Full MCS"),
+      aes(x = x, y = y, label = label),
+      color = "black",       
+      size = relSize(0.5),
+      angle = 41,
+      fontface = "bold"
+    ) +
+    # Label 2030
+    geom_text(
+      data = data.frame(x = 70, y = 675, label = "2030"),
+      aes(x = x, y = y, label = label),
+      color = "black",       # Black text
+      size = relSize(0.5),
+      angle = 15,
+      fontface = "bold"
+    ) +
+    # Label 2035
+    geom_text(
+      data = data.frame(x = 80, y = 515, label = "2035"),
+      aes(x = x, y = y, label = label),
+      color = "black",       # Black text
+      size = relSize(0.5),
+      angle = 15,
+      fontface = "bold"
+    ) +
+    # Add arrows from considered variants
+    # Horizontal line
+    geom_segment(
+      data = rangeComparison,
+      aes(x = 0, xend = cumShareFeas * 100,
+          y = directRange, yend = directRange,
+          color = `truckTechnology`, linetype = period),
+      linewidth = baseLineWidth
+    ) +
+    # Vertical line
+    geom_segment(
+      data = rangeComparison,
+      aes(x = cumShareFeas * 100, xend = cumShareFeas * 100,
+          y = directRange, yend = 140,
+          color = `truckTechnology`, linetype = period),
+      linewidth = baseLineWidth
+    ) +
+    # Horizontal arrow head
+    geom_segment(
+      data = rangeComparison,
+      aes(x = (cumShareFeas * 100) - 0.1, xend = cumShareFeas * 100,
+          y = directRange, yend = directRange,
+          color = `truckTechnology`),
+      arrow = arrow(length = unit(0.1, "cm"), type = "closed")
+    ) +
+    # Vertical arrow head
+    geom_segment(
+      data = rangeComparison,
+      aes(x = cumShareFeas * 100, xend = cumShareFeas * 100,
+          y = 140 + 0.1, yend = 140,
+          color = `truckTechnology`),
+      arrow = arrow(length = unit(0.1, "cm"), type = "closed")
+    ) +
+    labs(
+      x = "Feasible freight activity at a given\ndirect driving range [%]",
+      y = "Direct driving\nrange [km]",
+      color = "Truck\ntechnology",
+      linetype = "Year"
+    ) +
+    coord_cartesian(xlim = c(0, 100), ylim = c(150, 1100)) +
+    scale_x_continuous(limits = c(0, 100),
+                       expand = expansion(mult = c(0, 0))) +
+    scale_y_continuous(limits = c(140, 1010),
+                       expand = expansion(mult = c(0, 0))) +
+    scale_color_manual(values = paperColors) +
+    themePanel
+  
+  p <- p +
+    guides(
+      linetype = guide_legend(
+        override.aes = list(arrow = NULL)  # no arrow in legend
+      ))
 
+  return(p)
+}
+
+plotMileageDensity <- function(weightedMileage) {
+  
+  t <- ggplot(weightedMileage, aes(y = dvktMax)) +
+    geom_density(
+      aes(x = after_stat(density / max(density))),  # normalized density on x-axis
+      stat = "density",
+      fill = "darkgrey",
+      color = NA
+    ) +
+    labs(
+      x = "Normalized\ndensity",
+      y = "Maximum daily\nvehicle km travelled"
+    ) +
+    scale_x_continuous(
+      limits = c(0, 1),
+      breaks = c(0, 1),  
+      expand = expansion(mult = c(0, 0))
+    ) +
+    scale_y_continuous(
+      limits = c(140, 1100),
+      expand = expansion(mult = c(0, 0))
+    ) +
+    themePanel
+  return(t)
+}
 
 
 capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenario, vehType, region) {
@@ -650,7 +799,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       inherit.aes = FALSE,
       color = "grey95",   
       fill = NA,         
-      linewidth = 0.25
+      linewidth = 0.5 * baseLineWidth
     ) +
     # bars
     geom_linerange(
@@ -667,7 +816,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       position = position_dodge(width = dodgeWidth)
     ) +
     # ICET bottom line
-    geom_hline(yintercept = 100, color = "grey50", linewidth = 0.8) +
+    geom_hline(yintercept = 100, color = "grey50", linewidth = 1.6 * baseLineWidth) +
     annotate(
       "text",
       x = 3,
@@ -695,8 +844,8 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       legend.title = element_text(hjust = 0.5),
       panel.grid.major.x = element_blank(),
       panel.grid.minor.x = element_blank(),
-      panel.grid.major.y = element_line(color = "grey90", linewidth = 0.8),
-      panel.grid.minor.y = element_line(color = "grey95", linewidth = 0.25)
+      panel.grid.major.y = element_line(color = "grey90", linewidth = 1.6 * baseLineWidth),
+      panel.grid.minor.y = element_line(color = "grey95", linewidth = 0.5 * baseLineWidth)
     )
 
   opexShare <- ggplot(plotOpex, aes(x = factor(period))) +
@@ -712,13 +861,13 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       inherit.aes = FALSE,
       color = "grey95",   
       fill = NA,          
-      linewidth = 0.25
+      linewidth = 0.5 * baseLineWidth
     ) +
     # bars
     geom_linerange(
       aes(ymin = Pessimistic, ymax = Optimistic, color = truckTechnology,
                          group = truckTechnology),
-      linewidth = 3.5, alpha = 0.3,
+      linewidth = 7 * baseLineWidth, alpha = 0.3,
       position = position_dodge(width = dodgeWidth),
       show.legend = FALSE
     ) +
@@ -733,7 +882,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       show.legend = FALSE
     ) +
     # ICET bottom line
-    geom_hline(yintercept = 100, color = "grey50", linewidth = 0.8) +
+    geom_hline(yintercept = 100, color = "grey50", linewidth = 1.6 * baseLineWidth) +
     annotate(
       "text",
       x = 3,
@@ -755,8 +904,8 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
     theme(
       panel.grid.major.x = element_blank(),
       panel.grid.minor.x = element_blank(),
-      panel.grid.major.y = element_line(color = "grey90", linewidth = 0.8),
-      panel.grid.minor.y = element_line(color = "grey95", linewidth = 0.25)
+      panel.grid.major.y = element_line(color = "grey90", linewidth = 1.6 * baseLineWidth),
+      panel.grid.minor.y = element_line(color = "grey95", linewidth = 0.5 * baseLineWidth)
     ) 
   
   breakevenHeatMap <- ggplot(syntheticalBreakeven, aes(x = opexDiff, y = capexDiff, fill = breakevenBin)) +
@@ -779,7 +928,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
         linetype = DCOscenario,
         color = truckTechnology
       ),
-      linewidth = 1,
+      linewidth = baseLineWidth,
       inherit.aes = FALSE,
       show.legend = c(color = FALSE) 
     ) +

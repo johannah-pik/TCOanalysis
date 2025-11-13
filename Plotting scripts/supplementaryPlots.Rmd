@@ -14,233 +14,159 @@ library(ggtext)
 library(ggh4x)
 library(ggforce)
 library(patchwork)
+library(scales)
+library(colorspace)
+library(viridisLite)
+library(cowplot)
+library(funkyheatmap)
+library(stringr)
+library(grid)
+library(tibble)
 library(ggpattern)
-```
 
-```{r}
 rm(list=ls())
 mainFolder <- dirname(this.path::this.dir())
+dataFolder <-  file.path(mainFolder, "data")
 plotFolder <- file.path(mainFolder, "plots", "supplementary")
-source(file.path(mainFolder, "Plotting scripts", "loadAndPrepareData.R"))
+source(file.path(mainFolder, "Plotting scripts", "functions.R"))
+source(file.path(mainFolder, "Plotting scripts", "plotFunctions.R"))
+source(file.path(mainFolder, "Plotting scripts", "plotSettings.R"))
+
+annualMileage <- data.table(truckClass = c("Rigid", "Rigid", "Rigid", "Tractor-trailer", "Tractor-trailer", "Tractor-trailer"),
+                            operation = c("Urban", "Regional", "Long-haul", "Urban", "Regional", "Long-haul"),
+                            am = c(30000, 85000, 140000, 40000, 90000, 160000))
+
+DCOscenarios <- tribble(
+  ~truckTech,         ~truckTCOscenario, ~counterTech, ~counterTechTCOscenario, ~DCOscenario,
+  "BET small battery", "LC_HTMxPROG",    "ICET",       "HC_LTMxBAU",            "Optimistic",
+  "BET large battery", "LC_HTMxPROG",    "ICET",       "HC_LTMxBAU",            "Optimistic",
+  "FCET",              "LC_HTMxPROG",    "ICET",       "HC_LTMxBAU",            "Optimistic",
+  "BET small battery", "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "Medium",
+  "BET large battery", "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "Medium",
+  "FCET",              "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "Medium",
+  "BET small battery", "HC_LTMxBAU",     "ICET",       "LC_HTMxPROG",           "Pessimistic",
+  "BET large battery", "HC_LTMxBAU",     "ICET",       "LC_HTMxPROG",           "Pessimistic",
+  "FCET",              "HC_LTMxBAU",     "ICET",       "LC_HTMxPROG",           "Pessimistic"
+)
+setDT(DCOscenarios)
+
+
 ```
 
 # TCO x Annual mileage distribution bar plot 
-```{r, fig.width=15.5, fig.height=5, fig.fullwidth=FALSE}
-
+```{r, fig.width= 5, fig.height= 8.5, fig.fullwidth=FALSE}
 yr <- c(2030)
-trucktechs <- c("BET large battery", "BET small battery")
-data <- copy(BETvsFCET)[period %in% yr & `Fuel Type` %in% trucktechs & paperScen == "Current Policies"]
-data[, TCOgain := - TCOgap]
-data[, cum_width := 0.999* (cumBinWeightedShareEUR - shift(cumBinWeightedShareEUR, type = "lag")), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
-data[is.na(cum_width), cum_width := (cumBinWeightedShareEUR), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
-
-data[, paperScen := factor(paperScen, 
-                               levels = c("Current Policies"))]
-data[, TCOgapScenario := factor(TCOgapScenario, 
-                               levels = c("Optimistic", "Medium", "Pessimistic"))]
-
-findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
-findZeroPoints[, `Fuel Type` := factor(`Fuel Type`, 
-                               levels = c("BET small battery", "BET large battery"))]
-setorder(findZeroPoints, paperScen, TCOgapScenario, `Fuel Type`, cumBinWeightedShareEUR)
-findZeroPoints[, arrow_y := seq(-0.2, -0.5, length.out = .N), by = c("paperScen", "TCOgapScenario")]
-
-setorder(findZeroPoints, - cumBinWeightedShareEUR)
-findZeroPoints[, `Fuel Type` := factor(`Fuel Type`, levels = c("BET small battery", "BET large battery"))]  
-middle_y <- findZeroPoints[round(nrow(findZeroPoints)/6), arrow_y]
-
-data$facet_order <- as.numeric(factor(data$TCOgapScenario))
-findZeroPoints$facet_order <- as.numeric(factor(findZeroPoints$TCOgapScenario))
-
-# Split data to layer plots for best visibility
-dataPositive <- data[TCOgain > 0]
-dataNegative <- data[TCOgain < 0] 
-dataPositive[, `Fuel Type` := factor(`Fuel Type`, 
-                               levels = c("BET small battery", "BET large battery"))]
-dataNegative[, `Fuel Type` := factor(`Fuel Type`, 
-                               levels = c("BET large battery", "BET small battery"))]
-setorder(dataPositive, `Fuel Type`)
-setorder(dataNegative, `Fuel Type`)
-
-# Create one plot per facet, then stitch them back together
-facet_levels <- unique(data$TCOgapScenario)
-facet_levels <- facet_levels[c(1,3,2)]
-# Primary x-axis breaks
-x_breaks <- c(0, 25, 50, 75, 100)
-# Corresponding secondary axis labels
-sec_labels <- sapply(x_breaks, function(x) {
-  # Find the nearest cumBinWeightedShareEUR
-  idx <- which.min(abs(data$cumBinWeightedShareEUR * 100 - x))
-  # Return corresponding cumBinWeightedVehShare value
-  round(data$cumBinWeightedVehShareEUR[idx] * 100)
-})
-
-plot_list <- lapply(seq_along(facet_levels), function(i) {
-  facet_level <- facet_levels[i]
-  sub_dataPos <- subset(dataPositive, TCOgapScenario == facet_level)
-  sub_dataNeg <- subset(dataNegative, TCOgapScenario == facet_level)
-  sub_zero <- subset(findZeroPoints, TCOgapScenario == facet_level)
-  extra_label <- if (i == 3) {
-  annotate("label", x = 52, y = middle_y, label = "of road km\ncost beneficial", 
-           color = "black", fill = "white", fontface = "bold", size = 4.2, hjust = 0, vjust = 0.5,
-           label.padding = unit(0.3, "cm"), label.size = 0)
-} else {
-  NULL
-}
-  scales <- if (i == 3) {
-  list(
-    scale_color_manual(values = paperColors),
-    scale_fill_manual(values = paperColors)
-  )
-} else {
-  list(
-    scale_color_manual(values = paperColors, guide = "none"),
-    scale_fill_manual(values = paperColors, guide = "none")
-  )
-}
-  ggplot(sub_dataPos) +
-    # 1. Fill only
-    geom_rect(
-      aes(xmin = cumBinWeightedShareEUR * 100 - cum_width * 100, xmax = cumBinWeightedShareEUR * 100,
-          ymin = 0, ymax = TCOgain,
-          fill = `Fuel Type`),
-      color = NA,
-      alpha = 0.5,
-      show.legend = FALSE
-    ) +
-    # 2. Border only
-    geom_rect(
-      aes(xmin = cumBinWeightedShareEUR * 100 - cum_width * 100, xmax = cumBinWeightedShareEUR * 100,
-          ymin = 0, ymax = TCOgain,
-          color = `Fuel Type`),
-      fill = NA,
-      linewidth = 0.001,
-      alpha = 0.005,
-      show.legend = FALSE
-    ) +
-    # 1. Fill only
-    geom_rect(
-      data = sub_dataNeg, 
-      aes(xmin = cumBinWeightedShareEUR * 100 - cum_width * 100, xmax = cumBinWeightedShareEUR * 100,
-          ymin = 0, ymax = TCOgain,
-          fill = `Fuel Type`),
-      color = NA,
-      alpha = 0.5
-    ) +
-    # 2. Border only
-    geom_rect(
-      data = sub_dataNeg,
-      aes(xmin = cumBinWeightedShareEUR * 100 - cum_width * 100, xmax = cumBinWeightedShareEUR * 100,
-          ymin = 0, ymax = TCOgain,
-          color = `Fuel Type`),
-      fill = NA,
-      linewidth = 0.001,
-      show.legend = FALSE,
-      alpha = 0.005
-    ) +
-  geom_point(
-    data = sub_zero,
-    aes(x = cumBinWeightedShareEUR * 100, y = 0, color = `Fuel Type`),  
-    shape = 1,
-    size = 5,
-    stroke = 2,
-    fill = NA
-  ) +
-    geom_vline(data = sub_zero, aes(xintercept = cumBinWeightedShareEUR * 100, color = `Fuel Type`), 
-               linetype = "dashed", linewidth = 1, show.legend = FALSE) +
-    geom_segment(data = sub_zero, aes(x = 0, xend = cumBinWeightedShareEUR * 100, y = arrow_y, yend = arrow_y, color = `Fuel Type`), 
-                 arrow = arrow(length = unit(0.3, "cm"), type = "open"), 
-                 linewidth = 1) +
-    geom_label(data = sub_zero, 
-               aes(x = 50, y = arrow_y, 
-                   label = paste("~", round(cumBinWeightedShareEUR * 100), "%")),
-               color = "black", fill = "white",
-               size = 4.2, fontface = "bold",
-               label.padding = unit(0.1, "cm"),
-               label.size = 0, hjust = 1, vjust = 0.5) +
-    extra_label +
-    geom_hline(yintercept = 0, color = "black", linewidth = 1) +
-    scale_x_continuous(expand = c(0, 0), 
-                       limits = c(0, 101),
-                       breaks = x_breaks,
-                       sec.axis = sec_axis(
-                         transform = ~ .,  
-                         name = if (i == 2) paste0("Share of vehicles in in considered truck markets in ", yr," [%]") else NULL,
-                         labels = sec_labels)) +
-    coord_cartesian(ylim = c(-0.6, 0.6)) +
-    scales +
-    labs(
-      x = if (i == 2) paste0("Share of road km in considered truck markets in ", yr," [%]") else NULL,
-      y = if (i == 1) "DCO gain [EUR/km]" else NULL,
-      title = as.character(facet_level)
-    ) + 
-  themePanel
-})
-
-
-combined <- wrap_plots(plot_list, ncol = 3, guides = "collect") &
-  theme(legend.position = "bottom")
-combined <- combined & theme(
-  legend.margin = margin(t = 20),
-  legend.text = element_text(size = rel(1)),
-  legend.title = element_text(size = rel(1))
+paperScenario <- "Current policies"
+BETvsFCETdcoScenarios <- tribble(
+  ~truckTech,         ~truckTCOscenario, ~counterTech, ~counterTechTCOscenario, ~DCOscenario,
+  "BET small battery", "LC_HTMxPROG",    "FCET",       "HC_LTMxBAU",            "Optimistic",
+  "BET large battery", "LC_HTMxPROG",    "FCET",       "HC_LTMxBAU",            "Optimistic",
+  "BET small battery", "MC_MTMxBAU",     "FCET",       "MC_MTMxBAU",            "Medium",
+  "BET large battery", "MC_MTMxBAU",     "FCET",       "MC_MTMxBAU",            "Medium",
+  "BET small battery", "HC_LTMxBAU",     "FCET",       "LC_HTMxPROG",           "Pessimistic",
+  "BET large battery", "HC_LTMxBAU",     "FCET",       "LC_HTMxPROG",           "Pessimistic"
 )
-plot(combined)
+setDT(BETvsFCETdcoScenarios)
+
+TCOdata <- loadTCO(dataFolder)
+mileageDistribution <- prepareMileageData(dataFolder)
+DCOdata <- getDCO(BETvsFCETdcoScenarios, TCOdata)
+setnames(mileageDistribution, "binMean", "annualM")
+DCOmilageDistribution <- applyMileage(mileageDistribution, DCOdata)
+DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribution, focus = "EUR")
+
+TCOxAnnualMileage <- amDistributionBarPlot(DCOmilageDistributionShares, yr, paperScenario)
+
+MetaTCOxAnnualMileage <- metaPlot(DCOmilageDistributionShares, paperScenario)
+
+```
+
+# Combine meta and mileage dstribution plot
+```{r, fig.width=4.5, fig.height=5.5, fig.fullwidth=FALSE}
+legend <- get_legend(
+  TCOxAnnualMileage +
+    theme(
+      legend.position = "bottom",
+      legend.justification = "left",   # start from left in its own box
+      legend.box.just = "left"
+    )
+)
+
+# 2. Remove legends from the plots
+TCOxAnnualMileagePlot_noleg <- TCOxAnnualMileage + theme(legend.position = "none")
+metaPlot_noleg <- MetaTCOxAnnualMileage + theme(legend.position = "none")
+
+# 3. Combine the plots side by side
+combined <- plot_grid(
+  TCOxAnnualMileagePlot_noleg,
+  metaPlot_noleg,
+  ncol = 2,
+  rel_widths = c(1.2, 0.8),
+  align = "v",
+  labels = c("a", "b"),
+  label_size = baseTextSize,
+  label_fontface = "bold",
+  label_x = 0.02,
+  label_y = 1.02,
+  hjust = 0, vjust = 1
+) +
+  theme(plot.margin = margin(t = 10, r = 5, b = 5, l = 15))
+
+# 4. Shift legend slightly to the right using a spacer
+legend_shifted <- plot_grid(
+  NULL,      # empty spacer
+  legend,
+  ncol = 2,
+  rel_widths = c(0.05, 0.3)  # First number: empty space on the left.Second number:space the legend occupies.
+)
+
+# 5. Combine plots and shifted legend vertically
+finalPlot <- plot_grid(
+  combined,
+  legend_shifted,
+  ncol = 1,
+  rel_heights = c(1, 0.1)  
+)
+finalPlot_with_labels <- ggdraw(finalPlot) +
+  draw_label(
+    "Optimistic", x = 0.02, y = 0.775, angle = 90,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1.2,
+    hjust = 0
+  ) +
+  draw_label(
+    "Medium", x = 0.02, y = 0.525, angle = 90,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1.2,
+    hjust = 0
+  ) +
+  draw_label(
+    "Pessimistic", x = 0.02, y = 0.235, angle = 90,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1.2,
+    hjust = 0
+  )
+
+
+# 6. Display final plot
+plot(finalPlot_with_labels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("BETvsFCETAMdistributionBarPlotCurrentPolicies", yr, ".pdf")),
-  plot = combined,
-  width = 15.5, height = 5, units = "in",
-  dpi = 72,          # Optional but improves embedded text quality
-  bg = "white"        # Avoid transparency issues in PDF/LaTeX
+  filename = file.path(plotFolder, paste0("BETvsFCETeconomicallyViableActivity.pdf")),
+  plot     = finalPlot_with_labels,
+  device   = cairo_pdf,
+  width    = 4.5,          # in inches ≈ 180 mm / 25.4
+  height   = 5.5,          # in inches (adjust aspect ratio as appropriate)
+  units    = "in",
+  dpi      = 300           # ensures minimum resolution for any raster elements
 )
-
 ```
 
-```
 
-#Meta plot: Share of economically viable road km over time, Current policies scenario with removed diesel efficiency gains for comparison
-```{r, fig.width=27, fig.height=12, fig.fullwidth=FALSE}
-scenario1 <- "Sensitivity | Removed diesel efficiency gains | Current Policies"
-scenario2 <- "Removed Policies"
-trucktechs <- c("BET small battery", "BET large battery", "FCET")
-data <- copy(TCOdrivingProfiles)[`Fuel Type` %in% trucktechs & paperScen %in% c(scenario1, scenario2)]
-data[paperScen == "Sensitivity | Removed diesel efficiency gains | Current Policies", paperScen := "Current Policies\nRemoved diesel\nefficiency gains"]
 
-findZeroPoints <- data[ , .SD[which.min(abs(TCOgap))], by = .(period, `Fuel Type`, paperScen, TCOgapScenario)][
-  , .(period, `Fuel Type`, paperScen, TCOgapScenario, share)
-]
-setnames(findZeroPoints, c("paperScen", "TCOgapScenario"), c("Policy scenario", "Sensitivity scenario"))
-
-p <- ggplot(
-  findZeroPoints[period >= 2030], 
-  aes(color = `Fuel Type`, linetype = `Policy scenario`)
-) +
-  geom_line(aes(x = period, y = share), linewidth = 1.5) +
-  
-  scale_color_manual(values =  paperColors) +
-scale_linetype_manual(values = c(
-  "Current Policies\nRemoved diesel\nefficiency gains" = "solid",
-  "Removed Policies" = "dashed"
-)) +
-  # Facet settings: No spacing & fixed scales
-  facet_grid2(
-    #rows = vars(paperScen),
-    cols = vars(`Sensitivity scenario`),
-    scales = "fixed",
-    axes = "all"  # <- this makes all axes (x and y) visible
-  ) +
-  # Title and labels
-  labs(
-    x = "Year",
-    y = "Economically viable road km [%]")+
-  coord_cartesian(ylim = c(0, 100))+ 
-  themePanel
-plot(p)
-
-ggsave(file.path(plotFolder, paste0("Sup_AMdistributionMetaPlotEUR_sensDieselefficiencyGains.pdf")), plot = p, device = cairo_pdf, width = 27, height = 9, units = "in")
-
-```
 
 # Prices overview panel plot
 ```{r, fig.width=45, fig.height=10, fig.fullwidth=FALSE}
