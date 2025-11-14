@@ -194,7 +194,7 @@ MetaTCOxAnnualMileage <- metaPlot(DCOmilageDistributionShares[period < 2041], pa
 
 ```
 ## Combine meta and mileage dstribution plot
-```{r, fig.width=4.5, fig.height=6.2, fig.fullwidth=FALSE}
+```{r, fig.width=4.5, fig.height=5, fig.fullwidth=FALSE}
 legend <- get_legend(
   TCOxAnnualMileage +
     theme(
@@ -222,7 +222,7 @@ combined <- plot_grid(
   label_y = 1.02,
   hjust = 0, vjust = 1
 ) +
-  theme(plot.margin = margin(t = 12, r = 5, b = 5, l = 12))
+  theme(plot.margin = margin(t = 8, r = 3, b = 3, l = 10))
 
 # 4. Shift legend slightly to the right using a spacer
 legend_shifted <- plot_grid(
@@ -241,21 +241,21 @@ finalPlot <- plot_grid(
 )
 finalPlot_with_labels <- ggdraw(finalPlot) +
   draw_label(
-    "Optimistic", x = 0.02, y = 0.775, angle = 90,
+    "Optimistic", x = 0.02, y = 0.76, angle = 90,
     fontface = "bold",
     fontfamily = "sans",
     size = baseTextSize * 1.2,
     hjust = 0
   ) +
   draw_label(
-    "Medium", x = 0.02, y = 0.525, angle = 90,
+    "Medium", x = 0.02, y = 0.5, angle = 90,
     fontface = "bold",
     fontfamily = "sans",
     size = baseTextSize * 1.2,
     hjust = 0
   ) +
   draw_label(
-    "Pessimistic", x = 0.02, y = 0.235, angle = 90,
+    "Pessimistic", x = 0.02, y = 0.185, angle = 90,
     fontface = "bold",
     fontfamily = "sans",
     size = baseTextSize * 1.2,
@@ -271,7 +271,7 @@ ggsave(
   plot     = finalPlot_with_labels,
   device   = cairo_pdf,
   width    = 4.5,          # in inches ≈ 180 mm / 25.4
-  height   = 6.2,          # in inches (adjust aspect ratio as appropriate)
+  height   = 5,          # in inches (adjust aspect ratio as appropriate)
   units    = "in",
   dpi      = 300           # ensures minimum resolution for any raster elements
 )

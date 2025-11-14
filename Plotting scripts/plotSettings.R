@@ -56,7 +56,7 @@ themePanel <- theme_minimal(base_size = baseTextSize) +
     legend.key.height = unit(0.2, "cm"),
     legend.title  = element_text(size = baseTextSize),
     legend.text   = element_text(size = baseTextSize),
-    plot.margin   = margin(t = 15, r = 5, b = 5, l = 5)
+    plot.margin   =  margin(t = 3, r = 3, b = 3, l = 3)
   )
 
   
