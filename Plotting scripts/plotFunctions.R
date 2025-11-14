@@ -411,14 +411,20 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
   return(TCOtoDCOAnnotated)
 }
 
-amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenario) {
-  
+amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenario, feas = FALSE) {
+
   data <- copy(DCOmileageDistributionShares)[period %in% yr & paperScen == paperScenario]
+  # witdth of mileage bins
   data[, cumWidth := 0.999 * (cumShare - shift(cumShare, type = "lag")),
        by = c("paperScen", "DCOscenario", "truckTechnology")]
   data[is.na(cumWidth), cumWidth := (cumShare),
        by = c("paperScen", "DCOscenario", "truckTechnology")]
-  
+  # ensure that DCO scenarios are handled in the right order
+  data[, DCOscenario := factor(
+    DCOscenario,
+    levels = c("Optimistic", "Medium", "Pessimistic")
+  )]
+  # find cost benefitial percentage
   findZeroPoints <- data[, .SD[which.min(abs(value))],
                          by = .(period, truckTechnology, paperScen, DCOscenario)]
   findZeroPoints[, truckTechnology := factor(truckTechnology,
@@ -426,12 +432,9 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
   setorder(findZeroPoints, paperScen, DCOscenario, truckTechnology, -cumShare)
   findZeroPoints[, arrowY := seq(-0.2, -0.5, length.out = .N),
                  by = c("paperScen", "DCOscenario")]
-  middleY <- findZeroPoints[round(nrow(findZeroPoints) / 6), arrowY]
+  middleY <- -0.35
   
-  data$facetOrder <- as.numeric(factor(data$DCOscenario))
-  findZeroPoints$facetOrder <- as.numeric(factor(findZeroPoints$DCOscenario))
-  
-  # Split data
+  # Split data in positive and negative DCO for better visualisation
   dataPositive <- data[value > 0]
   dataNegative <- data[value < 0]
   dataPositive[, truckTechnology := factor(truckTechnology,
@@ -441,8 +444,17 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
   setorder(dataPositive, truckTechnology)
   setorder(dataNegative, truckTechnology)
   
-  facetLevels <- c("Optimistic", "Medium", "Pessimistic")
+  facetLevels <- levels(data$DCOscenario)
+  facetLevels <- facetLevels[facetLevels %in% unique(data$DCOscenario)]
   xBreaks <- c(0, 25, 50, 75, 100)
+  if (feas) {annotation <- "cost beneficial\n and feasible"
+             xAnnotation = 50} else {
+    annotation <- "of road km\ncost beneficial"
+    xAnnotation = 42}
+  if (length(facetLevels) > 2) {xAxisLabel <- length(facetLevels)} else {
+    xAxisLabel <- seq(1:length(facetLevels))}
+  if (length(facetLevels) > 2) {yAxisLabel <- ceiling(length(facetLevels)/2)} else {
+    yAxisLabel <- seq(1:length(facetLevels))}
   
   secLabels <- sapply(xBreaks, function(x) {
     idx <- which.min(abs(data$cumShare * 100 - x))
@@ -455,13 +467,13 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
     subDataNeg <- subset(dataNegative, DCOscenario == facetLevel)
     subZero <- subset(findZeroPoints, DCOscenario == facetLevel)
     
-    extraLabel <- if (i == 3) {
-      annotate("label", x = 42, y = middleY, label = "of road km\ncost beneficial",
-               color = "black", fill = "white", fontface = "bold", size = relSize(1.1),
+    extraLabel <- if (i %in% xAxisLabel) {
+      annotate("label", x = xAnnotation, y = middleY, label = annotation,
+               color = "black", fill = "white", fontface = "bold", size = relSize(0.9),
                hjust = 0, vjust = 0.5, linewidth = 0)
     } else NULL
     
-    scales <- if (i == 3) {
+    scales <- if (i %in% xAxisLabel) {
       list(scale_color_manual(values = paperColors, name = NULL,  guide = guide_legend(nrow = 1, keywidth = unit(0.4, "cm"),   
                               keyheight = unit(0.2, "cm") )),
            scale_fill_manual(values = paperColors, name = NULL, guide = guide_legend(nrow = 1, keyheight = unit(0.2, "cm"),
@@ -516,7 +528,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
                  aes(x = 40, y = arrowY,
                      label = paste("~", round(cumShare * 100), "%")),
                  color = "black", fill = "white",
-                 size = relSize(1.1), fontface = "bold",
+                 size = relSize(0.9), fontface = "bold",
                  label.padding = unit(0.1, "cm"),
                  linewidth = 0, hjust = 1, vjust = 0.5) +
       extraLabel +
@@ -525,8 +537,8 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
       coord_cartesian(ylim = c(-0.6, 0.6)) +
       scales +
       labs(
-        x = if (i == 3) "Road freight activity [%]" else NULL,
-        y = if (i == 2) paste0("DCO in ", yr, " [EUR/km]") else NULL
+        x = if (i %in% xAxisLabel) "Road freight activity [%]" else NULL,
+        y = if (i %in% yAxisLabel) paste0("DCO in ", yr, " [EUR/km]") else NULL
       ) +
       themePanel 
   })

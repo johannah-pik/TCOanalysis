@@ -298,7 +298,7 @@ aggregateCountryData <- function(dt, weightType = "stock") {
 }
 
 checkFeasMileageDistribution <- function(DCOmilageDistribution, binnedWeightedMileage, reducedBinnedWeightedMileage, ranges, infrastructure, focus = "EUR") {
-  browser()
+
   ranges <- copy(ranges)
   infrastructure <- copy(infrastructure)
   # Ranges of considered BET variants
