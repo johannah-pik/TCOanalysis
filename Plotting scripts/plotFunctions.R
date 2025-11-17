@@ -606,8 +606,8 @@ metaPlot <- function(DCOmilageDistributionShares, paperScenario) {
   return(combined)
 }
 
-plotRangeAnalysis <- function(ranges, infrastructure) {
-    
+plotRangeAnalysis <- function(rangeAnalysis, ranges, infrastructure) {
+browser()
   ranges <- ranges[truckClass == "Tractor-trailer" &
                       `truckTechnology` %in% c("BET small battery", "BET large battery") &
                       `vehicleParameterScenario` == "MC_MTM" &
@@ -734,27 +734,52 @@ plotRangeAnalysis <- function(ranges, infrastructure) {
 
 plotMileageDensity <- function(weightedMileage) {
   
-  t <- ggplot(weightedMileage, aes(y = dvktMax)) +
-    geom_density(
-      aes(x = after_stat(density / max(density))),  # normalized density on x-axis
-      stat = "density",
+  # t <- ggplot(weightedMileage, aes(y = dvktMax)) +
+  #   geom_density(
+  #     aes(x = after_stat(density)),  #  / max(density) normalized density on x-axis
+  #     stat = "density",
+  #     fill = "grey",
+  #     color = NA
+  #   ) +
+  #   labs(
+  #     x = "Normalized\ndensity",
+  #     y = "Maximum daily\nvehicle km travelled"
+  #   ) +
+  #   scale_x_continuous(
+  #    # limits = c(0, 1),
+  #   #  breaks = c(0, 1),  
+  #     expand = expansion(mult = c(0, 0))
+  #   ) +
+  #   scale_y_continuous(
+  #     limits = c(140, 1100),
+  #     expand = expansion(mult = c(0, 0))
+  #   ) +
+  #   themePanel
+  
+ t <-  ggplot(weightedMileage, aes(x = dvktMax)) +
+    stat_ecdf(geom = "line", color = "darkgrey", size = baseLineWidth) +
+    geom_ribbon(
+      stat = "ecdf",
+      aes(ymin = 0, ymax = ..y..),
       fill = "darkgrey",
-      color = NA
+      alpha = 0.8
     ) +
+    coord_flip() + 
+   scale_x_continuous(
+     limits = c(140, 1500),
+     expand = expansion(mult = c(0, 0))
+   ) +
+   scale_y_continuous(
+     limits = c(0, 1.1),
+     breaks = c(0, 0.5, 1),  
+     expand = expansion(mult = c(0,0))
+   ) +
     labs(
-      x = "Normalized\ndensity",
-      y = "Maximum daily\nvehicle km travelled"
-    ) +
-    scale_x_continuous(
-      limits = c(0, 1),
-      breaks = c(0, 1),  
-      expand = expansion(mult = c(0, 0))
-    ) +
-    scale_y_continuous(
-      limits = c(140, 1100),
-      expand = expansion(mult = c(0, 0))
+      x = "Maximum daily\nvehicle km travelled",
+      y = "Cumulative\nfraction"
     ) +
     themePanel
+  
   return(t)
 }
 

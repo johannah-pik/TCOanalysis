@@ -287,14 +287,14 @@ infrastructure <- loadInfrastructureBuildUp(dataFolder)
 rangeAnalysis <- getRangeAnalysis(weightedMileage, infrastructure)
 ranges <- loadRanges(dataFolder)
 
-rangePlot <- plotRangeAnalysis(ranges, infrastructure)
+rangePlot <- plotRangeAnalysis(rangeAnalysis, ranges, infrastructure)
 dMaxDensityPlot <- plotMileageDensity(weightedMileage)
 
 combined <- plot_grid(
     dMaxDensityPlot,
     rangePlot,
     ncol = 2,
-    rel_widths = c(2.3, 8),
+    rel_widths = c(2.35, 8),
     labels = c("a", "b"),
     label_size = baseTextSize,
     label_fontface = "bold",
@@ -339,6 +339,7 @@ setnames(feasDCO, "cumFeasWeightedShareEUR", "cumShare")
 # version 1
 ```{r, fig.width=4.5, fig.height=6.2, fig.fullwidth=FALSE}
 paperScenario <- "Current policies"
+yr <- 2030
 
 TCOxAnnualMileage <- amDistributionBarPlot(feasDCO[period < 2041], yr, paperScenario, feas = TRUE)
 MetaTCOxAnnualMileage <- metaPlot(feasDCO[period < 2041], paperScenario)
@@ -431,7 +432,7 @@ ggsave(
 paperScenario <- "Current policies"
 DCOscen <- "Medium"
 FeasTCOxAnnualMileage2030 <- amDistributionBarPlot(feasDCO[DCOscenario == DCOscen], yr = 2030, paperScenario, feas = TRUE)
-FeasTCOxAnnualMileage2040 <- amDistributionBarPlot(feasDCO[DCOscenario == DCOscen], yr = 2040, paperScenario, feas = TRUE)
+FeasTCOxAnnualMileage2040 <- amDistributionBarPlot(feasDCO[DCOscenario == DCOscen], yr = 2035, paperScenario, feas = TRUE)
 
 legend <- get_legend(
   FeasTCOxAnnualMileage2030 +
