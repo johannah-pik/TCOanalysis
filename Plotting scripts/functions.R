@@ -293,7 +293,11 @@ calulcateTCOperMileage <- function(TCO) {
 aggregateCountryData <- function(dt, weightType = "stock") {
  cols <- names(dt)[!names(dt)%in% c("value", "country")]
  dt <- merge(dt, loadWeight(dataFolder, eval(weightType)), by = "country", allow.cartesian = TRUE)
- dt[, .(value = sum(value * meanStockShare)), by = cols][, country := "EUR"]
+ if (weightType == "stock") {
+   dt[, .(value = sum(value * meanStockShare)), by = cols]
+   dt[, meanStockShare := NULL]}
+ if (weightType == "activity") dt[, .(value = sum(value * meanESdemandShare)), by = cols]
+ dt[, country := "EUR"]
  return(dt)
 }
 

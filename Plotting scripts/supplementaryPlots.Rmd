@@ -41,9 +41,9 @@ DCOscenarios <- tribble(
   "BET small battery", "LC_HTMxPROG",    "ICET",       "HC_LTMxBAU",            "Optimistic",
   "BET large battery", "LC_HTMxPROG",    "ICET",       "HC_LTMxBAU",            "Optimistic",
   "FCET",              "LC_HTMxPROG",    "ICET",       "HC_LTMxBAU",            "Optimistic",
-  "BET small battery", "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "Medium",
-  "BET large battery", "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "Medium",
-  "FCET",              "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "Medium",
+  "BET small battery", "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "MC_MTM",
+  "BET large battery", "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "MC_MTM",
+  "FCET",              "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "MC_MTM",
   "BET small battery", "HC_LTMxBAU",     "ICET",       "LC_HTMxPROG",           "Pessimistic",
   "BET large battery", "HC_LTMxBAU",     "ICET",       "LC_HTMxPROG",           "Pessimistic",
   "FCET",              "HC_LTMxBAU",     "ICET",       "LC_HTMxPROG",           "Pessimistic"
@@ -61,8 +61,8 @@ BETvsFCETdcoScenarios <- tribble(
   ~truckTech,         ~truckTCOscenario, ~counterTech, ~counterTechTCOscenario, ~DCOscenario,
   "BET small battery", "LC_HTMxPROG",    "FCET",       "HC_LTMxBAU",            "Optimistic",
   "BET large battery", "LC_HTMxPROG",    "FCET",       "HC_LTMxBAU",            "Optimistic",
-  "BET small battery", "MC_MTMxBAU",     "FCET",       "MC_MTMxBAU",            "Medium",
-  "BET large battery", "MC_MTMxBAU",     "FCET",       "MC_MTMxBAU",            "Medium",
+  "BET small battery", "MC_MTMxBAU",     "FCET",       "MC_MTMxBAU",            "MC_MTM",
+  "BET large battery", "MC_MTMxBAU",     "FCET",       "MC_MTMxBAU",            "MC_MTM",
   "BET small battery", "HC_LTMxBAU",     "FCET",       "LC_HTMxPROG",           "Pessimistic",
   "BET large battery", "HC_LTMxBAU",     "FCET",       "LC_HTMxPROG",           "Pessimistic"
 )
@@ -74,7 +74,7 @@ DCOdata <- getDCO(BETvsFCETdcoScenarios, TCOdata)
 setnames(mileageDistribution, "binMean", "annualM")
 DCOmilageDistribution <- applyMileage(mileageDistribution, DCOdata)
 DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribution, focus = "EUR")
-
+setnames(DCOmilageDistributionShares, "cumBinWeightedShareEUR", "cumShare")
 TCOxAnnualMileage <- amDistributionBarPlot(DCOmilageDistributionShares, yr, paperScenario)
 
 MetaTCOxAnnualMileage <- metaPlot(DCOmilageDistributionShares, paperScenario)
@@ -136,7 +136,7 @@ finalPlot_with_labels <- ggdraw(finalPlot) +
     hjust = 0
   ) +
   draw_label(
-    "Medium", x = 0.02, y = 0.525, angle = 90,
+    "MC_MTM", x = 0.02, y = 0.525, angle = 90,
     fontface = "bold",
     fontfamily = "sans",
     size = baseTextSize * 1.2,
@@ -171,65 +171,68 @@ ggsave(
 # Prices overview panel plot
 ```{r, fig.width=45, fig.height=10, fig.fullwidth=FALSE}
 # Select plot data
-yrs <- c(2050)
+yrs <- c(2030)
 vehSize <- "Tractor-trailer"
-overviewTechs <- c("Diesel", "FCET", "BET large battery", "BET small battery")
+overviewTechs <- c("ICET", "FCET", "BET large battery", "BET small battery")
+paperScenario <- 	"Current policies"
+
+salesPrices <- aggregateCountryData(loadSalesPrices(dataFolder), weightType = "stock")[period %in% yrs & truckTechnology %in% overviewTechs & truckClass %in% vehSize & paperScen == paperScenario] 
+# Choose BET battery costs for visualisation (equal for all BETs, different for FCETs)
+batteryAndFCPrices <- aggregateCountryData(loadBatteryAndFCPrices(dataFolder), weightType = "stock")
+batteryAndFCPrices <- unique(batteryAndFCPrices[, c("truckClass", "category", "paperScen", "country") := NULL])  
 ```
 
 ## sales Prices
 ```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
-salesPricedata <- copy(salesPrices)[period %in% yrs &  `Fuel Type` %in% overviewTechs & `Vehicle Size` %in% vehSize]
-salesPricedata[`Fuel Type` == "BET large battery", `Fuel Type` := "BET\nlarge\nbattery"]
-salesPricedata[`Fuel Type` == "BET small battery", `Fuel Type` := "BET\nsmall\nbattery"]
-salesPricedata[, `Fuel Type` := factor(`Fuel Type`, levels = c("Diesel", "FCET", "BET\nlarge\nbattery", "BET\nsmall\nbattery"))]
-salesPricedata[, `Vehicle-Parameter-Scenario` := factor(`Vehicle-Parameter-Scenario`, levels = c("Low", "Medium", "High"))]
-salesPricedata[, Parameter := factor(Parameter, levels = c("H2 tank", "Fuel cell system", "Battery", "Vehicle body\nincl. engine"))]
+salesPricedata <- copy(salesPrices)
+salesPricedata[truckTechnology == "BET large battery", truckTechnology := "BET\nlarge\nbattery"]
+salesPricedata[truckTechnology == "BET small battery", truckTechnology := "BET\nsmall\nbattery"]
+salesPricedata[, truckTechnology := factor(truckTechnology, levels = c("ICET", "FCET", "BET\nlarge\nbattery", "BET\nsmall\nbattery"))]
+salesPricedata[, vehicleParameterScenario := factor(vehicleParameterScenario, levels = c("LC_HTM", "MC_MTM", "HC_LTM"))]
+salesPricedata[, parameter := factor(parameter, levels = c("H2 tank", "Fuel cell system", "Battery", "Vehicle body\nincl. engine"))]
 
 # Stacked Bar Plot
-salesPbarPlots <- ggplot(salesPricedata, aes(x = `Vehicle-Parameter-Scenario`)) +
-  geom_bar(aes(y = value, fill = Parameter), position = "stack", stat = "identity", width = 0.8) +
+salesPbarPlots <- ggplot(salesPricedata, aes(x = vehicleParameterScenario)) +
+  geom_bar(aes(y = value, fill = parameter), position = "stack", stat = "identity", width = 0.8) +
   scale_fill_manual(values = paperColors) + 
-  facet_wrap(~ `Fuel Type`, nrow = 1) +
+  facet_wrap(~ truckTechnology, nrow = 1) +
   labs(x = "", y = "Purchase price [EUR/Veh]", title = paste0("Purchase prices\n", vehSize, " (", yrs, ")")) +
   scale_x_discrete(labels = function(x) { sub("\\s", "\n", x) }, expand = expansion(mult = c(0.3, 0.3))) +
   themePanel +
   theme(
-    panel.spacing = unit(0.7, "lines"),                 # Slightly more room between facets
-    panel.border = element_rect(color = "grey85", fill = NA, linewidth = 0.4),  # Light border
-    strip.text = element_text(margin = margin(t = 4, b = 4)),                   # Ensure facet titles aren't clipped
-    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+   # panel.spacing = unit(0.7, "lines"),                 # Slightly more room between facets
+    panel.border = element_rect(color = "grey85", fill = NA, linewidth = baseLineWidth),  # Light border
+   # strip.text = element_text(margin = margin(t = 4, b = 4)),                   # Ensure facet titles aren't clipped
+    #axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
   )
-
-
-plot(salesPbarPlots)
 ```
 
 ## Battery and fuel Cell System prices
-```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
+```{r, fig.width=4.5, fig.height=1.8, fig.fullwidth=FALSE}
 rawBatFCPrices_wide <- dcast(
-  rawBatFCPrices[period > 2025], 
-  period + Parameter + `Fuel Type`~ `Vehicle-Parameter-Scenario`, 
+  batteryAndFCPrices[period > 2025], 
+  period + parameter + unit + truckTechnology ~ vehicleParameterScenario, 
   value.var = "value"
 )
 
-rawBatFCPrices_wide[, Low := as.numeric(Low)]
-rawBatFCPrices_wide[, High := as.numeric(High)]
-rawBatFCPrices_wide[, Medium := as.numeric(Medium)]
+rawBatFCPrices_wide[, LC_HTM := as.numeric(LC_HTM)]
+rawBatFCPrices_wide[, HC_LTM := as.numeric(HC_LTM)]
+rawBatFCPrices_wide[, MC_MTM := as.numeric(MC_MTM)]
 
-rawBatFCPrices_wide <- rawBatFCPrices_wide[Parameter == "Fuel cell system costs", Parameter := "Fuel cell\nsystem\nprices"]
+rawBatFCPrices_wide <- rawBatFCPrices_wide[parameter == "Fuel cell system costs", parameter := "Fuel cell\nsystem\nprices"]
 FCPrices <- ggplot(
-  rawBatFCPrices_wide[period > 2020 & Parameter == "Fuel cell\nsystem\nprices"], 
+  rawBatFCPrices_wide[parameter == "Fuel cell\nsystem\nprices"], 
   aes()) +
   geom_ribbon(
     aes(
       x = period,
-      ymin = Low,
-      ymax = High,
-      fill = Parameter
+      ymin = LC_HTM,
+      ymax = HC_LTM,
+      fill = parameter
     ),
     alpha = 0.5 ) +
   geom_line(
-    aes(x = period, y = Medium, color = Parameter), size = 3
+    aes(x = period, y = MC_MTM, color = parameter), size = baseLineWidth
   ) +
   scale_fill_manual(values = paperColors) +
   scale_color_manual(values = paperColors) +
@@ -238,20 +241,20 @@ FCPrices <- ggplot(
   labs(x = "Year", y = "Fuel cell system cost [EUR/kW]", title = "Fuel cell system prices") +
   themePanel  
 
-rawBatFCPrices_wide[Parameter == "Battery costs", Parameter := "Battery\nsystem\nprices"]
+rawBatFCPrices_wide[parameter == "Battery costs", parameter := "Battery\nsystem\nprices"]
 BatPrices <- ggplot(
-  rawBatFCPrices_wide[period > 2020 & Parameter == "Battery\nsystem\nprices" & `Fuel Type` == "BET"], 
+  rawBatFCPrices_wide[period > 2025 & parameter == "Battery\nsystem\nprices" & truckTechnology == "BET large battery"], 
   aes()) +
   geom_ribbon(
     aes(
       x = period,
-      ymin = Low,
-      ymax = High,
-      fill = Parameter,
+      ymin = LC_HTM,
+      ymax = HC_LTM,
+      fill = parameter,
     ),
     alpha = 0.5 ) +
   geom_line(
-    aes(x = period, y = Medium, color = Parameter), size = 3
+    aes(x = period, y = MC_MTM, color = parameter), size = baseLineWidth
   ) +
   scale_fill_manual(values = paperColors) +
   scale_color_manual(values = paperColors) +
@@ -260,29 +263,44 @@ BatPrices <- ggplot(
   labs(x = "Year", y = "Battery system prices [EUR/kW]", title = "Battery system prices") +
   themePanel 
 
-plot(BatPrices)
-plot(FCPrices)
+combined_plotCAPEX <- (
+  (BatPrices | FCPrices | salesPbarPlots)
+)+ 
+  plot_annotation(tag_levels = "a")
+
+plot(combined_plotCAPEX)
+
+ggsave(
+  file.path(plotFolder, "Sup_pricesPanelCAPEX.pdf"),
+  plot     = combined_plotCAPEX,
+  device   = cairo_pdf,
+  width    = 4.5,          # in inches ≈ 180 mm / 25.4
+  height   = 1.8,          # in inches (adjust aspect ratio as appropriate)
+  units    = "in",
+  dpi      = 300           # ensures minimum resolution for any raster elements
+)
+
 ```
 
 
 ## energy carrier prices enduse vs wholesale 
 ```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
 data <- copy(fuelPricesEURperkwh)[period > 2025 & paperScen == "Current Policies"]
-enduseFuelPrices <- data[, .(value = sum(value)), by = c("Energy-Carrier-Parameter-Scenario", "period", "Country", "Unit", "Fuel", "paperScen")]
-enduseFuelPrices[, Parameter := "Enduse"]
-data <- data[Parameter == "Wholesale"]
+enduseFuelPrices <- data[, .(value = sum(value)), by = c("Energy-Carrier-parameter-Scenario", "period", "Country", "Unit", "Fuel", "paperScen")]
+enduseFuelPrices[, parameter := "Enduse"]
+data <- data[parameter == "Wholesale"]
 data <- rbind(data, enduseFuelPrices)
 
 fuels_wide <- dcast(
   data, 
-  period + Fuel + Parameter ~ `Energy-Carrier-Parameter-Scenario`, 
+  period + Fuel + parameter ~ `Energy-Carrier-parameter-Scenario`, 
   value.var = "value"
 )
 fuels_wide <- fuels_wide[!Fuel == "Mixed Charging"]
 fuels_wide[, Fuel := factor(Fuel, levels = c("Hydrogen", "CCS", "MCS", "Diesel Mix", "Diesel Fossil", "Diesel Bio", "Diesel Syn"))]
 
 HydrogenPrices <- ggplot(
-  fuels_wide[Fuel == "Hydrogen" & Parameter %in% c("Wholesale", "Enduse")], 
+  fuels_wide[Fuel == "Hydrogen" & parameter %in% c("Wholesale", "Enduse")], 
   aes()) +
   geom_ribbon_pattern(
     aes(
@@ -290,7 +308,7 @@ HydrogenPrices <- ggplot(
       ymin = `Progressive`,
       ymax = BAU,
       fill = Fuel,
-      pattern = Parameter
+      pattern = parameter
     ),
     alpha = 0.2) +
   scale_fill_manual(values = paperColors) +
@@ -299,12 +317,12 @@ HydrogenPrices <- ggplot(
   labs(x = "Year", y = "Hydrogen\nPrice [EUR/kWh]", title = "Wholesale vs. enduse price trajectory") +
     guides(
     fill = guide_legend(override.aes = list(pattern = "none")),
-    pattern = guide_legend(title = "Parameter")
+    pattern = guide_legend(title = "parameter")
   ) +
   themePanel
 
 ElecPrices <- ggplot(
-  fuels_wide[Fuel %in% c("MCS", "CCS") & Parameter %in% c("Wholesale", "Enduse")], 
+  fuels_wide[Fuel %in% c("MCS", "CCS") & parameter %in% c("Wholesale", "Enduse")], 
   aes()) +
   geom_ribbon_pattern(
     aes(
@@ -312,7 +330,7 @@ ElecPrices <- ggplot(
       ymin = `Progressive`,
       ymax = BAU,
       fill = Fuel,
-      pattern = Parameter
+      pattern = parameter
     ),
     alpha = 0.5 ) +
   scale_fill_manual(values = paperColors) +
@@ -321,7 +339,7 @@ ElecPrices <- ggplot(
   labs(x = "Year", y = "Electricity\nPrice [EUR/kWh]", title = "Wholesale vs. enduse price trajectory") +
     guides(
     fill = guide_legend(override.aes = list(pattern = "none")),
-    pattern = guide_legend(title = "Parameter")
+    pattern = guide_legend(title = "parameter")
   ) +
   themePanel
 
@@ -334,25 +352,25 @@ fuels_wide[, Fuel := factor(Fuel, levels = c("Fossil", "Bio", "Syn", "Mix"))]
 DieselPrices <- ggplot() +
   geom_ribbon_pattern(
     data = fuels_wide[
-      (Fuel %in% c("Bio", "Syn", "Fossil") & Parameter == "Wholesale") |
-        (Fuel == "Mix" & Parameter == "Enduse")
+      (Fuel %in% c("Bio", "Syn", "Fossil") & parameter == "Wholesale") |
+        (Fuel == "Mix" & parameter == "Enduse")
     ],
     aes(
       x = period,
       ymin = `Progressive`,  # backticks if name has spaces
       ymax = BAU,
       fill = Fuel,
-      pattern = Parameter
+      pattern = parameter
     ),
     alpha = 0.5) +
   scale_fill_manual(values = paperColors) +
   geom_line(
-    data = fuels_wide[Fuel == "Fossil" & Parameter == "Wholesale"],
+    data = fuels_wide[Fuel == "Fossil" & parameter == "Wholesale"],
     aes(x = period, y = BAU),
     color = "black"
   ) +
   geom_point(
-    data = fuels_wide[Fuel == "Fossil" & Parameter == "Wholesale"],
+    data = fuels_wide[Fuel == "Fossil" & parameter == "Wholesale"],
     aes(x = period, y = BAU),
     shape = 1,        # solid circle
     size = 3,        # small dot
@@ -363,7 +381,7 @@ DieselPrices <- ggplot() +
   labs(x = "Year", y = "Diesel\nprice [EUR/kWh]", title = "Wholesale vs. enduse price trajectory") +
     guides(
     fill = guide_legend(override.aes = list(pattern = "none")),
-    pattern = guide_legend(title = "Parameter")
+    pattern = guide_legend(title = "parameter")
   ) +
   themePanel
 
@@ -385,21 +403,21 @@ rose5 <- c(
   "#7A1E48"   # deep wine rose
 )
 #stacked categories
-data[Parameter %in% c("Network Costs", 
-                      "Network fees savings potential"), Parameter := "General network costs"]
-data[Parameter %in% c("Taxes, Fees, Levies and charges - MCS",
-                      "Taxes, Fees, Levies and charges - Depot"), Parameter := "Taxes, fees, levies,\nand charges"]
-data[Parameter %in% c("Total Diesel Mark-Up"), Parameter := "Total diesel markup"]
-data <- data[, .(value = sum(value)), by = c("Energy-Carrier-Parameter-Scenario", "period", "Country", "Unit", "Fuel", "paperScen", "Parameter")]
+data[parameter %in% c("Network Costs", 
+                      "Network fees savings potential"), parameter := "General network costs"]
+data[parameter %in% c("Taxes, Fees, Levies and charges - MCS",
+                      "Taxes, Fees, Levies and charges - Depot"), parameter := "Taxes, fees, levies,\nand charges"]
+data[parameter %in% c("Total Diesel Mark-Up"), parameter := "Total diesel markup"]
+data <- data[, .(value = sum(value)), by = c("Energy-Carrier-parameter-Scenario", "period", "Country", "Unit", "Fuel", "paperScen", "parameter")]
 
 # Stacked Bar Plot
 # Hydrogen
 hydrogen <- data[Fuel == "Hydrogen"]
-hydrogen[Parameter == "Station Overhead, Profit and Mark-Up", Parameter := "Station overhead,\nprofit and mark-up"]
-hydrogen[Parameter == "Taxes, Fees, Levies and charges", Parameter := "Taxes, fees, levies,\nand charges"]
-hydrogen[, Parameter := factor(Parameter, levels = c("Taxes, fees, levies,\nand charges", "Station overhead,\nprofit and mark-up", "Station", "Transport and distribution", "Wholesale"))]
-hydrogenBarPlots <- ggplot(hydrogen, aes(x = `Energy-Carrier-Parameter-Scenario`)) +
-  geom_bar(aes(y = value, fill = Parameter), position = "stack", stat = "identity", width = 0.8) +
+hydrogen[parameter == "Station Overhead, Profit and Mark-Up", parameter := "Station overhead,\nprofit and mark-up"]
+hydrogen[parameter == "Taxes, Fees, Levies and charges", parameter := "Taxes, fees, levies,\nand charges"]
+hydrogen[, parameter := factor(parameter, levels = c("Taxes, fees, levies,\nand charges", "Station overhead,\nprofit and mark-up", "Station", "Transport and distribution", "Wholesale"))]
+hydrogenBarPlots <- ggplot(hydrogen, aes(x = `Energy-Carrier-parameter-Scenario`)) +
+  geom_bar(aes(y = value, fill = parameter), position = "stack", stat = "identity", width = 0.8) +
  scale_fill_manual(values = rose5) + 
   labs(x = "", y = "Enduse hydrogen\nprice [EUR/kWh]", title = "Hydrogen: Enduse price components (2030)") +
   scale_x_discrete(labels = function(x) { sub("\\s", "\n", x) }, expand = expansion(mult = c(0.3, 0.3))) +
@@ -419,22 +437,22 @@ purple7 <- c(
   "#E6E0F8",  # very light lavender
   "#C9B3F0",  # light purple
   "#AD85E8",  # soft purple
-  "#9160E0",  # muted medium purple
+  "#9160E0",  # muted MC_MTM purple
   "#6F3CB8",  # strong purple
   "#4D2290",  # deep purple
   "#2A0068"   # very deep violet
 )
-electricity[Parameter %in% c("Network fees savings potential", "Network Costs"), 
-            Parameter := "General network costs"]
-electricity[Parameter %in% c("Taxes, Fees, Levies and charges", "Taxes, Fees, Levies and charges - MCS", "Taxes, Fees, Levies and charges - Depot"), 
-            Parameter := "Taxes, fees, levies,\nand charges"]
-electricity[Parameter == "Station Overhead, Profit and Mark-Up", Parameter := "Station overhead,\nprofit and mark-up"]
+electricity[parameter %in% c("Network fees savings potential", "Network Costs"), 
+            parameter := "General network costs"]
+electricity[parameter %in% c("Taxes, Fees, Levies and charges", "Taxes, Fees, Levies and charges - MCS", "Taxes, Fees, Levies and charges - Depot"), 
+            parameter := "Taxes, fees, levies,\nand charges"]
+electricity[parameter == "Station Overhead, Profit and Mark-Up", parameter := "Station overhead,\nprofit and mark-up"]
 electricity[Fuel == "Mixed Charging", Fuel := "Mixed"]
 # Sum up for "General network costs"
-electricity <- electricity[, .(value = sum(value)), by = c("Energy-Carrier-Parameter-Scenario", "period", "Country", "Unit", "Fuel", "paperScen", "Parameter")]
-electricity[, Parameter := factor(Parameter, levels = c("Taxes, fees, levies,\nand charges", "Station overhead,\nprofit and mark-up", "Grid extension", "Station", "General network costs", "Wholesale"))]
-electricityBarPlots <- ggplot(electricity, aes(x = `Energy-Carrier-Parameter-Scenario`)) +
-  geom_bar(aes(y = value, fill = Parameter), position = "stack", stat = "identity", width = 0.8) +
+electricity <- electricity[, .(value = sum(value)), by = c("Energy-Carrier-parameter-Scenario", "period", "Country", "Unit", "Fuel", "paperScen", "parameter")]
+electricity[, parameter := factor(parameter, levels = c("Taxes, fees, levies,\nand charges", "Station overhead,\nprofit and mark-up", "Grid extension", "Station", "General network costs", "Wholesale"))]
+electricityBarPlots <- ggplot(electricity, aes(x = `Energy-Carrier-parameter-Scenario`)) +
+  geom_bar(aes(y = value, fill = parameter), position = "stack", stat = "identity", width = 0.8) +
  scale_fill_manual(values = purple7) + 
   facet_wrap(~ Fuel, nrow = 1) +
   labs(x = "", y = "Enduse electricity\nprice [EUR/kWh]", title = "Electricity: Enduse price components (2030)") +
@@ -453,21 +471,21 @@ plot(electricityBarPlots)
 diesel <- data[Fuel %in% c("Diesel Bio", "Diesel Syn", "Diesel Fossil", "Diesel Mix")]
 green7 <- c(
   "#C6E0C6",  # light green
-  "#86B88E",  # muted medium green
+  "#86B88E",  # muted MC_MTM green
   "#46774E",  # dark green
   "#26502E"   # deep forest green
 )
-diesel[Parameter == "Excise Duty", Parameter := "Excise duty"]
-diesel[Parameter == "Total Diesel Mark-Up", Parameter := "Total diesel markup"]
-diesel[, Parameter := factor(Parameter, levels = c("CO2 tax", "Excise duty", "Total diesel markup", "Transport and distribution", "Wholesale"))]
+diesel[parameter == "Excise Duty", parameter := "Excise duty"]
+diesel[parameter == "Total Diesel Mark-Up", parameter := "Total diesel markup"]
+diesel[, parameter := factor(parameter, levels = c("CO2 tax", "Excise duty", "Total diesel markup", "Transport and distribution", "Wholesale"))]
 diesel[Fuel == "Diesel Bio", Fuel := "Bio"]
 diesel[Fuel == "Diesel Syn", Fuel := "Syn"]
 diesel[Fuel == "Diesel Fossil", Fuel := "Fossil"]
 diesel[Fuel == "Diesel Mix", Fuel := "Mix"]
 diesel[, Fuel := factor(Fuel, levels = c("Fossil", "Bio", "Syn", "Mix"))]
 
-dieselBarPlots <- ggplot(diesel, aes(x = `Energy-Carrier-Parameter-Scenario`)) +
-  geom_bar(aes(y = value, fill = Parameter), position = "stack", stat = "identity", width = 0.8) +
+dieselBarPlots <- ggplot(diesel, aes(x = `Energy-Carrier-parameter-Scenario`)) +
+  geom_bar(aes(y = value, fill = parameter), position = "stack", stat = "identity", width = 0.8) +
  scale_fill_manual(values = green7) + 
   facet_wrap(~ Fuel, nrow = 1) +
   labs(x = "", y = "Enduse diesel\nprice [EUR/kWh]", title = "Diesel: Enduse price components (2030)") +
@@ -484,21 +502,6 @@ dieselBarPlots <- ggplot(diesel, aes(x = `Energy-Carrier-Parameter-Scenario`)) +
 plot(dieselBarPlots)
 ```
 
-```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
-
-
-combined_plotCAPEX <- (
-  (BatPrices | FCPrices | salesPbarPlots)
-)+ 
-  plot_annotation(tag_levels = "a")
-
-ggsave(
-  file.path(plotFolder, "Sup_pricesPanelCAPEX.pdf"),
-  plot = combined_plotCAPEX,
-  width = 40, height = (45/6) * 2, units = "in", device = cairo_pdf, limitsize = FALSE
-)
-
-```
 
 
 ```{r, fig.width=15, fig.height=10, fig.fullwidth=FALSE}
@@ -632,7 +635,7 @@ ggsave(
 
 yr <- c(2030)
 trucktechs <- c("BET small battery", "BET large battery") #, "BET small battery", "FCET"
-data <- copy(feasibility)[period %in% yr & `Fuel Type` %in% trucktechs & paperScen == "Current Policies" & `infrastructure-scenario` == "On time"]
+data <- copy(feasibility)[period %in% yr & truckTechnology %in% trucktechs & paperScen == "Current Policies" & `infrastructure-scenario` == "On time"]
 setorder(data, "Fuel Type", "TCOgapScenario", "period", "TCOgap")
 data[, TCOgain := - TCOgap]
 data[, cum_width := 0.999 * (share - shift(share, type = "lag")), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
@@ -641,20 +644,20 @@ data[is.na(cum_width), cum_width := (share), by = c("paperScen", "TCOgapScenario
 data[, paperScen := factor(paperScen, 
                                levels = c("Current Policies"))]
 data[, TCOgapScenario := factor(TCOgapScenario, 
-                               levels = c("Optimistic", "Medium", "Pessimistic"))]
-data[, `Fuel Type` := factor(`Fuel Type`, 
+                               levels = c("Optimistic", "MC_MTM", "Pessimistic"))]
+data[, truckTechnology := factor(truckTechnology, 
                                levels = c("BET small battery", "BET large battery"))]
-setorder(data, `Fuel Type`)
+setorder(data, truckTechnology)
 
-totFeas <- data[TCOgain > 0, .(totFeasCostBenShare = sum(feasShareKmEUR)), by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
+totFeas <- data[TCOgain > 0, .(totFeasCostBenShare = sum(feasShareKmEUR)), by = .(period, truckTechnology, paperScen, TCOgapScenario)]
 totFeas[is.na(totFeasCostBenShare), totFeasCostBenShare := 0]
-findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
+findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, truckTechnology, paperScen, TCOgapScenario)]
 findZeroPoints <- merge(findZeroPoints, totFeas, by = c("period", "Fuel Type", "paperScen", "TCOgapScenario"))
-setorder(findZeroPoints, paperScen, TCOgapScenario, `Fuel Type`, share)
+setorder(findZeroPoints, paperScen, TCOgapScenario, truckTechnology, share)
 findZeroPoints[, arrow_y := seq(-0.2, -0.5, length.out = .N), by = c("paperScen", "TCOgapScenario")]
 
 setorder(findZeroPoints, - share)
-findZeroPoints[, `Fuel Type` := factor(`Fuel Type`, levels = c("BET small battery", "BET large battery", "FCET"))]  
+findZeroPoints[, truckTechnology := factor(truckTechnology, levels = c("BET small battery", "BET large battery", "FCET"))]  
 middle_y <- -0.35
 
 data$facet_order <- as.numeric(factor(data$TCOgapScenario))
@@ -682,42 +685,42 @@ ggplot(sub_data) +
       xend = share - feasShareKmEUR,
       y = 0,
       yend = 0,
-      color = `Fuel Type`
+      color = truckTechnology
     ), linewidth = 0.8) +
     geom_rect(aes(
       xmin = share - cum_width,
       xmax = share - feasShareKmEUR,
       ymin = 0,
       ymax = 0,
-      fill = `Fuel Type`,
-      color = `Fuel Type`
+      fill = truckTechnology,
+      color = truckTechnology
     ), linewidth = 0.02, alpha = 0.2) +
    geom_segment(aes(
       x = share - feasShareKmEUR,
       xend = share,
       y = TCOgain,
       yend = TCOgain,
-      color = `Fuel Type`
+      color = truckTechnology
     ), linewidth = 0.8) +
     geom_rect(aes(
       xmin = share - feasShareKmEUR,
       xmax = share,
       ymin = 0,
       ymax = TCOgain,
-      fill = `Fuel Type`,
-      color = `Fuel Type`
+      fill = truckTechnology,
+      color = truckTechnology
     ), linewidth = 0.02, alpha = 0.2) +
   geom_point(
       data = sub_zero,
-      aes(x = share, y = 0, color = `Fuel Type`),  
+      aes(x = share, y = 0, color = truckTechnology),  
       shape = 1,
       size = 10,
       stroke = 4,
       fill = NA
     ) +
-  geom_vline(data = sub_zero, aes(xintercept = share, color = `Fuel Type`), 
+  geom_vline(data = sub_zero, aes(xintercept = share, color = truckTechnology), 
                linetype = "dashed", linewidth = 2) +
-    geom_segment(data = sub_zero, aes(x = 0, xend = share, y = arrow_y, yend = arrow_y, color = `Fuel Type`), 
+    geom_segment(data = sub_zero, aes(x = 0, xend = share, y = arrow_y, yend = arrow_y, color = truckTechnology), 
                  arrow = arrow(length = unit(0.3, "cm"), type = "open"), 
                  linewidth = 2) +
     geom_label(data = sub_zero, aes(x = 50, y = arrow_y, 
@@ -767,7 +770,7 @@ ggsave(
 region <- "DE"
 yr <- c(2030)
 trucktechs <- c("BET large battery", "BET small battery", "FCET")
-data <- copy(TCOdrivingProfiles)[Country == region & period %in% yr & `Fuel Type` %in% trucktechs & paperScen == "Current Policies"]
+data <- copy(TCOdrivingProfiles)[Country == region & period %in% yr & truckTechnology %in% trucktechs & paperScen == "Current Policies"]
 setorder(data, "Fuel Type", "paperScen", "TCOgapScenario", "period", "TCOgap")
 data[, TCOgain := - TCOgap]
 data[, cum_width := 0.999* (shareCountry - shift(shareCountry, type = "lag")), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
@@ -776,17 +779,17 @@ data[is.na(cum_width), cum_width := (shareCountry), by = c("paperScen", "TCOgapS
 data[, paperScen := factor(paperScen, 
                                levels = c("Current Policies"))]
 data[, TCOgapScenario := factor(TCOgapScenario, 
-                               levels = c("Optimistic", "Medium", "Pessimistic"))]
-data[, `Fuel Type` := factor(`Fuel Type`, 
+                               levels = c("Optimistic", "MC_MTM", "Pessimistic"))]
+data[, truckTechnology := factor(truckTechnology, 
                                levels = c("BET small battery", "BET large battery", "FCET"))]
-setorder(data, `Fuel Type`)
+setorder(data, truckTechnology)
 
-findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
-setorder(findZeroPoints, paperScen, TCOgapScenario, `Fuel Type`, shareCountry)
+findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, truckTechnology, paperScen, TCOgapScenario)]
+setorder(findZeroPoints, paperScen, TCOgapScenario, truckTechnology, shareCountry)
 findZeroPoints[, arrow_y := seq(-0.2, -0.5, length.out = .N), by = c("paperScen", "TCOgapScenario")]
 
 setorder(findZeroPoints, - shareCountry)
-findZeroPoints[, `Fuel Type` := factor(`Fuel Type`, levels = c("BET small battery", "BET large battery", "FCET"))]  
+findZeroPoints[, truckTechnology := factor(truckTechnology, levels = c("BET small battery", "BET large battery", "FCET"))]  
 middle_y <- findZeroPoints[round(nrow(findZeroPoints)/6), arrow_y]
 
 data$facet_order <- as.numeric(factor(data$TCOgapScenario))
@@ -814,27 +817,27 @@ plot_list <- lapply(seq_along(facet_levels), function(i) {
       xend = shareCountry,
       y = TCOgain,
       yend = TCOgain,
-      color = `Fuel Type`
+      color = truckTechnology
     ), linewidth = 0.8) +
     geom_rect(aes(
       xmin = shareCountry - cum_width,
       xmax = shareCountry,
      ymin = 0,
       ymax = TCOgain,
-      fill = `Fuel Type`,
-      color = `Fuel Type`
+      fill = truckTechnology,
+      color = truckTechnology
     ), linewidth = 0.02, alpha = 0.2) +
     geom_point(
       data = sub_zero,
-      aes(x = shareCountry, y = 0, color = `Fuel Type`),  
+      aes(x = shareCountry, y = 0, color = truckTechnology),  
       shape = 1,
       size = 10,
       stroke = 4,
       fill = NA
     ) +
-    geom_vline(data = sub_zero, aes(xintercept = shareCountry, color = `Fuel Type`), 
+    geom_vline(data = sub_zero, aes(xintercept = shareCountry, color = truckTechnology), 
                linetype = "dashed", linewidth = 2) +
-    geom_segment(data = sub_zero, aes(x = 0, xend = shareCountry, y = arrow_y, yend = arrow_y, color = `Fuel Type`), 
+    geom_segment(data = sub_zero, aes(x = 0, xend = shareCountry, y = arrow_y, yend = arrow_y, color = truckTechnology), 
                  arrow = arrow(length = unit(0.3, "cm"), type = "open"), 
                  linewidth = 2) +
     geom_label(data = sub_zero, 
@@ -884,7 +887,7 @@ plot(combined)
 region <- "DE"
 yr <- c(2030)
 trucktechs <- c("BET small battery", "BET large battery") #, "BET small battery", "FCET"
-data <- copy(feasibility)[Country == region & period %in% yr & `Fuel Type` %in% trucktechs & paperScen == "Current Policies" & `infrastructure-scenario` == "On time"]
+data <- copy(feasibility)[Country == region & period %in% yr & truckTechnology %in% trucktechs & paperScen == "Current Policies" & `infrastructure-scenario` == "On time"]
 setorder(data, "Fuel Type", "paperScen", "TCOgapScenario", "period", "TCOgap")
 data[, TCOgain := - TCOgap]
 data[, cum_width := 0.999 * (shareCountry - shift(shareCountry, type = "lag")), by = c("paperScen", "TCOgapScenario", "Fuel Type")]
@@ -893,19 +896,19 @@ data[is.na(cum_width), cum_width := (shareCountry), by = c("paperScen", "TCOgapS
 data[, paperScen := factor(paperScen, 
                                levels = c("Current Policies"))]
 data[, TCOgapScenario := factor(TCOgapScenario, 
-                               levels = c("Optimistic", "Medium", "Pessimistic"))]
-data[, `Fuel Type` := factor(`Fuel Type`, 
+                               levels = c("Optimistic", "MC_MTM", "Pessimistic"))]
+data[, truckTechnology := factor(truckTechnology, 
                                levels = c("BET small battery", "BET large battery"))]
-setorder(data, `Fuel Type`)
-totFeas <- data[TCOgain > 0, .(totFeasCostBenShare = sum(feasShareKmCountry)), by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
+setorder(data, truckTechnology)
+totFeas <- data[TCOgain > 0, .(totFeasCostBenShare = sum(feasShareKmCountry)), by = .(period, truckTechnology, paperScen, TCOgapScenario)]
 totFeas[is.na(totFeasCostBenShare), totFeasCostBenShare := 0]
-findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
+findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, truckTechnology, paperScen, TCOgapScenario)]
 findZeroPoints <- merge(findZeroPoints, totFeas, by = c("period", "Fuel Type", "paperScen", "TCOgapScenario"))
-setorder(findZeroPoints, paperScen, TCOgapScenario, `Fuel Type`, shareCountry)
+setorder(findZeroPoints, paperScen, TCOgapScenario, truckTechnology, shareCountry)
 findZeroPoints[, arrow_y := seq(-0.2, -0.5, length.out = .N), by = c("paperScen", "TCOgapScenario")]
 
 setorder(findZeroPoints, - shareCountry)
-findZeroPoints[, `Fuel Type` := factor(`Fuel Type`, levels = c("BET small battery", "BET large battery", "FCET"))]  
+findZeroPoints[, truckTechnology := factor(truckTechnology, levels = c("BET small battery", "BET large battery", "FCET"))]  
 middle_y <- -0.35
 
 data$facet_order <- as.numeric(factor(data$TCOgapScenario))
@@ -933,34 +936,34 @@ ggplot(sub_data) +
       xend = shareCountry - feasShareKmCountry,
       y = 0,
       yend = 0,
-      color = `Fuel Type`
+      color = truckTechnology
     ), linewidth = 0.8) +
     geom_rect(aes(
       xmin = shareCountry - cum_width,
       xmax = shareCountry - feasShareKmCountry,
       ymin = 0,
       ymax = 0,
-      fill = `Fuel Type`,
-      color = `Fuel Type`
+      fill = truckTechnology,
+      color = truckTechnology
     ), linewidth = 0.02, alpha = 0.2) +
    geom_segment(aes(
       x = shareCountry - feasShareKmCountry,
       xend = shareCountry,
       y = TCOgain,
       yend = TCOgain,
-      color = `Fuel Type`
+      color = truckTechnology
     ), linewidth = 0.8) +
     geom_rect(aes(
       xmin = shareCountry - feasShareKmCountry,
       xmax = shareCountry,
       ymin = 0,
       ymax = TCOgain,
-      fill = `Fuel Type`,
-      color = `Fuel Type`
+      fill = truckTechnology,
+      color = truckTechnology
     ), linewidth = 0.02, alpha = 0.2) +
-  geom_vline(data = sub_zero, aes(xintercept = shareCountry, color = `Fuel Type`), 
+  geom_vline(data = sub_zero, aes(xintercept = shareCountry, color = truckTechnology), 
                linetype = "dashed", linewidth = 2) +
-    geom_segment(data = sub_zero, aes(x = 0, xend = shareCountry, y = arrow_y, yend = arrow_y, color = `Fuel Type`), 
+    geom_segment(data = sub_zero, aes(x = 0, xend = shareCountry, y = arrow_y, yend = arrow_y, color = truckTechnology), 
                  arrow = arrow(length = unit(0.3, "cm"), type = "open"), 
                  linewidth = 2) +
     geom_label(data = sub_zero, aes(x = 50, y = arrow_y, 
@@ -1007,7 +1010,7 @@ ggsave(
 ```{r, fig.width=30, fig.height=10, fig.fullwidth=FALSE}
 yr <- c(2030, 2040, 2050)
 trucktechs <- c("BET large battery", "BET small battery", "FCET")
-data <- copy(reducedBinnedWeightedMileageFeasibility)[period %in% yr & `Fuel Type` %in% trucktechs & paperScen == "Current Policies" & `infrastructure-scenario` == "Base" & TCOgapScenario == "Medium"]
+data <- copy(reducedBinnedWeightedMileageFeasibility)[period %in% yr & truckTechnology %in% trucktechs & paperScen == "Current Policies" & `infrastructure-scenario` == "Base" & TCOgapScenario == "MC_MTM"]
 data[, TCOgain := - TCOgap]
 data[, cum_width := 0.999* (cumFeasWeightedShareEUR - shift(cumFeasWeightedShareEUR, type = "lag")), by = c("paperScen", "TCOgapScenario", "period", "Fuel Type")]
 data[is.na(cum_width), cum_width := (cumFeasWeightedShareEUR), by = c("paperScen", "TCOgapScenario", "period", "Fuel Type")]
@@ -1015,17 +1018,17 @@ data[is.na(cum_width), cum_width := (cumFeasWeightedShareEUR), by = c("paperScen
 data[, paperScen := factor(paperScen, 
                                levels = c("Current Policies"))]
 data[, TCOgapScenario := factor(TCOgapScenario, 
-                               levels = c("Medium"))]
-data[, `Fuel Type` := factor(`Fuel Type`, 
+                               levels = c("MC_MTM"))]
+data[, truckTechnology := factor(truckTechnology, 
                                levels = c("BET small battery", "BET large battery"))]
-setorder(data, `Fuel Type`)
+setorder(data, truckTechnology)
 
-findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, `Fuel Type`, paperScen, TCOgapScenario)]
-setorder(findZeroPoints, paperScen, TCOgapScenario, period, `Fuel Type`, cumFeasWeightedShareEUR)
+findZeroPoints <-  data[ , .SD[which.min(abs(TCOgain))], by = .(period, truckTechnology, paperScen, TCOgapScenario)]
+setorder(findZeroPoints, paperScen, TCOgapScenario, period, truckTechnology, cumFeasWeightedShareEUR)
 findZeroPoints[, arrow_y := seq(-0.2, -0.5, length.out = .N), by = c("paperScen", "TCOgapScenario", "period")]
 
 setorder(findZeroPoints, - cumFeasWeightedShareEUR)
-findZeroPoints[, `Fuel Type` := factor(`Fuel Type`, levels = c("BET small battery", "BET large battery"))]  
+findZeroPoints[, truckTechnology := factor(truckTechnology, levels = c("BET small battery", "BET large battery"))]  
 middle_y <- sum(unique(findZeroPoints$arrow_y))/2
 
 # Create one plot per facet, then stitch them back together
@@ -1049,7 +1052,7 @@ plot_list <- lapply(seq_along(facet_levels), function(i) {
     geom_rect(
       aes(xmin = cumFeasWeightedShareEUR - cum_width, xmax = cumFeasWeightedShareEUR,
           ymin = 0, ymax = TCOgain,
-          fill = `Fuel Type`),
+          fill = truckTechnology),
       color = NA,
       alpha = 0.3
     ) +
@@ -1058,22 +1061,22 @@ plot_list <- lapply(seq_along(facet_levels), function(i) {
     geom_rect(
       aes(xmin = cumFeasWeightedShareEUR - cum_width, xmax = cumFeasWeightedShareEUR,
           ymin = 0, ymax = TCOgain,
-          color = `Fuel Type`),
+          color = truckTechnology),
       fill = NA,
       linewidth = 0.001,
       alpha = 0.005
     ) +
   geom_point(
     data = sub_zero,
-    aes(x = cumFeasWeightedShareEUR, y = 0, color = `Fuel Type`),  
+    aes(x = cumFeasWeightedShareEUR, y = 0, color = truckTechnology),  
     shape = 1,
     size = 10,
     stroke = 4,
     fill = NA
   ) +
-    geom_vline(data = sub_zero, aes(xintercept = cumFeasWeightedShareEUR, color = `Fuel Type`), 
+    geom_vline(data = sub_zero, aes(xintercept = cumFeasWeightedShareEUR, color = truckTechnology), 
                linetype = "dashed", linewidth = 2) +
-    geom_segment(data = sub_zero, aes(x = 0, xend = cumFeasWeightedShareEUR, y = arrow_y, yend = arrow_y, color = `Fuel Type`), 
+    geom_segment(data = sub_zero, aes(x = 0, xend = cumFeasWeightedShareEUR, y = arrow_y, yend = arrow_y, color = truckTechnology), 
                  arrow = arrow(length = unit(0.3, "cm"), type = "open"), 
                  linewidth = 2) +
     geom_label(data = sub_zero, 
@@ -1127,30 +1130,30 @@ yrs <- c(2030)
 vehSize <- "Tractor-trailer"
 operationMode <- c("Regional")
 barplotTechs <- c("Diesel", "FCET", "BET large battery", "BET small battery")
-TCOgapScen <- "Medium"
-barPlotData <- copy(TCOdata)[period == yrs & `Vehicle Size` == vehSize & Operation == operationMode & `Fuel Type` %in% barplotTechs & TCOgapScenario == TCOgapScen]
+TCOgapScen <- "MC_MTM"
+barPlotData <- copy(TCOdata)[period == yrs & `Vehicle Size` == vehSize & Operation == operationMode & truckTechnology %in% barplotTechs & TCOgapScenario == TCOgapScen]
 
-barPlotData[`Fuel Type` == "BET large battery", `Fuel Type` := "BET\nlarge battery"]
-barPlotData[`Fuel Type` == "BET small battery", `Fuel Type` := "BET\nsmall battery"]
-barPlotData[, `Fuel Type` := factor(`Fuel Type`, levels = c("Diesel", "FCET", "BET\nlarge battery", "BET\nsmall battery"))]
+barPlotData[truckTechnology == "BET large battery", truckTechnology := "BET\nlarge battery"]
+barPlotData[truckTechnology == "BET small battery", truckTechnology := "BET\nsmall battery"]
+barPlotData[, truckTechnology := factor(truckTechnology, levels = c("Diesel", "FCET", "BET\nlarge battery", "BET\nsmall battery"))]
 # Step 1: Compute sum per Fuel Type
-TCOSum <- barPlotData[, .(value = sum(value)), by = `Fuel Type`]
+TCOSum <- barPlotData[, .(value = sum(value)), by = truckTechnology]
 
 # Step 2: Compute differences to Diesel
-diesel_val <- TCOSum[`Fuel Type` == "Diesel", value]
+diesel_val <- TCOSum[truckTechnology == "Diesel", value]
 TCOSum[, diff := value - diesel_val]
 
 # Step 3: Create segment data for arrows (exclude Diesel)
-arrow_data <- TCOSum[`Fuel Type` != "Diesel"]
-arrow_data[, `"TCOgapScenario"` := "Medium"]  # x-position
-arrow_data[, x := "Medium"]
-arrow_data[, xend := "Medium"]
+arrow_data <- TCOSum[truckTechnology != "Diesel"]
+arrow_data[, `"TCOgapScenario"` := "MC_MTM"]  # x-position
+arrow_data[, x := "MC_MTM"]
+arrow_data[, xend := "MC_MTM"]
 arrow_data[, y := diesel_val]
 arrow_data[, yend := value]
 
 # Step 4: Plot
 TCObarPlots <- ggplot(barPlotData, aes(x = `TCOgapScenario`)) +
-  geom_bar(aes(y = value, fill = Parameter), position = "stack", stat = "identity", width = 0.6) +
+  geom_bar(aes(y = value, fill = parameter), position = "stack", stat = "identity", width = 0.6) +
   scale_fill_manual(values = paperColors) +
  geom_hline(yintercept = diesel_val, linetype = "dashed", color = "black", size = 1) +
 geom_segment(
@@ -1176,7 +1179,7 @@ size = 12,
  label.r = unit(0.15, "lines"),  # corner radius
  fontface = "bold"
 ) +
-  facet_wrap(~ `Fuel Type`, nrow = 1) +
+  facet_wrap(~ truckTechnology, nrow = 1) +
   labs(x = "", y = "TCO [EUR/vehkm]", title = paste("TCO\n", operationMode, vehSize, "in", yrs)) +
   scale_x_discrete(labels = function(x) { sub("\\s", "\n", x) }) +
   themePanel +
@@ -1195,27 +1198,27 @@ plot(TCObarPlots)
 yr <- c(2030)
 trucktechs <- c("Diesel", "BET large battery", "BET small battery")
 vehicleSize <- "Tractor-trailer"
-gapScenarios <- c("BETOptimistic", "BETPessimistic", "Medium")
-data <- copy(TCOPerMileage)[period %in% yr & `Fuel Type` %in% trucktechs & `Vehicle Size` == vehicleSize & TCOgapScenario %in% gapScenarios]
+gapScenarios <- c("BETOptimistic", "BETPessimistic", "MC_MTM")
+data <- copy(TCOPerMileage)[period %in% yr & truckTechnology %in% trucktechs & `Vehicle Size` == vehicleSize & TCOgapScenario %in% gapScenarios]
 
 #Select Gap scenarios
 data[TCOgapScenario == "BETOptimistic", TCOgapScenario := "Optimistic"]
 data[TCOgapScenario == "BETPessimistic", TCOgapScenario := "Pessimistic"]
 
-data <- data[TCOgapScenario %in% c("Optimistic", "Medium", "Pessimistic")]
+data <- data[TCOgapScenario %in% c("Optimistic", "MC_MTM", "Pessimistic")]
 
 data <- data[AM > 6000]
 data <- data[, .(value = sum(value)), by = c("Fuel Type", "TCOgapScenario", "AM")]
 data_wide <- dcast(
   data,
-  `TCOgapScenario` + AM ~ `Fuel Type`,
+  `TCOgapScenario` + AM ~ truckTechnology,
   value.var = "value"
 )
-data_wide <- data_wide[`TCOgapScenario` == "Medium"]
+data_wide <- data_wide[`TCOgapScenario` == "MC_MTM"]
 find_intersections <- function(dt, col1, col2) {
   dt[, diff := get(col1) - get(col2)]
   dt[, sign_change := shift(sign(diff), type = "lag") != sign(diff)]
-  dt[sign_change == TRUE, .(AM, TCO = get(col2), `Fuel Type` = col1)]
+  dt[sign_change == TRUE, .(AM, TCO = get(col2), truckTechnology = col1)]
 }
 
 # Find intersections
@@ -1227,26 +1230,26 @@ intersections <- rbind(inter1, inter2)
 
 data  <- dcast(
   data,
-  `Fuel Type` + AM ~ `TCOgapScenario`,
+  truckTechnology + AM ~ `TCOgapScenario`,
   value.var = "value"
 )
 
 breakeven <- ggplot(data) +
   geom_ribbon(
-    aes(x = AM, ymin = `Optimistic`, ymax = `Pessimistic`, fill =  `Fuel Type`),
+    aes(x = AM, ymin = `Optimistic`, ymax = `Pessimistic`, fill =  truckTechnology),
     inherit.aes = FALSE,
     alpha = 0.2
   ) +
-  geom_line(aes(x = AM, y = Medium, color = `Fuel Type`), linewidth = 1.5
+  geom_line(aes(x = AM, y = MC_MTM, color = truckTechnology), linewidth = 1.5
   ) +
   geom_vline(
     data = intersections,
-    aes(xintercept = AM, color = `Fuel Type`),
+    aes(xintercept = AM, color = truckTechnology),
     linetype = "dashed", linewidth = 3
   ) +
   geom_point(
       data = intersections,
-      aes(x = AM, y = TCO, color = `Fuel Type`),  
+      aes(x = AM, y = TCO, color = truckTechnology),  
       shape = 1,
       size = 10,
       stroke = 4,
@@ -1257,7 +1260,7 @@ breakeven <- ggplot(data) +
  aes(
    x = AM - 15000,
    y = TCO - 0.39,
-   label = paste0("Breakeven\n", `Fuel Type`)
+   label = paste0("Breakeven\n", truckTechnology)
 ),
  hjust = 0,
  vjust = 1,
