@@ -764,7 +764,7 @@ plotMileageDensity <- function(weightedMileage) {
       fill = "darkgrey",
       alpha = 0.8
     ) +
-    coord_flip() + 
+  #  coord_flip() + 
    scale_x_continuous(
      limits = c(140, 1500),
      expand = expansion(mult = c(0, 0))
@@ -1012,7 +1012,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
   ) + 
     plot_annotation(tag_levels = "a") &
     theme(
-      plot.tag = element_text(size = baseTextSize*0.7, face = "bold")  # adjust size here
+      plot.tag = element_text(size = baseTextSize*1.2, face = "bold")  # adjust size here
     )
   
   return(combinedCapexOpexAnalysis)
