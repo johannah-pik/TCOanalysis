@@ -433,7 +433,7 @@ ggsave(
 ```
 
 ## Removed policies scenario
-```{r, fig.width= 4.5, fig.height= 3, fig.fullwidth=FALSE}
+```{r, fig.width= 4.5, fig.height= 2.3, fig.fullwidth=FALSE}
 paperScenario <- c("Current policies", "Removed policies")
 
 TCOdata <- loadTCO(dataFolder)
@@ -442,16 +442,120 @@ DCOdata <- getDCO(DCOscenarios, TCOdata)
 setnames(mileageDistribution, "binMean", "annualM")
 DCOmilageDistribution <- applyMileage(mileageDistribution, DCOdata)
 DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribution, focus = "EUR")
-MetaTCOxAnnualMileage <- metaPlot(DCOmilageDistributionShares[period < 2041], paperScenario, horizontal = TRUE)
-plot(MetaTCOxAnnualMileage)
 
+  data <- copy(DCOmilageDistributionShares)[paperScen %in% paperScenario & period < 2041]
+  findZeroPoints <- data[ , .SD[which.min(abs(value))], by = .(period, truckTechnology, paperScen, DCOscenario)][
+    , .(period, `truckTechnology`, paperScen, DCOscenario, cumBinWeightedShareEUR)
+  ]
+  findZeroPoints[, DCOscenario := factor(DCOscenario, levels = c("Optimistic", "Medium", "Pessimistic"))]
+  
+  arrow <- copy(findZeroPoints)
+  arrow <- dcast(arrow, period + truckTechnology + DCOscenario ~ paperScen)
+  arrow <- arrow[
+  , .(period, truckTechnology, DCOscenario,
+      current = `Current policies`,
+      removed = `Removed policies`)
+]
+  
+  p1 <- ggplot(findZeroPoints[DCOscenario == "Optimistic"], 
+               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology, linetype = paperScen)) +
+    geom_line(linewidth = baseLineWidth) +
+    scale_color_manual(values = paperColors, guide = "none") +  # legend removed
+    scale_linetype_manual(values = paperLines, guide = "none") +
+    labs(y = "Economically viable road\nfreight activity [%]", x = NULL) +
+    scale_x_continuous(breaks = seq(min(findZeroPoints$period),
+                                    max(findZeroPoints$period), by = 5)) +
+    scale_y_continuous(limits = c(0, 102)) +
+    themePanel +
+    theme(legend.position = "bottom",
+          legend.box = "horizontal",
+          legend.direction = "vertical")
+  
+  p2 <- ggplot(findZeroPoints[DCOscenario == "Medium"]) +
+    geom_line(aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology, linetype = paperScen),
+              linewidth = baseLineWidth) +
+    geom_segment(
+      data = arrow[DCOscenario == "Medium" & truckTechnology == "BET small battery"],
+      aes(x = period, xend = period,
+          y = removed* 100, yend = current* 100 *0.995),
+          color = "#17BECF",
+          linewidth = baseLineWidth * 1.5,
+          arrow = arrow(
+            type = "closed",                 
+            length = unit(0.07, "cm"),       
+            angle = 35)) +
+    scale_color_manual(values = paperColors) +  
+    scale_linetype_manual(values = paperLines) +
+    scale_x_continuous(breaks = seq(min(findZeroPoints$period),
+                                    max(findZeroPoints$period), by = 5)) +
+    scale_y_continuous(limits = c(0, 102)) +
+    labs(
+      x = "Year",
+      y = NULL,
+      color = "Truck technology",
+      linetype = ""
+    ) +
+    themePanel +
+    theme(legend.position = "bottom",
+          legend.box = "horizontal",
+          legend.direction = "vertical")
+  
+  p3 <- ggplot(findZeroPoints[DCOscenario == "Pessimistic"], 
+               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology, linetype = paperScen)) +
+    geom_line(linewidth = baseLineWidth) +
+    scale_color_manual(values = paperColors, guide = "none") +  # legend removed
+    scale_linetype_manual(values = paperLines, guide = "none") +
+    labs(x = NULL, y = NULL) +
+    scale_x_continuous(breaks = seq(min(findZeroPoints$period),
+                                    max(findZeroPoints$period), by = 5)) +
+    scale_y_continuous(limits = c(0, 102)) +
+    themePanel +
+    theme(legend.position = "bottom",
+          legend.box = "horizontal",
+          legend.direction = "vertical")
+  
+  combined <- (
+    (p1 | p2 | p3) +
+      plot_layout(widths = c(0.8, 0.8, 0.8), guides = "collect") &
+      theme(
+        legend.position = "bottom",
+        plot.margin   =  margin(t = 10, r = 3, b = -2, l = 3)
+      ))
+  plot(combined)
+    
+finalPlot_with_labels <- ggdraw(combined) +
+  draw_label(
+    "Optimistic", x = 0.17, y = 0.93, angle = 0,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1,
+    hjust = 0
+  ) +
+  draw_label(
+    "Medium", x = 0.5, y = 0.93, angle = 0,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1,
+    hjust = 0
+  ) +
+  draw_label(
+    "Pessimistic", x = 0.82, y = 0.93, angle = 0,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1,
+    hjust = 0
+  )
+
+
+# 6. Display final plot
+plot(finalPlot_with_labels)
 
 ggsave(
   filename = file.path(plotFolder, paste0("removedPolicies.pdf")),
-  plot     = MetaTCOxAnnualMileage,
+  plot     = finalPlot_with_labels,
   device   = cairo_pdf,
-  width    = 7.09,          # in inches ≈ 180 mm / 25.4
-  height   = 3.5,          # in inches (adjust aspect ratio as appropriate)
+  width    = 4.5,          # in inches ≈ 180 mm / 25.4
+  height   = 2.3,          # in inches (adjust aspect ratio as appropriate)
   units    = "in",
   dpi      = 300           # ensures minimum resolution for any raster elements
 )
