@@ -411,9 +411,16 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
   return(TCOtoDCOAnnotated)
 }
 
-amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenario, feas = FALSE) {
+amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenario, xAxis = "activity", feas = FALSE) {
 
   data <- copy(DCOmileageDistributionShares)[period %in% yr & paperScen == paperScenario]
+
+  if (xAxis == "activity") {
+     if (feas == FALSE) setnames(data, "cumBinWeightedShareEUR", "cumShare") else setnames(data, "cumBinFeasWeightedShareEUR", "cumShare")
+    xAxisTitle <- "Road freight activity [%]" 
+    } else if (xAxis == "vehicles") {
+      if (feas == FALSE) setnames(data, "cumBinWeightedVehShareEUR", "cumShare") else setnames(data, "cumBinFeasWeightedVehShareEUR", "cumShare")
+      xAxisTitle <- "Vehicles [%]"}
   # witdth of mileage bins
   data[, cumWidth := 0.999 * (cumShare - shift(cumShare, type = "lag")),
        by = c("paperScen", "DCOscenario", "truckTechnology")]
@@ -447,6 +454,13 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
   facetLevels <- levels(data$DCOscenario)
   facetLevels <- facetLevels[facetLevels %in% unique(data$DCOscenario)]
   xBreaks <- c(0, 25, 50, 75, 100)
+  # function to find equivalent veh Share for 2n x axis (only for xAxis == activity)
+  secLabels <- sapply(xBreaks, function(x) {
+    # Find the nearest cumBinWeightedShareEUR
+    idx <- which.min(abs(data$cumShare * 100 - x))
+    # Return corresponding cumBinWeightedVehShare value
+    round(data$cumBinWeightedVehShareEUR[idx] * 100)
+  })
   if (feas) {annotation <- "cost beneficial\n and feasible"
              xAnnotation = 50} else {
     annotation <- "of road km\ncost beneficial"
@@ -484,7 +498,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
            scale_fill_manual(values = paperColors, guide = "none"))
     }
     
-    ggplot(subDataPos) +
+    p <- ggplot(subDataPos) +
       geom_rect(
         aes(xmin = cumShare * 100 - cumWidth * 100,
             xmax = cumShare * 100, ymin = 0, ymax = value,
@@ -537,10 +551,28 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
       coord_cartesian(ylim = c(-0.6, 0.6)) +
       scales +
       labs(
-        x = if (i %in% xAxisLabel) "Road freight activity [%]" else NULL,
+        x = if (i %in% xAxisLabel) xAxisTitle else NULL,
         y = if (i %in% yAxisLabel) paste0("DCO in ", yr, " [EUR/km]") else NULL
       ) +
       themePanel 
+    
+    # Add conditional sec.axis
+    if (!feas & xAxis == "activity") {
+      p <- p + scale_x_continuous(
+        expand = c(0, 0),
+        limits = c(0, 101),
+        breaks = xBreaks,
+        sec.axis = sec_axis(
+          transform = ~ .,
+          name = if (i == 1)
+            paste0("Vehicles [%]")
+          else NULL,
+          labels = secLabels
+        )
+      )
+    }
+    return(p)
+    
   })
   
   
@@ -558,51 +590,56 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
 }
 
 
-metaPlot <- function(DCOmilageDistributionShares, paperScenario) {
+metaPlot <- function(DCOmilageDistributionShares, paperScenario, horizontal = FALSE) {
   
-  data <- copy(DCOmilageDistributionShares)[paperScen == paperScenario]
+  data <- copy(DCOmilageDistributionShares)[paperScen %in% paperScenario]
   findZeroPoints <- data[ , .SD[which.min(abs(value))], by = .(period, truckTechnology, paperScen, DCOscenario)][
-    , .(period, `truckTechnology`, paperScen, DCOscenario, cumShare)
+    , .(period, `truckTechnology`, paperScen, DCOscenario, cumBinWeightedShareEUR)
   ]
   findZeroPoints[, DCOscenario := factor(DCOscenario, levels = c("Optimistic", "Medium", "Pessimistic"))]
   
   p1 <- ggplot(findZeroPoints[DCOscenario == "Optimistic"], 
-               aes(x = period, y = cumShare * 100, color = truckTechnology)) +
+               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology, linetype = paperScen)) +
     geom_line(linewidth = baseLineWidth) +
     scale_color_manual(values = paperColors, guide = "none") +  # legend removed
+    scale_linetype_manual(values = paperLines, guide = "none") +
     geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = baseLineWidth) +
-    labs(y = NULL, x = NULL) +
-    #scale_x_continuous(breaks = NULL, labels = NULL) +
+    labs(y = if (horizontal == TRUE) "Economically\nviable road freight\nactivity [%]" else NULL, x = NULL) +
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
-                                    max(findZeroPoints$period), by = 10)) +
+                                    max(findZeroPoints$period), by = 5)) +
     scale_y_continuous(limits = c(0, 102)) +
     themePanel
   
   p2 <- ggplot(findZeroPoints[DCOscenario == "Medium"], 
-               aes(x = period, y = cumShare * 100, color = truckTechnology)) +
+               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology, linetype = paperScen)) +
     geom_line(linewidth = baseLineWidth) +
     scale_color_manual(values = paperColors, guide = "none") +  # legend removed
+    scale_linetype_manual(values = paperLines, guide = "none") +
     geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = baseLineWidth) +
-    labs(y = "Economically viable road freight activity [%]", x = NULL) +
-    #scale_x_continuous(breaks = NULL, labels = NULL) +
+    labs(y = if (horizontal == FALSE) "Economically viable road freight activity [%]" else NULL, 
+         x = if (horizontal == FALSE) NULL else "Year") +
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
-                                    max(findZeroPoints$period), by = 10)) +
+                                    max(findZeroPoints$period), by = 5)) +
     scale_y_continuous(limits = c(0, 102)) +
     themePanel
   
   p3 <- ggplot(findZeroPoints[DCOscenario == "Pessimistic"], 
-               aes(x = period, y = cumShare * 100, color = truckTechnology)) +
+               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology, linetype = paperScen)) +
     geom_line(linewidth = baseLineWidth) +
     scale_color_manual(values = paperColors, guide = "none") +  # legend removed
+    scale_linetype_manual(values = paperLines) +
     geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = baseLineWidth) +
-    labs(x = "Year", y = NULL) +
+    labs(x = if (horizontal == FALSE) "Year" else NULL, y = NULL) +
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
-                                    max(findZeroPoints$period), by = 10)) +
+                                    max(findZeroPoints$period), by = 5)) +
     scale_y_continuous(limits = c(0, 102)) +
     themePanel
   
   # Combine plots
-  combined <- wrap_plots(p1, p2, p3, ncol = 1, heights = c(1, 1, 1))
+  if (horizontal) columns = 3 else columns = 1
+  combined <- wrap_plots(p1, p2, p3, ncol = columns, heights = c(1, 1, 1)) &
+    theme(
+      legend.position   = "bottom")
   return(combined)
 }
 

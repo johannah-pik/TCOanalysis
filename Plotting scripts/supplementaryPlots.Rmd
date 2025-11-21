@@ -41,9 +41,9 @@ DCOscenarios <- tribble(
   "BET small battery", "LC_HTMxPROG",    "ICET",       "HC_LTMxBAU",            "Optimistic",
   "BET large battery", "LC_HTMxPROG",    "ICET",       "HC_LTMxBAU",            "Optimistic",
   "FCET",              "LC_HTMxPROG",    "ICET",       "HC_LTMxBAU",            "Optimistic",
-  "BET small battery", "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "MC_MTM",
-  "BET large battery", "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "MC_MTM",
-  "FCET",              "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "MC_MTM",
+  "BET small battery", "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "Medium",
+  "BET large battery", "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "Medium",
+  "FCET",              "MC_MTMxBAU",     "ICET",       "MC_MTMxBAU",            "Medium",
   "BET small battery", "HC_LTMxBAU",     "ICET",       "LC_HTMxPROG",           "Pessimistic",
   "BET large battery", "HC_LTMxBAU",     "ICET",       "LC_HTMxPROG",           "Pessimistic",
   "FCET",              "HC_LTMxBAU",     "ICET",       "LC_HTMxPROG",           "Pessimistic"
@@ -53,7 +53,7 @@ setDT(DCOscenarios)
 
 ```
 
-# TCO x Annual mileage distribution bar plot 
+# Suppplementary Fig: BET vs FCET TCO x Annual mileage distribution bar plot 
 ```{r, fig.width= 5, fig.height= 8.5, fig.fullwidth=FALSE}
 yr <- c(2030)
 paperScenario <- "Current policies"
@@ -163,6 +163,96 @@ ggsave(
   dpi      = 300           # ensures minimum resolution for any raster elements
 )
 ```
+
+## Suppplementary Fig: Feasibility plot for veh share
+```{r, fig.width= 5, fig.height= 8.5, fig.fullwidth=FALSE}
+TCOdata <- loadTCO(dataFolder)
+binnedWeightedMileage <- prepareMileageData(dataFolder, bin = TRUE, reduce = FALSE)
+reducedBinnedWeightedMileage <- prepareMileageData(dataFolder, bin = TRUE, reduce = TRUE)
+ranges <- loadRanges(dataFolder)
+infrastructure <- loadInfrastructureBuildUp(dataFolder)
+dco <- getDCO(DCOscenarios, TCOdata)
+setnames(reducedBinnedWeightedMileage, "binMean", "annualM")
+DCOmilageDistribution <- applyMileage(reducedBinnedWeightedMileage, dco)
+DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribution, focus = "EUR")
+feasDCO <- checkFeasMileageDistribution(DCOmilageDistribution, binnedWeightedMileage, reducedBinnedWeightedMileage, ranges, infrastructure, focus = "EUR")
+
+
+paperScenario <- "Current policies"
+DCOscen <- "Medium"
+FeasTCOxAnnualMileage1 <- amDistributionBarPlot(feasDCO[DCOscenario == DCOscen], yr = 2030, paperScenario, xAxis = "vehicles", feas = TRUE)
+FeasTCOxAnnualMileage2 <- amDistributionBarPlot(feasDCO[DCOscenario == DCOscen], yr = 2035, paperScenario, xAxis = "vehicles", feas = TRUE)
+
+legend <- get_legend(
+  FeasTCOxAnnualMileage1 +
+    theme(
+      legend.position = "bottom",
+      legend.justification = "left",   # start from left in its own box
+      legend.box.just = "left"
+    )
+)
+
+# 2. Remove legends from the plots
+FeasTCOxAnnualMileage1_noleg <- FeasTCOxAnnualMileage1 + theme(legend.position = "none")
+FeasTCOxAnnualMileage2_noleg <- FeasTCOxAnnualMileage2 + theme(legend.position = "none")
+
+# 3. Combine the plots side by side
+combined <- plot_grid(
+  FeasTCOxAnnualMileage1_noleg,
+  FeasTCOxAnnualMileage2_noleg,
+  ncol = 2,
+  rel_widths = c(1, 1),
+  align = "h",
+  labels = c("a", "b"),
+  label_size = baseTextSize,
+  label_fontface = "bold",
+  label_x = 0.02,
+  label_y = 1.02,
+  hjust = 0, vjust = 1
+) +
+  theme(plot.margin = margin(t = 12, r = 5, b = 5, l = 12))
+
+# 4. Shift legend slightly to the right using a spacer
+legend_shifted <- plot_grid(
+  NULL,      # empty spacer
+  legend,
+  ncol = 2,
+  rel_widths = c(0.05, 0.3)  # First number: empty space on the left.Second number:space the legend occupies.
+)
+
+# 5. Combine plots and shifted legend vertically
+finalPlot <- plot_grid(
+  combined,
+  legend_shifted,
+  ncol = 1,
+  rel_heights = c(1, 0.08)  
+)
+finalPlot_with_labels <- ggdraw(finalPlot) +
+  draw_label(
+    DCOscen, x = 0.02, y = 0.45, angle = 90,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1.2,
+    hjust = 0
+  ) 
+
+
+# 6. Display final plot
+plot(finalPlot_with_labels)
+
+ggsave(
+  filename = file.path(plotFolder, paste0("Sup_FeasibleEconomicallyViableVehShare.pdf")),
+  plot     = finalPlot_with_labels,
+  device   = cairo_pdf,
+  width    = 4.5,          # in inches ≈ 180 mm / 25.4
+  height   = 6.2/3,          # in inches (adjust aspect ratio as appropriate)
+  units    = "in",
+  dpi      = 300           # ensures minimum resolution for any raster elements
+)
+
+
+```
+
 
 # CAPEX overview 
 ```{r, fig.width=45, fig.height=10, fig.fullwidth=FALSE}

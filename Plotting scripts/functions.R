@@ -41,7 +41,7 @@ loadDieselBlendShares <- function(dataFolder) {
 prepareMileageData <- function(dataFolder, bin = TRUE, reduce = TRUE) {
   pathToMilageData <- file.path(dataFolder, "mileage")
   files <- list.files(pathToMilageData, full.names = TRUE)
-  
+
   readMileageFile <- function(path){
     
     region <- gsub(".*\\/", "", path)
@@ -322,18 +322,28 @@ checkFeasMileageDistribution <- function(DCOmilageDistribution, binnedWeightedMi
   feasibilityCheck <- merge(feasibilityCheck, infrastructure[period %in% c(2030, 2035, 2040, 2045, 2050)], by = c("period"), allow.cartesian = TRUE)
   # Calculate total feasible yearly road km for each bin
   feasSums <- copy(feasibilityCheck)
+
   # Zero share for non-feasible profiles
   feasSums[feas == 0, feasWeightedShareEUR := 0]
   feasSums[feas == 0, feasShareCountry := 0]
+  feasSums[feas == 0, feasWeightedVehShareEUR := 0]
+  feasSums[feas == 0, feasVehShareCountry := 0]  
+
   feasSums[feas == 1, feasWeightedShareEUR := weightedShareEUR]
   feasSums[feas == 1, feasShareCountry := shareCountry]
+  feasSums[feas == 1, feasWeightedVehShareEUR := weightedVehShareEUR]
+  feasSums[feas == 1, feasVehShareCountry := shareVehCountry]  
+  
   # Correct share in tot road km if the feasibility relies on MCS charging according to infrastructure availability 
   feasSums[feas == 1 & dvktMax > drivingRange, feasWeightedShareEUR := weightedShareEUR * MCSavailability]
   feasSums[feas == 1 & dvktMax > drivingRange, feasShareCountry := shareCountry * MCSavailability]
-  
+  feasSums[feas == 1 & dvktMax > drivingRange, feasWeightedVehShareEUR := weightedVehShareEUR * MCSavailability]
+  feasSums[feas == 1 & dvktMax > drivingRange, feasVehShareCountry := shareVehCountry * MCSavailability]
   # Sum up for whole bin
   feasSums <- feasSums[, .(binFeasWeightedShareEUR = sum(feasWeightedShareEUR),
-                           binFeasShareCountry = sum(feasShareCountry)
+                           binFeasShareCountry = sum(feasShareCountry),
+                           binFeasWeightedVehShareEUR = sum(feasWeightedVehShareEUR),
+                           binFeasVehShareCountry = sum(feasVehShareCountry)
                            ), by = .(country, truckClass, avktBinned, period, vehicleParameterScenario, truckTechnology)]
   
   # Merge back to reduced Mileage to not lose not feasible profiles
@@ -350,11 +360,13 @@ checkFeasMileageDistribution <- function(DCOmilageDistribution, binnedWeightedMi
   feasDCO <- merge(reducedBinnedWeightedMileageFeasibility, mergerDCO, by = intersect(names(reducedBinnedWeightedMileageFeasibility), names(mergerDCO)), allow.cartesian = TRUE)
   if (focus == "Country") {
     setorder(feasDCO, truckTechnology, paperScen, DCOscenario, country, period, -value)
-    feasDCO[, cumFeasshareCountry := cumsum(binFeasShareCountry) , by = c("truckTechnology", "paperScen", "DCOscenario", "country", "period")]
-  } else if (focus == "EUR") {
+    feasDCO[, cumBinFeasshareCountry := cumsum(binFeasShareCountry) , by = c("truckTechnology", "paperScen", "DCOscenario", "country", "period")]
+    feasDCO[, cumBinFeasVehshareCountry := cumsum(binFeasVehshareCountry) , by = c("truckTechnology", "paperScen", "DCOscenario", "country", "period")]
+    } else if (focus == "EUR") {
     setorder(feasDCO, truckTechnology, paperScen, DCOscenario, period, -value)
-    feasDCO[, cumFeasWeightedShareEUR := cumsum(binFeasWeightedShareEUR), by = c("truckTechnology", "paperScen", "DCOscenario", "period")]
-  }
+    feasDCO[, cumBinFeasWeightedShareEUR := cumsum(binFeasWeightedShareEUR), by = c("truckTechnology", "paperScen", "DCOscenario", "period")]
+    feasDCO[, cumBinFeasWeightedVehShareEUR := cumsum(binFeasWeightedVehShareEUR), by = c("truckTechnology", "paperScen", "DCOscenario", "period")]
+    }
   return(feasDCO)
 }
 
