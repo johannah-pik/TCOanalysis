@@ -57,7 +57,7 @@ themePanel <- theme_minimal(base_size = baseTextSize) +
     panel.spacing = unit(0, "lines"),
     plot.title    = element_text(size = baseTextSize, face = "bold", hjust = 0.5),
     strip.text    = element_text(size = baseTextSize, face = "bold"),
-    legend.key.width = unit(0.35, "cm"),       
+    legend.key.width = unit(0.6, "cm"),       
     legend.key.height = unit(0.2, "cm"),
     legend.title  = element_text(size = baseTextSize),
     legend.text   = element_text(size = baseTextSize),

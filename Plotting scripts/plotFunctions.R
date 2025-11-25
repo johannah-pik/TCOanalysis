@@ -328,7 +328,10 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
         title = as.character(facetLevel),
         fill = NULL
       ) +  
-      themePanel})
+      themePanel +
+      theme(
+        plot.margin   =  margin(t = 3, r = , b = 3, l = 1),
+      )})
   
   TCOtoDCOexample <- wrap_plots(
     plotList,
@@ -417,7 +420,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
 
   if (xAxis == "activity") {
      if (feas == FALSE) setnames(data, "cumBinWeightedShareEUR", "cumShare") else setnames(data, "cumBinFeasWeightedShareEUR", "cumShare")
-    xAxisTitle <- "Road freight activity [%]" 
+    xAxisTitle <- "Activity [%]" 
     } else if (xAxis == "vehicles") {
       if (feas == FALSE) setnames(data, "cumBinWeightedVehShareEUR", "cumShare") else setnames(data, "cumBinFeasWeightedVehShareEUR", "cumShare")
       xAxisTitle <- "Vehicles [%]"}
@@ -556,21 +559,21 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
       ) +
       themePanel 
     
-    # Add conditional sec.axis
-    if (!feas & xAxis == "activity") {
-      p <- p + scale_x_continuous(
-        expand = c(0, 0),
-        limits = c(0, 101),
-        breaks = xBreaks,
-        sec.axis = sec_axis(
-          transform = ~ .,
-          name = if (i == 1)
-            paste0("Vehicles [%]")
-          else NULL,
-          labels = secLabels
-        )
-      )
-    }
+    # # Add conditional sec.axis
+    # if (!feas & xAxis == "activity") {
+    #   p <- p + scale_x_continuous(
+    #     expand = c(0, 0),
+    #     limits = c(0, 101),
+    #     breaks = xBreaks,
+    #     sec.axis = sec_axis(
+    #       transform = ~ .,
+    #       name = if (i == 1)
+    #         paste0("Vehicles [%]")
+    #       else NULL,
+    #       labels = secLabels
+    #     )
+    #   )
+    # }
     return(p)
     
   })
@@ -604,7 +607,7 @@ metaPlot <- function(DCOmilageDistributionShares, paperScenario, horizontal = FA
     scale_color_manual(values = paperColors, guide = "none") +  # legend removed
     scale_linetype_manual(values = paperLines, guide = "none") +
     geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = baseLineWidth) +
-    labs(y = if (horizontal == TRUE) "Economically\nviable road freight\nactivity [%]" else NULL, x = NULL) +
+    labs(y = if (horizontal == TRUE) "Economically\nviable activity [%]" else NULL, x = NULL) +
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
                                     max(findZeroPoints$period), by = 5)) +
     scale_y_continuous(limits = c(0, 102)) +
@@ -616,7 +619,7 @@ metaPlot <- function(DCOmilageDistributionShares, paperScenario, horizontal = FA
     scale_color_manual(values = paperColors, guide = "none") +  # legend removed
     scale_linetype_manual(values = paperLines, guide = "none") +
     geom_vline(xintercept = 2030, linetype = "dashed", color = "darkgrey", linewidth = baseLineWidth) +
-    labs(y = if (horizontal == FALSE) "Economically viable road freight activity [%]" else NULL, 
+    labs(y = if (horizontal == FALSE) "Economically viable activity [%]" else NULL, 
          x = if (horizontal == FALSE) NULL else "Year") +
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
                                     max(findZeroPoints$period), by = 5)) +
@@ -644,11 +647,11 @@ metaPlot <- function(DCOmilageDistributionShares, paperScenario, horizontal = FA
 }
 
 plotRangeAnalysis <- function(rangeAnalysis, ranges, infrastructure) {
-browser()
+
   ranges <- ranges[truckClass == "Tractor-trailer" &
                       `truckTechnology` %in% c("BET small battery", "BET large battery") &
                       `vehicleParameterScenario` == "MC_MTM" &
-                      period %in% c(2030, 2050)]
+                      period %in% c(2030, 2040)]
   setnames(ranges, "value", "directRange")
   rangeComparison <- merge(
     ranges,
@@ -660,7 +663,6 @@ browser()
   rangeComparison[`truckTechnology` == "BET small battery", `truckTechnology` := "Small\nbattery"]
   rangeComparison[, `truckTechnology` := factor(`truckTechnology`, levels = unique(rangeComparison$`truckTechnology`))]
   rangeComparison[, period := factor(period, levels = unique(rangeComparison$period))]
-  
   
   p <- ggplot() +
     
@@ -675,9 +677,16 @@ browser()
                   group = period), color = "black", linewidth = 0.5 * baseLineWidth, alpha = 0.5) +
     # Border no MCS: direct driving range over freight activity for different periods
     geom_line(data = rangeAnalysis$noMCS,  aes(x = cumShareFeas * 100, y = directRange), color = "black", linewidth = 0.5 * baseLineWidth, alpha = 0.5) +
+    geom_text(
+      data = data.frame(x = 58, y = 950, label = "Fast-charging\ninfrastructure\navailability"),
+      aes(x = x, y = y, label = label),
+      color = "black",       
+      size = relSize(0.7),
+      fontface = "bold"
+    ) +
     # Label border no MCS
     geom_text(
-      data = data.frame(x = 77, y = 850, label = "Without MCS"),
+      data = data.frame(x = 78, y = 849, label = "0 %"),
       aes(x = x, y = y, label = label),
       color = "black",       
       size = relSize(0.5),
@@ -688,7 +697,7 @@ browser()
     geom_line(data = rangeAnalysis$fullMCS,  aes(x = cumShareFeas * 100, y = directRange), color = "black", linewidth = 0.5 * baseLineWidth, alpha = 0.5) +
     # Label border full MCS
     geom_text(
-      data = data.frame(x = 91, y = 511, label = "Full MCS"),
+      data = data.frame(x = 91, y = 511, label = "100 %"),
       aes(x = x, y = y, label = label),
       color = "black",       
       size = relSize(0.5),
@@ -697,7 +706,7 @@ browser()
     ) +
     # Label 2030
     geom_text(
-      data = data.frame(x = 70, y = 675, label = "2030"),
+      data = data.frame(x = 75, y = 735, label = "2030"),
       aes(x = x, y = y, label = label),
       color = "black",       # Black text
       size = relSize(0.5),
@@ -747,7 +756,7 @@ browser()
       arrow = arrow(length = unit(0.1, "cm"), type = "closed")
     ) +
     labs(
-      x = "Feasible freight activity at a given\ndirect driving range [%]",
+      x = "Feasible activity at a given\ndirect driving range [%]",
       y = "Direct driving\nrange [km]",
       color = "Truck\ntechnology",
       linetype = "Year"
@@ -770,42 +779,22 @@ browser()
 }
 
 plotMileageDensity <- function(weightedMileage) {
-  
-  # t <- ggplot(weightedMileage, aes(y = dvktMax)) +
-  #   geom_density(
-  #     aes(x = after_stat(density)),  #  / max(density) normalized density on x-axis
-  #     stat = "density",
-  #     fill = "grey",
-  #     color = NA
-  #   ) +
-  #   labs(
-  #     x = "Normalized\ndensity",
-  #     y = "Maximum daily\nvehicle km travelled"
-  #   ) +
-  #   scale_x_continuous(
-  #    # limits = c(0, 1),
-  #   #  breaks = c(0, 1),  
-  #     expand = expansion(mult = c(0, 0))
-  #   ) +
-  #   scale_y_continuous(
-  #     limits = c(140, 1100),
-  #     expand = expansion(mult = c(0, 0))
-  #   ) +
-  #   themePanel
+
   
  t <-  ggplot(weightedMileage, aes(x = dvktMax)) +
-    stat_ecdf(geom = "line", color = "darkgrey", size = baseLineWidth) +
-    geom_ribbon(
-      stat = "ecdf",
-      aes(ymin = 0, ymax = ..y..),
-      fill = "darkgrey",
-      alpha = 0.8
-    ) +
-  #  coord_flip() + 
+    stat_ecdf(geom = "line", color = "darkgrey", size = baseLineWidth * 1.1) +
+    # geom_ribbon(
+    #   stat = "ecdf",
+    #   aes(ymin = 0, ymax = ..y..),
+    #   fill = "darkgrey",
+    #   alpha = 0.8
+    # ) +
+   coord_flip() + 
    scale_x_continuous(
-     limits = c(140, 1500),
+     limits = c(140, 1100),
      expand = expansion(mult = c(0, 0))
    ) +
+   geom_hline(yintercept = 1) +
    scale_y_continuous(
      limits = c(0, 1.1),
      breaks = c(0, 0.5, 1),  
@@ -815,7 +804,7 @@ plotMileageDensity <- function(weightedMileage) {
       x = "Maximum daily\nvehicle km travelled",
       y = "Cumulative\nfraction"
     ) +
-    themePanel
+    themePanel 
   
   return(t)
 }
@@ -988,7 +977,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       values =  colorMap,
       name = "Breakeven mileage\n[vehkm/yr]",
       drop = FALSE,
-      guide = guide_legend(title.position = "top")
+      guide = guide_legend(title.position = "top", ncol = 2)
     ) +
     scale_x_continuous(expand = c(0, 0)) +
     scale_y_continuous(expand = c(0, 0), breaks = seq(5000, 30000, by = 5000),
@@ -1023,7 +1012,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
     scale_shape_manual(values = c(16, 17, 18), guide = guide_legend(title.position = "top")
     ) +
     labs(
-      x = "OPEX advantage\n(ICET – alt) [€/vehkm]",
+      x = "OPEX advantage\n(ICET – alt) [€/km]",
       y = "CAPEX disadvantage\n(alt – ICET) [€/veh yr]",
       shape = "Period",
       linetype = "DCO\nScenario"

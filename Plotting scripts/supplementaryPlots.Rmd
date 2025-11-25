@@ -74,7 +74,6 @@ DCOdata <- getDCO(BETvsFCETdcoScenarios, TCOdata)
 setnames(mileageDistribution, "binMean", "annualM")
 DCOmilageDistribution <- applyMileage(mileageDistribution, DCOdata)
 DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribution, focus = "EUR")
-setnames(DCOmilageDistributionShares, "cumBinWeightedShareEUR", "cumShare")
 TCOxAnnualMileage <- amDistributionBarPlot(DCOmilageDistributionShares, yr, paperScenario)
 
 MetaTCOxAnnualMileage <- metaPlot(DCOmilageDistributionShares, paperScenario)
@@ -370,7 +369,10 @@ BatPrices <- ggplot(
 combined_plotCAPEX <- (
   (BatPrices | FCPrices | salesPbarPlots)) +
     plot_layout(widths = c(0.26, 0.26, 1)) + 
-  plot_annotation(tag_levels = "a")
+  plot_annotation(tag_levels = "a") &
+    theme(
+      plot.tag = element_text(size = baseTextSize*1.2, face = "bold")  # adjust size here
+    )
 
 plot(combined_plotCAPEX)
 
@@ -379,7 +381,7 @@ ggsave(
   plot     = combined_plotCAPEX,
   device   = cairo_pdf,
   width    = 4.5,          # in inches ≈ 180 mm / 25.4
-  height   = 3.5,          # in inches (adjust aspect ratio as appropriate)
+  height   = 2.5,          # in inches (adjust aspect ratio as appropriate)
   units    = "in",
   dpi      = 300           # ensures minimum resolution for any raster elements
 )
@@ -416,10 +418,14 @@ HydrogenPrices <- ggplot(
       fill = energyCarrier,
       pattern = parameter
     ),
-    pattern_density = 0.1,
+    alpha = 0.2,
+    pattern_density = 0.2,
    pattern_spacing = 0.05,
-   pattern_size = 0.5,
-    alpha = 0.2) +
+   pattern_size = 0.1) +
+  scale_pattern_manual(
+  values = c(
+    "Wholesale" = "circle",
+    "Enduse" = "stripe")) +
   scale_fill_manual(values = paperColors) +
   coord_cartesian(ylim = c(0, 0.3)) +
   scale_x_continuous(breaks = seq(2030, 2050, 10), expand = c(0, 0)) +
@@ -448,7 +454,10 @@ ElecPrices <- ggplot(
       fill = energyCarrier,
       pattern = parameter
       ),
-      alpha = 0.5 ) +
+      alpha = 0.5,
+      pattern_density = 0.2,
+   pattern_spacing = 0.05,
+   pattern_size = 0.1) +
   scale_fill_manual(values = paperColors) +
   coord_cartesian(ylim = c(0, 0.45)) +
   scale_x_continuous(breaks = seq(2030, 2050, 10), expand = c(0, 0)) +
@@ -485,7 +494,10 @@ DieselPrices <- ggplot() +
       fill = energyCarrier,
       pattern = parameter
     ),
-    alpha = 0.5) +
+    alpha = 0.5,
+    pattern_density = 0.2,
+   pattern_spacing = 0.05,
+   pattern_size = 0.1) +
   scale_fill_manual(values = paperColors) +
   geom_line(
     data = fuelsWide[energyCarrier == "Fossil" & parameter == "Wholesale"],
@@ -496,7 +508,7 @@ DieselPrices <- ggplot() +
     data = fuelsWide[energyCarrier == "Fossil" & parameter == "Wholesale"],
     aes(x = period, y = BAU),
     shape = 1,        # solid circle
-    size = 1,        # small dot
+    size = 0.5,        # small dot
     color = "black"
   ) +
   coord_cartesian(ylim = c(0, 0.3)) +
@@ -701,6 +713,36 @@ ggsave(
   plot = blendShares,
   device   = cairo_pdf,
   width    = 4.5,          # in inches ≈ 180 mm / 25.4
+  height   = 1.5,          # in inches (adjust aspect ratio as appropriate)
+  units    = "in",
+  dpi      = 400           # ensures minimum resolution for any raster elements
+)
+
+
+```
+
+```{r, fig.width=3, fig.height=1.5, fig.fullwidth=FALSE}
+infrastructure <- loadInfrastructureBuildUp(dataFolder)
+
+infraPlot <- ggplot(data = infrastructure, aes(x = period, y = value * 100)) +
+  geom_line(linewidth = baseLineWidth) +
+  labs(x = "Year", y = "Fast-charging\ninfrastructure\navailability [%]") +
+  scale_x_continuous(limits = c(2025, 2051), expand = expansion(mult = c(0, 0)), breaks = c(2030, 2035, 2040, 2045, 2050)) +
+  themePanel +
+    theme(
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor.x = element_blank(),
+      panel.grid.major.y = element_line(color = "grey90", linewidth = 1.6 * baseLineWidth),
+      panel.grid.minor.y = element_line(color = "grey95", linewidth = 0.5 * baseLineWidth)
+    ) 
+
+plot(infraPlot)
+
+ggsave(
+  file.path(plotFolder, "Sup_infraPlot.pdf"),
+  plot = infraPlot,
+  device   = cairo_pdf,
+  width    = 3,          # in inches ≈ 180 mm / 25.4
   height   = 1.5,          # in inches (adjust aspect ratio as appropriate)
   units    = "in",
   dpi      = 400           # ensures minimum resolution for any raster elements

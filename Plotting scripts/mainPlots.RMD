@@ -50,14 +50,14 @@ DCOscenarios <- tribble(
 setDT(DCOscenarios)
 ```
 
-# The heterogenous differential cost of ownership of BETs/FCETs against diesel ICETs
-## Fig 1
-##x Scenario overview
+
+# Fig1:  Exemplary DCO across utilisation profiles and vehicle-parameter/energy-carrier scenarios.
+## Scenario overview
 ```{r, fig.width=4, fig.height=2.2, fig.fullwidth=FALSE}
 scenariosPlot <- scenOverview(baseZise, paperColors)
 print(scenariosPlot)
 ```
-### Visualization utilization profiles
+## Visualization utilization profiles
 ```{r, fig.width=3, fig.height=2.2, fig.fullwidth=FALSE}
 #load data
 reducedBinnedWeightedMileage <- prepareMileageData(dataFolder, bin = TRUE, reduce = TRUE)
@@ -69,7 +69,7 @@ grid.newpage()
 grid.draw(utilizationExample)
 
 ```
-### Exemplary TCO barplot
+## Exemplary DCO barplot
 ```{r, fig.width=7.05, fig.height=3.5, fig.fullwidth=FALSE}
 #select data
 paperScenario <- "Current policies"  
@@ -89,7 +89,7 @@ grid.newpage()
 grid.draw(TCOtoDCOexample)
 
 ```
-### Panel
+## Panel
 ```{r, fig.width=7.09, fig.height=6.2, fig.fullwidth=FALSE}
 gScenarios <- ggplotGrob(scenariosPlot)
 
@@ -113,7 +113,7 @@ introPanel <- plot_grid(
   whiteSpace,
   row2,
   ncol = 1,
-  rel_heights = c(0.2, 2, 0.2, 3.5)
+  rel_heights = c(0.2, 2, 0.2, 3)
 )
 xMiddle <- 0.485
 triangleWidth  <- 0.06      
@@ -141,7 +141,7 @@ annotatedPanel <- ggdraw(introPanel) +
   draw_plot_label(
     label = c("a", "b", "c"),
     x = c(0, xMiddle - 0.025, 0),       
-    y = c(1, 1, 7.75 / 13 + 0.005),           
+    y = c(1, 1, 0.57 + 0.005),           
     hjust = 0, vjust = 1,
     size = baseTextSize,
     fontface = "bold",
@@ -149,12 +149,12 @@ annotatedPanel <- ggdraw(introPanel) +
   ) +
   draw_plot_label(
     label = c(
-      "Country- and truck type specific\nutilizaton profiles",
+      "Country- and truck type specific\nutilisaton profiles",
       "Scenario based approach",
       "Country- and truck type specific differential cost of ownership (DCO)"
     ),
     x = c(0.03, xMiddle, 0.03),
-    y = c(0.995, 0.995, 7.75 / 13),
+    y = c(0.995, 0.995, 0.57),
     hjust = 0, vjust = 1,
     size = baseTextSize * 1.2,
     fontface = "plain",
@@ -174,8 +174,9 @@ ggsave(
 
 ```
 
-## Fig 2
-## TCO x Annual mileage distribution bar plot 
+# Fig 2: Economically viable road freight activity for the optimistic, medium, and pessimistic DCO scenario
+## Heterogeneous DCO in 2030 in descending order and their cumulative share in total annual road freight activity in the considered markets. 
+## Evolution of the cumulative share of economically viable road freight activity over time.
 ```{r, fig.width= 5, fig.height= 8.5, fig.fullwidth=FALSE}
 yr <- c(2030)
 paperScenario <- "Current policies"
@@ -276,7 +277,8 @@ ggsave(
 )
 ```
 
-## Fig 3
+# Fig 3: Feasible HDV road freight activity
+## Cumulative fraction of maximum daily vehicle kilometers
 ## Max daily milage x share of road km  
 ```{r, fig.width=4.5, fig.height=1.8, fig.fullwidth=FALSE}
 vehType <- "Tractor-trailer"
@@ -286,8 +288,9 @@ infrastructure <- loadInfrastructureBuildUp(dataFolder)
 rangeAnalysis <- getRangeAnalysis(weightedMileage, infrastructure)
 ranges <- loadRanges(dataFolder)
 
-rangePlot <- plotRangeAnalysis(rangeAnalysis, ranges, infrastructure)
 dMaxDensityPlot <- plotMileageDensity(weightedMileage)
+rangePlot <- plotRangeAnalysis(rangeAnalysis, ranges, infrastructure)
+
 
 combined <- plot_grid(
     dMaxDensityPlot,
@@ -318,7 +321,7 @@ ggsave(
 
 ```
 
-## Fig 4 
+# Fig 4: Heterogeneous DCO of BETs against ICETs for feasible maximum daily mileages
 ```{r, fig.width= 5, fig.height= 8.5, fig.fullwidth=FALSE}
 TCOdata <- loadTCO(dataFolder)
 binnedWeightedMileage <- prepareMileageData(dataFolder, bin = TRUE, reduce = FALSE)
@@ -334,7 +337,7 @@ feasDCO <- checkFeasMileageDistribution(DCOmilageDistribution, binnedWeightedMil
 paperScenario <- "Current policies"
 DCOscen <- "Medium"
 FeasTCOxAnnualMileage1 <- amDistributionBarPlot(feasDCO[DCOscenario == DCOscen], yr = 2030, paperScenario, feas = TRUE)
-FeasTCOxAnnualMileage2<- amDistributionBarPlot(feasDCO[DCOscenario == DCOscen], yr = 2040, paperScenario, feas = TRUE)
+FeasTCOxAnnualMileage2<- amDistributionBarPlot(feasDCO[DCOscenario == DCOscen], yr = 2035, paperScenario, feas = TRUE)
 
 legend <- get_legend(
   FeasTCOxAnnualMileage1 +
@@ -394,7 +397,7 @@ finalPlot_with_labels <- ggdraw(finalPlot) +
 plot(finalPlot_with_labels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("FeasibleEconomicallyViableActivityV2.pdf")),
+  filename = file.path(plotFolder, paste0("FeasibleEconomicallyViableActivity.pdf")),
   plot     = finalPlot_with_labels,
   device   = cairo_pdf,
   width    = 4.5,          # in inches ≈ 180 mm / 25.4
@@ -462,7 +465,7 @@ DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribut
     geom_line(linewidth = baseLineWidth) +
     scale_color_manual(values = paperColors, guide = "none") +  # legend removed
     scale_linetype_manual(values = paperLines, guide = "none") +
-    labs(y = "Economically viable road\nfreight activity [%]", x = NULL) +
+    labs(y = "Economically viable\nactivity [%]", x = NULL) +
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
                                     max(findZeroPoints$period), by = 5)) +
     scale_y_continuous(limits = c(0, 102)) +
@@ -519,13 +522,13 @@ DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribut
       plot_layout(widths = c(0.8, 0.8, 0.8), guides = "collect") &
       theme(
         legend.position = "bottom",
-        plot.margin   =  margin(t = 10, r = 3, b = -2, l = 3)
+        plot.margin   =  margin(t = 10, r = 3, b = 3, l = 3)
       ))
   plot(combined)
     
 finalPlot_with_labels <- ggdraw(combined) +
   draw_label(
-    "Optimistic", x = 0.17, y = 0.93, angle = 0,
+    "Optimistic", x = 0.19, y = 0.93, angle = 0,
     fontface = "bold",
     fontfamily = "sans",
     size = baseTextSize * 1,
@@ -539,7 +542,7 @@ finalPlot_with_labels <- ggdraw(combined) +
     hjust = 0
   ) +
   draw_label(
-    "Pessimistic", x = 0.82, y = 0.93, angle = 0,
+    "Pessimistic", x = 0.8, y = 0.93, angle = 0,
     fontface = "bold",
     fontfamily = "sans",
     size = baseTextSize * 1,
