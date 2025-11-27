@@ -5,7 +5,7 @@ paperColors <- c(
   "Fuel cost" = '#A8E6A1', 
   "M&R + tires" = '#14532D',  
   "H2 tank" = '#c2d7e1', 
-  "Fuel cell\nsystem" = '#858ca7', 
+  "Fuel cell system" = '#858ca7', 
   "Battery" =  '#96a8f2', 
   "Vehicle\nbody incl.\nengine" = '#040f3e',
   "Vehicle body incl. engine" = '#040f3e',
@@ -44,7 +44,8 @@ paperLines <- c(
 
 baseTextSize <- 7
 baseLineWidth <- 0.5
-themePanel <- theme_minimal(base_size = baseTextSize) +
+plotTheme <- function(baseTextSize) {
+  themePanel <- theme_minimal(base_size = baseTextSize) +
   theme(
     axis.title.x  = element_text(size = baseTextSize, lineheight = 0.8),
     axis.title.y  = element_text(size = baseTextSize, lineheight = 0.8),
@@ -57,17 +58,17 @@ themePanel <- theme_minimal(base_size = baseTextSize) +
     panel.spacing = unit(0, "lines"),
     plot.title    = element_text(size = baseTextSize, face = "bold", hjust = 0.5),
     strip.text    = element_text(size = baseTextSize, face = "bold"),
-    legend.key.width = unit(0.6, "cm"),       
-    legend.key.height = unit(0.2, "cm"),
+    legend.key.width = unit(baseTextSize * 0.09, "cm"),       
+    legend.key.height = unit(baseTextSize * 0.03, "cm"),
     legend.title  = element_text(size = baseTextSize),
     legend.text   = element_text(size = baseTextSize),
     plot.margin   =  margin(t = 3, r = 3, b = 3, l = 3)
   )
-
-  
+ return(themePanel)
+}  
 
 # convert baseTextSize in pt to mm (mult is scaling factor)
-relSize <- function(mult = 1) {
-  baseTextSize * mult / .pt   # .pt = 2.845 (in ggplot2 definiert)
+relSize <- function(mult = 1, baseSize = baseTextSize) {
+  baseSize * mult / .pt   # .pt = 2.845 (in ggplot2 definiert)
 }
 

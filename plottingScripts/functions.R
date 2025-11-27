@@ -127,7 +127,7 @@ prepareMileageData <- function(dataFolder, bin = TRUE, reduce = TRUE) {
       reducedBinnedWeightedMileage[, c("test1", "test2") := NULL]}
     return(reducedBinnedWeightedMileage)
 }
-
+#- Load TCO data------------------------------------------------------------------------------------------------------------------
 loadTCO <- function(dataFolder) {
   TCO <- fread(file.path(dataFolder, "TCOanalysis", "TCO.csv"))
   TCO[, TCOscenario := paste0(vehicleParameterScenario, "x", energyCarrierParameterScenario)]
@@ -137,7 +137,7 @@ loadTCO <- function(dataFolder) {
   TCO <- rbind(TCO, TCOEUR)
   return(TCO)
 }
-
+#- Get DCO ------------------------------------------------------------------------------------------------------------------
 getDCO <- function(DCOscenarios, TCO, keep = FALSE) {
 
   dt <- copy(TCO)
@@ -181,7 +181,7 @@ getDCO <- function(DCOscenarios, TCO, keep = FALSE) {
   setnames(DCO, "truckTech", "truckTechnology")
   return(DCO)
 }
-
+#- Apply annual mileage on TCO/DCO------------------------------------------------------------------------------------------------------------------
 applyMileage <- function(annualMileage, dt) {
   #merge with annual mileage 
   if (is.data.table(annualMileage) == TRUE) dt <- merge(dt, annualMileage, by = intersect(names(dt), names(annualMileage)), allow.cartesian = TRUE)
@@ -194,7 +194,7 @@ applyMileage <- function(annualMileage, dt) {
   byCols <- byCols[!byCols == "value"]
   dt <- dt[, .(value = sum(value)), by = eval(byCols)]
 }
-
+#- Calculate HDV road freight activity shares ------------------------------------------------------------------------------------------------------------------
 calculateFreightActivityShares <- function(dt, focus = "EUR") {
 
   if (focus == "EUR") {
@@ -211,22 +211,7 @@ calculateFreightActivityShares <- function(dt, focus = "EUR") {
   return(dt)
 }
 
-#- CO2 price to bridge DCO---------------------------------------------------------------------------------------------------------------------
-#Co2 Intensities do not vary by paperScen
-calculateSwitchCO2price <- function(DCO, dataFolder) {
-  co2Intensities <- fread(file.path(dataFolder, "TCOanalysis", "co2IntensityDieFuel.csv"))[, unit := NULL] # tCO2/km
-  setnames(co2Intensities, "value", "co2int")
-  if (!unique(DCO$counterTech) == "ICET") stop("You need to transfer DCO with ICET as counter technology")
-  DCO[, energyCarrierParameterScenario := gsub("^.*x", "", counterTechTCOscenario)]
-  gapCO2Price <- merge(DCO, co2Intensities, by = intersect(names(DCO), names(co2Intensities)), allow.cartesian = TRUE)
-  gapCO2Price[, Co2PriceToCloseGap := value/co2int][, unit := "EUR/tCO2"] # EUR/vehkm  / tCO2/vehkm -> [EUR/tCO2]
-  gapCO2Price[, energyCarrierParameterScenario := NULL]
-  setorder(gapCO2Price, "truckTechnology", "energyCarrier", "period", "paperScen", "DCOscenario", "Co2PriceToCloseGap")
-  gapCO2Price[, cumBinWeightedShareEUR := cumsum(binWeightedShareEUR), by = c("truckTechnology", "energyCarrier", "paperScen", "DCOscenario", "period")]
-  return(gapCO2Price)
-}
-#- Annual mileage breakeven ---------------------------------------------------------------------------------------------------------------------
-
+#- Calculate annual mileage breakeven ---------------------------------------------------------------------------------------------------------------------
 caluclateAnnualMileageBreakeven <- function(DCO) {
 
   CAPEX <- DCO[unit == "EUR/veh yr"]
@@ -247,6 +232,7 @@ caluclateAnnualMileageBreakeven <- function(DCO) {
   return(breakeven)
 }
 
+#- Calculate synthetical annual mileage breakeven ---------------------------------------------------------------------------------------------------------------------
 caluclateSyntheticalBreakeven <- function() {
   # Step 1: Create a synthetic grid of values
   syntheticalBreakeven <- CJ(
@@ -260,49 +246,7 @@ caluclateSyntheticalBreakeven <- function() {
   return(syntheticalBreakeven)
 }
 
-#- TCO overview data-------------------------------------------------------------------------------------------------------------------------
-loadFuelPrices <- function(dataFolder) {
-  fuelPricesEURperkwh <- fread(file.path(dataFolder, "TCOanalysis", "fuelPricekWh.csv"))
-  return(fuelPricesEURperkwh)
-}
-loadSalesPrices <- function(dataFolder) {
-  salesPrices <- fread(file.path(dataFolder, "TCOanalysis", "SalesPrices.csv"))
-  salesPrices <- groupParameters(salesPrices)
-  return(salesPrices)
-}
-loadBatteryAndFCPrices <- function(dataFolder) {
-  rawBatFCPrices <- fread(file.path(dataFolder, "TCOparameter", "vehicleParameters.csv"))
-  rawBatFCPrices <- rawBatFCPrices[parameter %in% c("Fuel cell system costs", "Battery costs")]
-  return(rawBatFCPrices)
-}
-
-calulcateTCOperMileage <- function(TCO) {
-  dummymileage<- data.table(AM = c(seq(1, 100000, length.out = 201)))
-  dummymileage[, dummy := "All"]
-  TCOPerMileage <- copy(TCOdata)
-  TCOdata <- merge(TCOdata, AnnualMileage, by = c("truckClass"), allow.cartesian = TRUE)
-  TCOdata[unit == "EUR/veh yr", value := value/AM][, AM := NULL]
-  TCOdata[unit == "EUR/veh yr", unit := "EUR/km"]
-  TCOPerMileage[, dummy := "All"]
-  TCOPerMileage <- merge(TCOPerMileage, dummymileage, by = "dummy", allow.cartesian = TRUE)[, dummy := NULL]
-  TCOPerMileage[unit == "EUR/veh yr", value := value/AM]
-  TCOPerMileage[unit == "EUR/veh yr", unit := "EUR/km"]
-  return(TCOPerMileage)
-}
-
-aggregateCountryData <- function(dt, weightType = "stock") {
- cols <- names(dt)[!names(dt)%in% c("value", "country")]
- dt <- merge(dt, loadWeight(dataFolder, eval(weightType)), by = "country", allow.cartesian = TRUE)
- if (weightType == "stock") {
-   dt[, value := value * meanStockShare]
-   dt <- dt[, .(value = sum(value)), by = cols]}
- if (weightType == "activity") {
-   dt[, value := value * meanESdemandShare]
-   dt <- dt[, .(value = sum(value)), by = cols]}
-   dt[, country := "EUR"]
- return(dt)
-}
-
+##- Heterogeneous DCO of BETs against ICETs for feasible maximum daily mileages-----------
 checkFeasMileageDistribution <- function(DCOmilageDistribution, binnedWeightedMileage, reducedBinnedWeightedMileage, ranges, infrastructure, focus = "EUR") {
 
   ranges <- copy(ranges)
@@ -371,8 +315,7 @@ checkFeasMileageDistribution <- function(DCOmilageDistribution, binnedWeightedMi
 }
 
 
-##- Feasibility for range analysis----------------------------
-
+##- Feasible HDV road freight activity ----------------------------
 getRangeAnalysis <- function(weightedMileage, infrastructure) {
   
   setnames(infrastructure, "value", "MCSavailability")
@@ -424,6 +367,7 @@ getRangeAnalysis <- function(weightedMileage, infrastructure) {
   )
 }
 
+#- Group parameters for bar plots-------------------------------------------------------------------------------------------------------------------------
 groupParameters <- function(dt){
   dt[parameter %in% 
              c("Glider/Vehicle body invest without drivetrain",
@@ -454,10 +398,39 @@ groupParameters <- function(dt){
   neworder <- c("CO2 tax", "Toll charge", "Vehicle tax", "Fuel cost", 
                 "M&R + Tires", "H2 tank", "Fuel cell system", "Battery", "Vehicle body\nincl. engine")
   valid_neworder <- intersect(neworder, unique(dt$parameter))
-  
+
   droplevels(dt)
   dt[, parameter := factor(parameter, 
                                  levels = valid_neworder)]
+  return(dt)
+}
+
+#- Load TCO overview data for supplementary information-------------------------------------------------------------------------------------------------------------------------
+loadFuelPrices <- function(dataFolder) {
+  fuelPricesEURperkwh <- fread(file.path(dataFolder, "TCOanalysis", "fuelPricekWh.csv"))
+  return(fuelPricesEURperkwh)
+}
+loadSalesPrices <- function(dataFolder) {
+  salesPrices <- fread(file.path(dataFolder, "TCOanalysis", "SalesPrices.csv"))
+  salesPrices <- groupParameters(salesPrices)
+  return(salesPrices)
+}
+loadBatteryAndFCPrices <- function(dataFolder) {
+  rawBatFCPrices <- fread(file.path(dataFolder, "TCOparameter", "vehicleParameters.csv"))
+  rawBatFCPrices <- rawBatFCPrices[parameter %in% c("Fuel cell system costs", "Battery costs")]
+  return(rawBatFCPrices)
+}
+
+aggregateCountryData <- function(dt, weightType = "stock") {
+  cols <- names(dt)[!names(dt)%in% c("value", "country")]
+  dt <- merge(dt, loadWeight(dataFolder, eval(weightType)), by = "country", allow.cartesian = TRUE)
+  if (weightType == "stock") {
+    dt[, value := value * meanStockShare]
+    dt <- dt[, .(value = sum(value)), by = cols]}
+  if (weightType == "activity") {
+    dt[, value := value * meanESdemandShare]
+    dt <- dt[, .(value = sum(value)), by = cols]}
+  dt[, country := "EUR"]
   return(dt)
 }
 

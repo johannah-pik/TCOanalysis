@@ -1,12 +1,13 @@
 ---
-title: "Main plots"
+title: "Main figures"
 author: "Johanna Hoppe"
 date: "2025-02-03"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)#
+## Always run first chunk
+knitr::opts_chunk$set(echo = FALSE)#
 library(ggplot2)
 library(data.table)
 library(RColorBrewer)
@@ -27,9 +28,9 @@ rm(list=ls())
 mainFolder <- dirname(this.path::this.dir())
 dataFolder <-  file.path(mainFolder, "data")
 plotFolder <- file.path(mainFolder, "plots", "main")
-source(file.path(mainFolder, "Plotting scripts", "functions.R"))
-source(file.path(mainFolder, "Plotting scripts", "plotFunctions.R"))
-source(file.path(mainFolder, "Plotting scripts", "plotSettings.R"))
+source(file.path(mainFolder, "plottingScripts", "functions.R"))
+source(file.path(mainFolder, "plottingScripts", "plotFunctions.R"))
+source(file.path(mainFolder, "plottingScripts", "plotSettings.R"))
 
 annualMileage <- data.table(truckClass = c("Rigid", "Rigid", "Rigid", "Tractor-trailer", "Tractor-trailer", "Tractor-trailer"),
                             operation = c("Urban", "Regional", "Long-haul", "Urban", "Regional", "Long-haul"),
@@ -54,8 +55,7 @@ setDT(DCOscenarios)
 # Fig1:  Exemplary DCO across utilisation profiles and vehicle-parameter/energy-carrier scenarios.
 ## Scenario overview
 ```{r, fig.width=4, fig.height=2.2, fig.fullwidth=FALSE}
-scenariosPlot <- scenOverview(baseZise, paperColors)
-print(scenariosPlot)
+scenariosPlot <- scenOverview(baseZise, paperColors, baseTextSize)
 ```
 ## Visualization utilization profiles
 ```{r, fig.width=3, fig.height=2.2, fig.fullwidth=FALSE}
@@ -63,11 +63,7 @@ print(scenariosPlot)
 reducedBinnedWeightedMileage <- prepareMileageData(dataFolder, bin = TRUE, reduce = TRUE)
 exampleCountry <- "DE" 
 
-utilizationExample <- examplaryUtilization(exampleCountry, reducedBinnedWeightedMileage, baseTextSize, themePanel)
-
-grid.newpage()
-grid.draw(utilizationExample)
-
+utilizationExample <- examplaryUtilisation(exampleCountry, reducedBinnedWeightedMileage, baseTextSize)
 ```
 ## Exemplary DCO barplot
 ```{r, fig.width=7.05, fig.height=3.5, fig.fullwidth=FALSE}
@@ -83,11 +79,7 @@ TCOdata <- loadTCO(dataFolder)
 TCO <- applyMileage(am, TCOdata)
 TCO <- groupParameters(TCO)
 
-TCOtoDCOexample <- dcoBarPlot(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScenario)
-
-grid.newpage()
-grid.draw(TCOtoDCOexample)
-
+TCOtoDCOexample <- dcoBarPlot(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScenario, baseTextSize)
 ```
 ## Panel
 ```{r, fig.width=7.09, fig.height=6.2, fig.fullwidth=FALSE}
@@ -112,8 +104,9 @@ introPanel <- plot_grid(
   row1,
   whiteSpace,
   row2,
+  whiteSpace,
   ncol = 1,
-  rel_heights = c(0.2, 2, 0.2, 3)
+  rel_heights = c(0.16, 1.9, 0.16, 3, 0.05)
 )
 xMiddle <- 0.485
 triangleWidth  <- 0.06      
@@ -141,9 +134,9 @@ annotatedPanel <- ggdraw(introPanel) +
   draw_plot_label(
     label = c("a", "b", "c"),
     x = c(0, xMiddle - 0.025, 0),       
-    y = c(1, 1, 0.57 + 0.005),           
+    y = c(1, 1, 0.585 + 0.005),           
     hjust = 0, vjust = 1,
-    size = baseTextSize,
+    size = baseTextSize *1.2,
     fontface = "bold",
     color = "black"
   ) +
@@ -154,7 +147,7 @@ annotatedPanel <- ggdraw(introPanel) +
       "Country- and truck type specific differential cost of ownership (DCO)"
     ),
     x = c(0.03, xMiddle, 0.03),
-    y = c(0.995, 0.995, 0.57),
+    y = c(0.995, 0.995, 0.585),
     hjust = 0, vjust = 1,
     size = baseTextSize * 1.2,
     fontface = "plain",
@@ -239,7 +232,7 @@ finalPlot <- plot_grid(
   ncol = 1,
   rel_heights = c(1, 0.05)  
 )
-finalPlot_with_labels <- ggdraw(finalPlot) +
+plotWithLabels <- ggdraw(finalPlot) +
   draw_label(
     "Optimistic", x = 0.02, y = 0.76, angle = 90,
     fontface = "bold",
@@ -264,16 +257,16 @@ finalPlot_with_labels <- ggdraw(finalPlot) +
 
 
 # 6. Display final plot
-plot(finalPlot_with_labels)
+plot(plotWithLabels)
 
 ggsave(
   filename = file.path(plotFolder, paste0("EconomicallyViableActivity.pdf")),
-  plot     = finalPlot_with_labels,
+  plot     = plotWithLabels,
   device   = cairo_pdf,
-  width    = 4.5,          # in inches ≈ 180 mm / 25.4
-  height   = 5,          # in inches (adjust aspect ratio as appropriate)
+  width    = 4.5,          
+  height   = 5,          
   units    = "in",
-  dpi      = 300           # ensures minimum resolution for any raster elements
+  dpi      = 300           
 )
 ```
 
@@ -313,16 +306,16 @@ ggsave(
   filename = file.path(plotFolder, paste0("rangeAnalysis.pdf")),
   plot     = combined,
   device   = cairo_pdf,
-  width    = 4.5,          # in inches ≈ 180 mm / 25.4
-  height   = 1.8,          # in inches (adjust aspect ratio as appropriate)
+  width    = 4.5,          
+  height   = 1.8,          
   units    = "in",
-  dpi      = 300           # ensures minimum resolution for any raster elements
+  dpi      = 300           
 )
 
 ```
 
 # Fig 4: Heterogeneous DCO of BETs against ICETs for feasible maximum daily mileages
-```{r, fig.width= 5, fig.height= 8.5, fig.fullwidth=FALSE}
+```{r, fig.width= 5, fig.height= 3, fig.fullwidth=FALSE}
 TCOdata <- loadTCO(dataFolder)
 binnedWeightedMileage <- prepareMileageData(dataFolder, bin = TRUE, reduce = FALSE)
 reducedBinnedWeightedMileage <- prepareMileageData(dataFolder, bin = TRUE, reduce = TRUE)
@@ -343,7 +336,7 @@ legend <- get_legend(
   FeasTCOxAnnualMileage1 +
     theme(
       legend.position = "bottom",
-      legend.justification = "left",   # start from left in its own box
+      legend.justification = "left",   
       legend.box.just = "left"
     )
 )
@@ -383,7 +376,7 @@ finalPlot <- plot_grid(
   ncol = 1,
   rel_heights = c(1, 0.08)  
 )
-finalPlot_with_labels <- ggdraw(finalPlot) +
+plotWithLabels <- ggdraw(finalPlot) +
   draw_label(
     DCOscen, x = 0.02, y = 0.45, angle = 90,
     fontface = "bold",
@@ -394,22 +387,22 @@ finalPlot_with_labels <- ggdraw(finalPlot) +
 
 
 # 6. Display final plot
-plot(finalPlot_with_labels)
+plot(plotWithLabels)
 
 ggsave(
   filename = file.path(plotFolder, paste0("FeasibleEconomicallyViableActivity.pdf")),
-  plot     = finalPlot_with_labels,
+  plot     = plotWithLabels,
   device   = cairo_pdf,
-  width    = 4.5,          # in inches ≈ 180 mm / 25.4
-  height   = 6.2/3,          # in inches (adjust aspect ratio as appropriate)
+  width    = 4.5,          
+  height   = 6.2/3,          
   units    = "in",
-  dpi      = 300           # ensures minimum resolution for any raster elements
+  dpi      = 300           
 )
 
 
 ```
 
-# CAPEX to OPEX and shares
+# Fig. 5: Comparison of CAPEX and OPEX of BETs/FCETs relative to ICETs
 ```{r, fig.width=7.09, fig.height=3.5, fig.fullwidth=FALSE}
 
 scenario <- "Current policies"
@@ -427,15 +420,15 @@ ggsave(
   filename = file.path(plotFolder, paste0("CAPEvsOPEX.pdf")),
   plot     = capexVsOpex,
   device   = cairo_pdf,
-  width    = 7.09,          # in inches ≈ 180 mm / 25.4
-  height   = 3.5,          # in inches (adjust aspect ratio as appropriate)
+  width    = 7.09,          
+  height   = 3.5,          
   units    = "in",
-  dpi      = 300           # ensures minimum resolution for any raster elements
+  dpi      = 300           
 )
 
 ```
 
-## Removed policies scenario
+# Fig. 6: Evolution of the cumulative share of economically viable road freight activity over time. Results are shown for th ecurrent-policies case and for a counterfactual scenario in which ZET road-toll reductions, carbon pricing, fuel mandates, and hydrogen tax exemptions are removed
 ```{r, fig.width= 4.5, fig.height= 2.3, fig.fullwidth=FALSE}
 paperScenario <- c("Current policies", "Removed policies")
 
@@ -453,7 +446,7 @@ DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribut
   findZeroPoints[, DCOscenario := factor(DCOscenario, levels = c("Optimistic", "Medium", "Pessimistic"))]
   
   arrow <- copy(findZeroPoints)
-  arrow <- dcast(arrow, period + truckTechnology + DCOscenario ~ paperScen)
+  arrow <- dcast(arrow, period + truckTechnology + DCOscenario ~ paperScen, value.var = "cumBinWeightedShareEUR")
   arrow <- arrow[
   , .(period, truckTechnology, DCOscenario,
       current = `Current policies`,
@@ -469,7 +462,7 @@ DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribut
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
                                     max(findZeroPoints$period), by = 5)) +
     scale_y_continuous(limits = c(0, 102)) +
-    themePanel +
+    plotTheme(baseTextSize) +
     theme(legend.position = "bottom",
           legend.box = "horizontal",
           legend.direction = "vertical")
@@ -498,7 +491,7 @@ DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribut
       color = "Truck technology",
       linetype = ""
     ) +
-    themePanel +
+    plotTheme(baseTextSize) +
     theme(legend.position = "bottom",
           legend.box = "horizontal",
           legend.direction = "vertical")
@@ -512,7 +505,7 @@ DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribut
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
                                     max(findZeroPoints$period), by = 5)) +
     scale_y_continuous(limits = c(0, 102)) +
-    themePanel +
+    plotTheme(baseTextSize) +
     theme(legend.position = "bottom",
           legend.box = "horizontal",
           legend.direction = "vertical")
@@ -524,9 +517,9 @@ DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribut
         legend.position = "bottom",
         plot.margin   =  margin(t = 10, r = 3, b = 3, l = 3)
       ))
-  plot(combined)
+
     
-finalPlot_with_labels <- ggdraw(combined) +
+plotWithLabels <- ggdraw(combined) +
   draw_label(
     "Optimistic", x = 0.19, y = 0.93, angle = 0,
     fontface = "bold",
@@ -551,125 +544,16 @@ finalPlot_with_labels <- ggdraw(combined) +
 
 
 # 6. Display final plot
-plot(finalPlot_with_labels)
+plot(plotWithLabels)
 
 ggsave(
   filename = file.path(plotFolder, paste0("removedPolicies.pdf")),
-  plot     = finalPlot_with_labels,
+  plot     = plotWithLabels,
   device   = cairo_pdf,
-  width    = 4.5,          # in inches ≈ 180 mm / 25.4
-  height   = 2.3,          # in inches (adjust aspect ratio as appropriate)
+  width    = 4.5,         
+  height   = 2.3,          
   units    = "in",
-  dpi      = 300           # ensures minimum resolution for any raster elements
+  dpi      = 300          
 )
 ```
-
-
-
-# CO₂ Price Required to Bridge the Differential Cost of Ownership
-```{r, fig.width=15.5, fig.height=14, fig.fullwidth=FALSE}
-# REWORK
-#Interesting Sensitivity Scenarios: "Current Policies without CO2 Price", "Sensitivity | Removed Policies except for bio/syn fuel mandates", "Removed Policies" 
-
-paperScen <- "Removed policies"
-yr <- c(2030, 2040, 2050)
-trucktechs <- c("BET small battery", "BET large battery")
-dieselFuel <- "Diesel Mix"
-
-TCOdata <- loadTCO(dataFolder)
-mileageDistribution <- prepareMileageData(dataFolder)
-DCOdata <- getDCO(DCOscenarios, TCOdata)
-setnames(mileageDistribution, "binMean", "annualM")
-DCOmilageDistribution <- applyMileage(mileageDistribution, DCOdata)
-DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribution, focus = "EUR")
-gapCo2price <- calculateSwitchCO2price(DCOmilageDistributionShares, dataFolder)
-
-
-data <- copy(gapCO2Price)[period %in% yr & `truckTechnology` %in% trucktechs & paperScen == sensitivityScen & Fuel == dieselFuel]
-data[, DCOscenario := factor(DCOscenario, 
-                               levels = c("Optimistic", "Medium", "Pessimistic"))]
-
-data[, cum_width := 0.999* (cumBinWeightedShareEUR * 100 - shift(cumBinWeightedShareEUR * 100, type = "lag")), by = c("DCOscenario", "truckTechnology", "period")]
-data[is.na(cum_width), cum_width := (cumBinWeightedShareEUR * 100), by = c("DCOscenario", "truckTechnology", "period")]
-co2PriceCurrentPol <- co2PriceCurrentPol[period %in% yr]
-
-findZeroPoints <-  data[ , .SD[which.min(abs(Co2PriceToCloseGap))], by = .(period, `truckTechnology`, DCOscenario)]
-setorder(findZeroPoints, DCOscenario, cumBinWeightedShareEUR)
-findZeroPoints[, arrow_y := seq(-0.6, -0.9, length.out = .N), by = "DCOscenario"]
-
-setorder(findZeroPoints, - cumBinWeightedShareEUR)
-data[, `truckTechnology` := factor(`truckTechnology`, levels = c("BET large battery", "BET small battery"))]
-findZeroPoints[, `truckTechnology` := factor(`truckTechnology`, levels = c("BET large battery", "BET small battery"))]  
-middle_y <- findZeroPoints[round(nrow(findZeroPoints)/6), arrow_y]
-
-# Create one plot per facet, then stitch them back together
-facet_levels <- unique(data$period)
-plot_list <- lapply(seq_along(facet_levels), function(i) {
-  facet_level <- facet_levels[i]
-  sub_data <- subset(data, period == facet_level)
-  sub_CO2 <- subset(co2PriceCurrentPol, period == facet_level)
-  if (i == 3) {
-    extraLabel <- annotate("label", x = 5, y = as.numeric(sub_CO2$value) + 15, label = "CO2 price\nCurrent Policies scenario", 
-                           color = "black", fill = "white", fontface = "bold", size = 4.2, hjust = 0, vjust = 0, 
-                           label.padding = unit(0.3, "cm"), label.size = 0)} else {
-                             extraLabel <- NULL
-                           }
-  
-  test <- ggplot(sub_data) +
-    geom_segment(aes(
-      x = abs(cumBinWeightedShareEUR * 100 - cum_width),
-      xend = cumBinWeightedShareEUR * 100,
-      y = Co2PriceToCloseGap,
-      yend = Co2PriceToCloseGap,
-      color = `truckTechnology`
-    ), linewidth = 0.8) +
-    geom_rect(aes(
-      xmin = cumBinWeightedShareEUR * 100 - cum_width,
-      xmax = cumBinWeightedShareEUR * 100,
-      ymin = 0,
-      ymax = Co2PriceToCloseGap,
-      fill = `truckTechnology`,
-      color = `truckTechnology`
-    ), linewidth = 0.02, alpha = 0.25) +
-    geom_hline(yintercept = 0, color = "black", size = 1) +
-     geom_hline(yintercept = as.numeric(sub_CO2$value), color = "lightgreen", size = 1) +
-    extraLabel +
-
-    scale_x_continuous(expand = c(0, 0), limits = c(0, 1.05 * max(data$cumBinWeightedShareEUR * 100, na.rm = TRUE))) +
-    coord_cartesian(ylim = c(-600, 1050)) +
-    scale_color_manual(values = paperColors) +
-    scale_fill_manual(values = paperColors) +
-    labs(
-      x = if (i == 2) "Share of road km in considered truck markets [%]" else NULL,
-      y = if (i == 1) "CO2 price to bridge DCO [EUR/tCO2]" else NULL,
-      title = paste0(unique(sub_data$paperScen), "\n", facet_level)
-    ) +
-    facet_wrap(~DCOscenario, ncol = 1) +
-    themePanel +
-    theme(
-      strip.text = element_text(face = "bold")
-    )
-})
-library(patchwork)
-
-combined <- wrap_plots(plot_list, ncol = 3, guides = "collect") &
-  theme(legend.position = "bottom")
-combined <- combined & theme(
-  legend.margin = margin(t = 20),
-  legend.text = element_text(size = rel(1)),
-  legend.title = element_text(size = rel(1))
-)
-
-dir <- dirname(getwd())
-ggsave(
-  file.path(plotFolder, paste0("CO2price.pdf")),
-  plot = combined,
-  width = 15.5, height = 14, units = "in", device = cairo_pdf
-)
-plot(combined)
-```
-
-
-
-
 
