@@ -109,7 +109,7 @@ OMCosts <- rbind(OMOther,
                                      & `truckTechnology` %in% c("ICET")][, eval(colsToDelete) := NULL]))
 OMCosts[, unit := "EUR/vehkm"][, parameter := "M&R + tires"]
 
-##-Taxes per vehicle-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+##-Taxes per vehicle per year-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Comment: Varied by country (not by scenarios)
 vehTax <- unique(vehicleParameters[parameter == "Vehicle Tax"][, eval(colsToDelete[!colsToDelete %in% c("parameter", "unit")]) := NULL])
 vehTax[, unit := "EUR/veh yr"] # [EUR/a]
@@ -406,7 +406,7 @@ FCET <- c(
   "Resale value",                                     
   "Vehicle Tax",
   "Toll charge",
-  "M&R + Tires",
+  "M&R + tires",
   "Wholesale", 
   "Transport and distribution",
   "Taxes, Fees, Levies and charges",            
@@ -421,9 +421,9 @@ Diesel <- c(
   "Resale value",                                     
   "Vehicle Tax",
   "Toll charge",
-  "M&R + Tires",#!
+  "M&R + tires",
   "Wholesale", 
-  "CO2 tax",  #!                            
+  "CO2 tax",                              
   "Excise Duty",
   "Total Diesel Mark-Up"
 ) 

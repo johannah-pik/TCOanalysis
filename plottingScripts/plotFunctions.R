@@ -249,7 +249,6 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
   barPlotData <- rbind(truckSide, counterSide)
   # Rename for slim legend and axis labelling
   barPlotData[parameter == "Vehicle body\nincl. engine", parameter := "Vehicle body incl. engine"]
-  barPlotData[parameter == "M&R + Tires", parameter := "M&R + tires"]
   newOrder <- c("CO2 tax", "Toll charge", "Vehicle tax", "Fuel cost", 
                 "M&R + tires", "H2 tank", "Fuel cell system", "Battery", "Vehicle body incl. engine")
   validNewOrder <- intersect(newOrder, unique(barPlotData$parameter))

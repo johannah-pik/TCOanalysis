@@ -396,7 +396,7 @@ groupParameters <- function(dt){
                        by = cols]
   dt[parameter == "Vehicle Tax", parameter := "Vehicle tax"]
   neworder <- c("CO2 tax", "Toll charge", "Vehicle tax", "Fuel cost", 
-                "M&R + Tires", "H2 tank", "Fuel cell system", "Battery", "Vehicle body\nincl. engine")
+                "M&R + tires", "H2 tank", "Fuel cell system", "Battery", "Vehicle body\nincl. engine")
   valid_neworder <- intersect(neworder, unique(dt$parameter))
 
   droplevels(dt)
