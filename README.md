@@ -1,4 +1,4 @@
-# Research software for analyzing the total cost of ownership (TCO) of alternative technologies for heavy-duty trucks under real-world usage profiles
+# Research software for analysing the total cost of ownership (TCO) of alternative technologies for heavy-duty trucks under real-world utilisation profiles
 
 ## Summary
 This repository make source codes and input data publicly available that were used in the research article "Cost competitiveness of alternative heavy-duty
