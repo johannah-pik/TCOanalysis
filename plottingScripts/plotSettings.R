@@ -6,6 +6,7 @@ paperColors <- c(
   "M&R + tires" = '#14532D',  
   "H2 tank" = '#c2d7e1', 
   "Fuel cell system" = '#858ca7', 
+  "Fuel cell\nsystem" = '#858ca7', 
   "Battery" =  '#96a8f2', 
   "Vehicle\nbody incl.\nengine" = '#040f3e',
   "Vehicle body incl. engine" = '#040f3e',

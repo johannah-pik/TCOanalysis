@@ -733,7 +733,7 @@ plotRangeAnalysis <- function(rangeAnalysis, ranges, infrastructure) {
     labs(
       x = "Feasible activity at a given\ndirect driving range [%]",
       y = "Direct driving\nrange [km]",
-      color = "Truck\ntechnology",
+      color = "BET\nvariant",
       linetype = "Year"
     ) +
     coord_cartesian(xlim = c(0, 100), ylim = c(150, 1100)) +
