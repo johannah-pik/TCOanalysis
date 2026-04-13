@@ -1,9 +1,12 @@
 rm(list=ls())
 library(data.table)
 
+mainFolder <- this.path::this.dir()
+dataFolder <- file.path(mainFolder, "data")
+
 #-Raw data-------------------------------------------------------------------------------------------------------------------------------------------------------------------
-vehicleParameters <- fread(file.path("data", "TCOparameter", "vehicleParameters.csv"))
-energyCarrierParameters <- fread(file.path("data", "TCOparameter", "energyCarrierParameters.csv"))
+vehicleParameters <- fread(file.path(dataFolder, "TCOparameter", "vehicleParameters.csv"))
+energyCarrierParameters <- fread(file.path(dataFolder, "TCOparameter", "energyCarrierParameters.csv"))
 # Remove underlying assumptions on bandwith that are not needed for the calculation
 energyCarrierParameters <- energyCarrierParameters[!parameter %in% c("Bandwith MCS", "Bandwith Depot")]
 energyCarrierParameters[, value := as.numeric(value)]
