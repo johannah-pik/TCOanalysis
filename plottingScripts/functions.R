@@ -395,7 +395,9 @@ groupParameters <- function(dt){
   dt <- dt[, .(value = sum(as.numeric(value))), 
                        by = cols]
   dt[parameter == "Vehicle Tax", parameter := "Vehicle tax"]
-  neworder <- c("CO2 tax", "Toll charge", "Vehicle tax", "Fuel cost", 
+  if (nrow(dt[parameter == "Vehicle insurance"] > 0)) neworder <- c("CO2 tax", "Toll charge", "Vehicle tax", "Vehicle insurance", "Fuel cost", 
+                                                                    "M&R + tires", "H2 tank", "Fuel cell system", "Battery", "Vehicle body\nincl. engine")
+  else neworder <- c("CO2 tax", "Toll charge", "Vehicle tax", "Fuel cost", 
                 "M&R + tires", "H2 tank", "Fuel cell system", "Battery", "Vehicle body\nincl. engine")
   valid_neworder <- intersect(neworder, unique(dt$parameter))
 
