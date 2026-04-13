@@ -1,9 +1,12 @@
 rm(list=ls())
 library(data.table)
 
+mainFolder <- this.path::this.dir()
+dataFolder <- file.path(mainFolder, "data")
+
 #-Raw data-------------------------------------------------------------------------------------------------------------------------------------------------------------------
-vehicleParameters <- fread(file.path("data", "TCOparameter", "vehicleParameters.csv"))
-energyCarrierParameters <- fread(file.path("data", "TCOparameter", "energyCarrierParameters.csv"))
+vehicleParameters <- fread(file.path(dataFolder, "TCOparameter", "vehicleParameters.csv"))
+energyCarrierParameters <- fread(file.path(dataFolder, "TCOparameter", "energyCarrierParameters.csv"))
 # Remove underlying assumptions on bandwith that are not needed for the calculation
 energyCarrierParameters <- energyCarrierParameters[!parameter %in% c("Bandwith MCS", "Bandwith Depot")]
 energyCarrierParameters[, value := as.numeric(value)]
@@ -438,10 +441,10 @@ if (length((intersect(unique(TCO[`truckTechnology` == "FCET"]$parameter), FCET))
   stop(paste0("The following parameters are missing in the FCET TCO: ", FCET[!FCET %in% unique(TCO[`truckTechnology` == "FCET"]$parameter)]))
 
 # Save files---------------------------------------------------------
-write.csv(TCO, file.path("data", "TCOanalysis", "TCO.csv"), row.names = FALSE)
-write.csv(SalesPrice, file.path("data", "TCOanalysis", "salesPrices.csv"), row.names = FALSE)
-write.csv(Co2IntensityDieFuel, file.path("data", "TCOanalysis", "co2IntensityDieFuel.csv"), row.names = FALSE)
-write.csv(energyCarrierParameters, file.path("data", "TCOanalysis", "fuelPricekWh.csv"), row.names = FALSE)
+write.csv(TCO, file.path(dataFolder, "TCOanalysis", "TCO.csv"), row.names = FALSE)
+write.csv(SalesPrice, file.path(dataFolder, "TCOanalysis", "salesPrices.csv"), row.names = FALSE)
+write.csv(Co2IntensityDieFuel, file.path(dataFolder, "TCOanalysis", "co2IntensityDieFuel.csv"), row.names = FALSE)
+write.csv(energyCarrierParameters, file.path(dataFolder, "TCOanalysis", "fuelPricekWh.csv"), row.names = FALSE)
 
 rm(list=ls())
 
