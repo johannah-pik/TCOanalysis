@@ -117,6 +117,13 @@ OMCosts[, unit := "EUR/vehkm"][, parameter := "M&R + tires"]
 vehTax <- unique(vehicleParameters[parameter == "Vehicle Tax"][, eval(colsToDelete[!colsToDelete %in% c("parameter", "unit")]) := NULL])
 vehTax[, unit := "EUR/veh yr"] # [EUR/a]
 
+##- Vehicle insurance (only considered in sensitivity analysis) in % of vehicle purchase price (VPP) per year
+insurance <- vehicleParameters[parameter == "Vehicle insurance"]
+insurance[, c("unit") := NULL]
+setnames(insurance, "value", "insurance")
+insuranceCosts <- merge(totCap, insurance, by = intersect(names(totCap), names(insurance)))
+insuranceCosts[, value := totCap * insurance][, unit := "EUR/veh yr"][, c("totCap", "insurance", "category", "subCategory") := NULL]
+
 ##-Road Tolls-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Comment: Varied by country (not by scenarios)
 Tolls <- unique(vehicleParameters[parameter == "Toll charge"][, eval(colsToDelete[!colsToDelete %in% c("parameter", "unit")]) := NULL])
@@ -327,7 +334,7 @@ Tolls[, value := (as.numeric(value) + as.numeric(value)*as.numeric(TollRed))*as.
   H2AtPumpkWh <- rbind(h2WholeSalePrice, HRSCost, H2Tax)
 
 
-vehicleParameters <- rbind(CAPEX, efficiency, ChargingLosses, OMCosts, vehTax, Tolls)      
+vehicleParameters <- rbind(CAPEX, efficiency, ChargingLosses, OMCosts, vehTax, insuranceCosts, Tolls)      
 energyCarrierParameters <- unique(rbind(dieselAtPumpkWh, elecAtPumpkWh, H2AtPumpkWh))
 
 # check files---------------------------------------------------------
