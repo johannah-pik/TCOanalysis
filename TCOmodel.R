@@ -441,10 +441,10 @@ if (length((intersect(unique(TCO[`truckTechnology` == "FCET"]$parameter), FCET))
   stop(paste0("The following parameters are missing in the FCET TCO: ", FCET[!FCET %in% unique(TCO[`truckTechnology` == "FCET"]$parameter)]))
 
 # Save files---------------------------------------------------------
-write.csv(TCO, file.path(dataFolder, "TCOanalysis", "TCO.csv"), row.names = FALSE)
-write.csv(SalesPrice, file.path(dataFolder, "TCOanalysis", "salesPrices.csv"), row.names = FALSE)
-write.csv(Co2IntensityDieFuel, file.path(dataFolder, "TCOanalysis", "co2IntensityDieFuel.csv"), row.names = FALSE)
-write.csv(energyCarrierParameters, file.path(dataFolder, "TCOanalysis", "fuelPricekWh.csv"), row.names = FALSE)
+write.csv2(TCO, file.path(dataFolder, "TCOanalysis", "TCO.csv"), row.names = FALSE)
+write.csv2(SalesPrice, file.path(dataFolder, "TCOanalysis", "salesPrices.csv"), row.names = FALSE)
+write.csv2(Co2IntensityDieFuel, file.path(dataFolder, "TCOanalysis", "co2IntensityDieFuel.csv"), row.names = FALSE)
+write.csv2(energyCarrierParameters, file.path(dataFolder, "TCOanalysis", "fuelPricekWh.csv"), row.names = FALSE)
 
 rm(list=ls())
 
