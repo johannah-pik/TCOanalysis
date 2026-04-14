@@ -743,3 +743,118 @@ ggsave(
 
 ```
 
+## Sensitivity Analysis
+```{r, fig.width= 4.5, fig.height= 2.3, fig.fullwidth=FALSE}
+paperScenario <- c("Sensitivity | Current Policies | Resale value", "Sensitivity | Current Policies | Interest rate", "Sensitivity | Current Policies | Vehicle insurance", "Current policies")
+
+TCOdata <- loadTCO(dataFolder)
+mileageDistribution <- prepareMileageData(dataFolder)
+DCOdata <- getDCO(DCOscenarios, TCOdata)
+setnames(mileageDistribution, "binMean", "annualM")
+DCOmilageDistribution <- applyMileage(mileageDistribution, DCOdata)
+DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribution, focus = "EUR")
+
+  data <- copy(DCOmilageDistributionShares)[paperScen %in% paperScenario & period < 2041 & DCOscenario == "Medium"]
+  findZeroPoints <- data[ , .SD[which.min(abs(value))], by = .(period, truckTechnology, paperScen, DCOscenario)][
+    , .(period, `truckTechnology`, paperScen, DCOscenario, cumBinWeightedShareEUR)
+  ]
+  findZeroPoints[, DCOscenario := factor(DCOscenario, levels = c("Medium"))]
+  
+  p1 <- ggplot(findZeroPoints[paperScen %in% c("Current policies", "Sensitivity | Current Policies | Resale value")], 
+               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology, linetype = paperScen)) +
+    geom_line(linewidth = baseLineWidth) +
+    scale_color_manual(values = paperColors, guide = "none") +  # legend removed
+    scale_linetype_manual(values = paperLines, guide = "none") +
+    labs(y = "Economically viable\nactivity [%]", x = NULL) +
+    scale_x_continuous(breaks = seq(min(findZeroPoints$period),
+                                    max(findZeroPoints$period), by = 5)) +
+    scale_y_continuous(limits = c(0, 102)) +
+    plotTheme(baseTextSize) +
+    theme(legend.position = "bottom",
+          legend.box = "horizontal",
+          legend.direction = "vertical")
+  
+  p2 <- ggplot(findZeroPoints[paperScen %in% c("Current policies", "Sensitivity | Current Policies | Interest rate")]) +
+    geom_line(aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology, linetype = paperScen),
+              linewidth = baseLineWidth) +
+    scale_color_manual(values = paperColors) +  
+    scale_linetype_manual(values = paperLines, labels = c("Current policies",
+               "Sensitivity case")) +
+    scale_x_continuous(breaks = seq(min(findZeroPoints$period),
+                                    max(findZeroPoints$period), by = 5)) +
+    scale_y_continuous(limits = c(0, 102)) +
+    labs(
+      x = "Year",
+      y = NULL,
+      color = "Truck technology",
+      linetype = ""
+    ) +
+    plotTheme(baseTextSize) +
+    theme(legend.position = "bottom",
+          legend.box = "horizontal",
+          legend.direction = "vertical")
+  
+  p3 <- ggplot(findZeroPoints[paperScen %in% c("Current policies", "Sensitivity | Current Policies | Vehicle insurance")], 
+               aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology, linetype = paperScen)) +
+    geom_line(linewidth = baseLineWidth) +
+    scale_color_manual(values = paperColors, guide = "none") +  # legend removed
+    scale_linetype_manual(values = paperLines, guide = "none") +
+    labs(x = NULL, y = NULL) +
+    scale_x_continuous(breaks = seq(min(findZeroPoints$period),
+                                    max(findZeroPoints$period), by = 5)) +
+    scale_y_continuous(limits = c(0, 102)) +
+    plotTheme(baseTextSize) +
+    theme(legend.position = "bottom",
+          legend.box = "horizontal",
+          legend.direction = "vertical")
+  
+  combined <- (
+    (p1 | p2 | p3) +
+      plot_layout(widths = c(0.8, 0.8, 0.8), guides = "collect") &
+      theme(
+        legend.position = "bottom",
+        plot.margin   =  margin(t = 10, r = 3, b = 3, l = 3)
+      ))
+
+    
+plotWithLabels <- ggdraw(combined) +
+  draw_label(
+    "Sensitivity |\nResale value", x = 0.125, y = 0.93, angle = 0,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1,
+    hjust = 0
+  ) +
+  draw_label(
+    "Sensitivity |\nInterest rate", x = 0.44, y = 0.93, angle = 0,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1,
+    hjust = 0
+  ) +
+  draw_label(
+    "Sensitivity |\nVehicle insurance", x = 0.75, y = 0.93, angle = 0,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1,
+    hjust = 0
+  )
+
+
+# 6. Display final plot
+plot(plotWithLabels)
+
+ggsave(
+  filename = file.path(plotFolder, paste0("removedPolicies.pdf")),
+  plot     = plotWithLabels,
+  device   = cairo_pdf,
+  width    = 4.5,         
+  height   = 2.3,          
+  units    = "in",
+  dpi      = 300          
+)
+```
+
+
+
+
