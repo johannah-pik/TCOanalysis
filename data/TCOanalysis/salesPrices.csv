@@ -32303,9 +32303,9 @@
 "DE";"Rigid";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18290,9774407616
 "DE";"Rigid";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-18863,4306899155
 "DE";"Rigid";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-18863,4306899155
-"DE";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17384,7129035815
+"DE";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18863,4306899155
 "DE";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-18863,4306899155
-"DE";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"DE";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-18863,4306899155
 "DE";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-18863,4306899155
 "DE";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18863,4306899155
 "DE";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-18863,4306899155
@@ -32329,9 +32329,9 @@
 "DE";"Tractor-trailer";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20430,374798749
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-21213,9201835284
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-21213,9201835284
-"DE";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19818,7670252948
+"DE";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21213,9201835284
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21213,9201835284
-"DE";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"DE";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21213,9201835284
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21213,9201835284
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21213,9201835284
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21213,9201835284
@@ -32511,9 +32511,9 @@
 "ES";"Rigid";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18290,9774407616
 "ES";"Rigid";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-18863,4306899155
 "ES";"Rigid";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-18863,4306899155
-"ES";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17384,7129035815
+"ES";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18863,4306899155
 "ES";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-18863,4306899155
-"ES";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"ES";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-18863,4306899155
 "ES";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-18863,4306899155
 "ES";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18863,4306899155
 "ES";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-18863,4306899155
@@ -32537,9 +32537,9 @@
 "ES";"Tractor-trailer";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20430,374798749
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-21213,9201835284
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-21213,9201835284
-"ES";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19818,7670252948
+"ES";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21213,9201835284
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21213,9201835284
-"ES";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"ES";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21213,9201835284
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21213,9201835284
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21213,9201835284
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21213,9201835284
@@ -32719,9 +32719,9 @@
 "FR";"Rigid";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18290,9774407616
 "FR";"Rigid";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-18863,4306899155
 "FR";"Rigid";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-18863,4306899155
-"FR";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17384,7129035815
+"FR";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18863,4306899155
 "FR";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-18863,4306899155
-"FR";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"FR";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-18863,4306899155
 "FR";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-18863,4306899155
 "FR";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18863,4306899155
 "FR";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-18863,4306899155
@@ -32745,9 +32745,9 @@
 "FR";"Tractor-trailer";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20430,374798749
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-21213,9201835284
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-21213,9201835284
-"FR";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19818,7670252948
+"FR";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21213,9201835284
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21213,9201835284
-"FR";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"FR";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21213,9201835284
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21213,9201835284
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21213,9201835284
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21213,9201835284
@@ -32927,9 +32927,9 @@
 "IT";"Rigid";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18290,9774407616
 "IT";"Rigid";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-18863,4306899155
 "IT";"Rigid";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-18863,4306899155
-"IT";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17384,7129035815
+"IT";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18863,4306899155
 "IT";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-18863,4306899155
-"IT";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"IT";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-18863,4306899155
 "IT";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-18863,4306899155
 "IT";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18863,4306899155
 "IT";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-18863,4306899155
@@ -32953,9 +32953,9 @@
 "IT";"Tractor-trailer";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20430,374798749
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-21213,9201835284
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-21213,9201835284
-"IT";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19818,7670252948
+"IT";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21213,9201835284
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21213,9201835284
-"IT";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"IT";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21213,9201835284
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21213,9201835284
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21213,9201835284
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21213,9201835284
@@ -33135,9 +33135,9 @@
 "NL";"Rigid";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18290,9774407616
 "NL";"Rigid";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-18863,4306899155
 "NL";"Rigid";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-18863,4306899155
-"NL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17384,7129035815
+"NL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18863,4306899155
 "NL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-18863,4306899155
-"NL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"NL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-18863,4306899155
 "NL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-18863,4306899155
 "NL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18863,4306899155
 "NL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-18863,4306899155
@@ -33161,9 +33161,9 @@
 "NL";"Tractor-trailer";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20430,374798749
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-21213,9201835284
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-21213,9201835284
-"NL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19818,7670252948
+"NL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21213,9201835284
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21213,9201835284
-"NL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"NL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21213,9201835284
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21213,9201835284
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21213,9201835284
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21213,9201835284
@@ -33343,9 +33343,9 @@
 "PL";"Rigid";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18290,9774407616
 "PL";"Rigid";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-18863,4306899155
 "PL";"Rigid";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-18863,4306899155
-"PL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17384,7129035815
+"PL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18863,4306899155
 "PL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-18863,4306899155
-"PL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"PL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-18863,4306899155
 "PL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-18863,4306899155
 "PL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18863,4306899155
 "PL";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-18863,4306899155
@@ -33369,9 +33369,9 @@
 "PL";"Tractor-trailer";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20430,374798749
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-21213,9201835284
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-21213,9201835284
-"PL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19818,7670252948
+"PL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21213,9201835284
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21213,9201835284
-"PL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"PL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21213,9201835284
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21213,9201835284
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21213,9201835284
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21213,9201835284
@@ -33551,9 +33551,9 @@
 "UK";"Rigid";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18290,9774407616
 "UK";"Rigid";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-18863,4306899155
 "UK";"Rigid";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-18863,4306899155
-"UK";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17384,7129035815
+"UK";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18863,4306899155
 "UK";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-18863,4306899155
-"UK";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"UK";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-18863,4306899155
 "UK";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-18863,4306899155
 "UK";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18863,4306899155
 "UK";"Rigid";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-18863,4306899155
@@ -33577,9 +33577,9 @@
 "UK";"Tractor-trailer";"ICET";"LC_HTM";2030;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20430,374798749
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2030;"Current policies";"Resale value";"EUR/veh";-21213,9201835284
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2030;"Removed policies";"Resale value";"EUR/veh";-21213,9201835284
-"UK";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19818,7670252948
+"UK";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21213,9201835284
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21213,9201835284
-"UK";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"UK";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21213,9201835284
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21213,9201835284
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21213,9201835284
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2030;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21213,9201835284
@@ -33759,9 +33759,9 @@
 "DE";"Rigid";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18588,6149586501
 "DE";"Rigid";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-19168,8040625222
 "DE";"Rigid";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-19168,8040625222
-"DE";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17666,1478396987
+"DE";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19168,8040625222
 "DE";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19168,8040625222
-"DE";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"DE";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19168,8040625222
 "DE";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19168,8040625222
 "DE";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19168,8040625222
 "DE";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19168,8040625222
@@ -33785,9 +33785,9 @@
 "DE";"Tractor-trailer";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20807,9898545487
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-21602,1236904737
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-21602,1236904737
-"DE";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20181,4399681546
+"DE";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21602,1236904737
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21602,1236904737
-"DE";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"DE";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21602,1236904737
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21602,1236904737
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21602,1236904737
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21602,1236904737
@@ -33967,9 +33967,9 @@
 "ES";"Rigid";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18588,6149586501
 "ES";"Rigid";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-19168,8040625222
 "ES";"Rigid";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-19168,8040625222
-"ES";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17666,1478396987
+"ES";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19168,8040625222
 "ES";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19168,8040625222
-"ES";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"ES";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19168,8040625222
 "ES";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19168,8040625222
 "ES";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19168,8040625222
 "ES";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19168,8040625222
@@ -33993,9 +33993,9 @@
 "ES";"Tractor-trailer";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20807,9898545487
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-21602,1236904737
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-21602,1236904737
-"ES";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20181,4399681546
+"ES";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21602,1236904737
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21602,1236904737
-"ES";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"ES";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21602,1236904737
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21602,1236904737
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21602,1236904737
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21602,1236904737
@@ -34175,9 +34175,9 @@
 "FR";"Rigid";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18588,6149586501
 "FR";"Rigid";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-19168,8040625222
 "FR";"Rigid";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-19168,8040625222
-"FR";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17666,1478396987
+"FR";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19168,8040625222
 "FR";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19168,8040625222
-"FR";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"FR";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19168,8040625222
 "FR";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19168,8040625222
 "FR";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19168,8040625222
 "FR";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19168,8040625222
@@ -34201,9 +34201,9 @@
 "FR";"Tractor-trailer";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20807,9898545487
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-21602,1236904737
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-21602,1236904737
-"FR";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20181,4399681546
+"FR";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21602,1236904737
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21602,1236904737
-"FR";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"FR";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21602,1236904737
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21602,1236904737
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21602,1236904737
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21602,1236904737
@@ -34383,9 +34383,9 @@
 "IT";"Rigid";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18588,6149586501
 "IT";"Rigid";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-19168,8040625222
 "IT";"Rigid";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-19168,8040625222
-"IT";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17666,1478396987
+"IT";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19168,8040625222
 "IT";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19168,8040625222
-"IT";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"IT";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19168,8040625222
 "IT";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19168,8040625222
 "IT";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19168,8040625222
 "IT";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19168,8040625222
@@ -34409,9 +34409,9 @@
 "IT";"Tractor-trailer";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20807,9898545487
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-21602,1236904737
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-21602,1236904737
-"IT";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20181,4399681546
+"IT";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21602,1236904737
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21602,1236904737
-"IT";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"IT";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21602,1236904737
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21602,1236904737
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21602,1236904737
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21602,1236904737
@@ -34591,9 +34591,9 @@
 "NL";"Rigid";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18588,6149586501
 "NL";"Rigid";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-19168,8040625222
 "NL";"Rigid";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-19168,8040625222
-"NL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17666,1478396987
+"NL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19168,8040625222
 "NL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19168,8040625222
-"NL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"NL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19168,8040625222
 "NL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19168,8040625222
 "NL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19168,8040625222
 "NL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19168,8040625222
@@ -34617,9 +34617,9 @@
 "NL";"Tractor-trailer";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20807,9898545487
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-21602,1236904737
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-21602,1236904737
-"NL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20181,4399681546
+"NL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21602,1236904737
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21602,1236904737
-"NL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"NL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21602,1236904737
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21602,1236904737
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21602,1236904737
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21602,1236904737
@@ -34799,9 +34799,9 @@
 "PL";"Rigid";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18588,6149586501
 "PL";"Rigid";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-19168,8040625222
 "PL";"Rigid";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-19168,8040625222
-"PL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17666,1478396987
+"PL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19168,8040625222
 "PL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19168,8040625222
-"PL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"PL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19168,8040625222
 "PL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19168,8040625222
 "PL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19168,8040625222
 "PL";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19168,8040625222
@@ -34825,9 +34825,9 @@
 "PL";"Tractor-trailer";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20807,9898545487
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-21602,1236904737
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-21602,1236904737
-"PL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20181,4399681546
+"PL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21602,1236904737
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21602,1236904737
-"PL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"PL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21602,1236904737
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21602,1236904737
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21602,1236904737
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21602,1236904737
@@ -35007,9 +35007,9 @@
 "UK";"Rigid";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18588,6149586501
 "UK";"Rigid";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-19168,8040625222
 "UK";"Rigid";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-19168,8040625222
-"UK";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17666,1478396987
+"UK";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19168,8040625222
 "UK";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19168,8040625222
-"UK";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"UK";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19168,8040625222
 "UK";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19168,8040625222
 "UK";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19168,8040625222
 "UK";"Rigid";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19168,8040625222
@@ -35033,9 +35033,9 @@
 "UK";"Tractor-trailer";"ICET";"LC_HTM";2035;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20807,9898545487
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2035;"Current policies";"Resale value";"EUR/veh";-21602,1236904737
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2035;"Removed policies";"Resale value";"EUR/veh";-21602,1236904737
-"UK";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20181,4399681546
+"UK";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21602,1236904737
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21602,1236904737
-"UK";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"UK";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21602,1236904737
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21602,1236904737
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21602,1236904737
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2035;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21602,1236904737
@@ -35215,9 +35215,9 @@
 "DE";"Rigid";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18886,2524765385
 "DE";"Rigid";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-19474,177435129
 "DE";"Rigid";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-19474,177435129
-"DE";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17947,5827758158
+"DE";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19474,177435129
 "DE";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19474,177435129
-"DE";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"DE";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19474,177435129
 "DE";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19474,177435129
 "DE";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19474,177435129
 "DE";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19474,177435129
@@ -35241,9 +35241,9 @@
 "DE";"Tractor-trailer";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21185,6049103484
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-21990,3271974191
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-21990,3271974191
-"DE";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20544,1129110144
+"DE";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21990,3271974191
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21990,3271974191
-"DE";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"DE";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21990,3271974191
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21990,3271974191
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21990,3271974191
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21990,3271974191
@@ -35423,9 +35423,9 @@
 "ES";"Rigid";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18886,2524765385
 "ES";"Rigid";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-19474,177435129
 "ES";"Rigid";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-19474,177435129
-"ES";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17947,5827758158
+"ES";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19474,177435129
 "ES";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19474,177435129
-"ES";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"ES";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19474,177435129
 "ES";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19474,177435129
 "ES";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19474,177435129
 "ES";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19474,177435129
@@ -35449,9 +35449,9 @@
 "ES";"Tractor-trailer";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21185,6049103484
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-21990,3271974191
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-21990,3271974191
-"ES";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20544,1129110144
+"ES";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21990,3271974191
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21990,3271974191
-"ES";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"ES";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21990,3271974191
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21990,3271974191
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21990,3271974191
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21990,3271974191
@@ -35631,9 +35631,9 @@
 "FR";"Rigid";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18886,2524765385
 "FR";"Rigid";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-19474,177435129
 "FR";"Rigid";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-19474,177435129
-"FR";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17947,5827758158
+"FR";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19474,177435129
 "FR";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19474,177435129
-"FR";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"FR";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19474,177435129
 "FR";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19474,177435129
 "FR";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19474,177435129
 "FR";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19474,177435129
@@ -35657,9 +35657,9 @@
 "FR";"Tractor-trailer";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21185,6049103484
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-21990,3271974191
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-21990,3271974191
-"FR";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20544,1129110144
+"FR";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21990,3271974191
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21990,3271974191
-"FR";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"FR";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21990,3271974191
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21990,3271974191
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21990,3271974191
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21990,3271974191
@@ -35839,9 +35839,9 @@
 "IT";"Rigid";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18886,2524765385
 "IT";"Rigid";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-19474,177435129
 "IT";"Rigid";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-19474,177435129
-"IT";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17947,5827758158
+"IT";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19474,177435129
 "IT";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19474,177435129
-"IT";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"IT";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19474,177435129
 "IT";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19474,177435129
 "IT";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19474,177435129
 "IT";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19474,177435129
@@ -35865,9 +35865,9 @@
 "IT";"Tractor-trailer";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21185,6049103484
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-21990,3271974191
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-21990,3271974191
-"IT";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20544,1129110144
+"IT";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21990,3271974191
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21990,3271974191
-"IT";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"IT";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21990,3271974191
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21990,3271974191
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21990,3271974191
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21990,3271974191
@@ -36047,9 +36047,9 @@
 "NL";"Rigid";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18886,2524765385
 "NL";"Rigid";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-19474,177435129
 "NL";"Rigid";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-19474,177435129
-"NL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17947,5827758158
+"NL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19474,177435129
 "NL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19474,177435129
-"NL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"NL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19474,177435129
 "NL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19474,177435129
 "NL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19474,177435129
 "NL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19474,177435129
@@ -36073,9 +36073,9 @@
 "NL";"Tractor-trailer";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21185,6049103484
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-21990,3271974191
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-21990,3271974191
-"NL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20544,1129110144
+"NL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21990,3271974191
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21990,3271974191
-"NL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"NL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21990,3271974191
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21990,3271974191
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21990,3271974191
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21990,3271974191
@@ -36255,9 +36255,9 @@
 "PL";"Rigid";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18886,2524765385
 "PL";"Rigid";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-19474,177435129
 "PL";"Rigid";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-19474,177435129
-"PL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17947,5827758158
+"PL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19474,177435129
 "PL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19474,177435129
-"PL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"PL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19474,177435129
 "PL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19474,177435129
 "PL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19474,177435129
 "PL";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19474,177435129
@@ -36281,9 +36281,9 @@
 "PL";"Tractor-trailer";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21185,6049103484
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-21990,3271974191
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-21990,3271974191
-"PL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20544,1129110144
+"PL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21990,3271974191
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21990,3271974191
-"PL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"PL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21990,3271974191
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21990,3271974191
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21990,3271974191
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21990,3271974191
@@ -36463,9 +36463,9 @@
 "UK";"Rigid";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-18886,2524765385
 "UK";"Rigid";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-19474,177435129
 "UK";"Rigid";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-19474,177435129
-"UK";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-17947,5827758158
+"UK";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19474,177435129
 "UK";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19474,177435129
-"UK";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"UK";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19474,177435129
 "UK";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19474,177435129
 "UK";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19474,177435129
 "UK";"Rigid";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19474,177435129
@@ -36489,9 +36489,9 @@
 "UK";"Tractor-trailer";"ICET";"LC_HTM";2040;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21185,6049103484
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2040;"Current policies";"Resale value";"EUR/veh";-21990,3271974191
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2040;"Removed policies";"Resale value";"EUR/veh";-21990,3271974191
-"UK";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20544,1129110144
+"UK";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21990,3271974191
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-21990,3271974191
-"UK";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"UK";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-21990,3271974191
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-21990,3271974191
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21990,3271974191
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2040;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-21990,3271974191
@@ -36671,9 +36671,9 @@
 "DE";"Rigid";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19161,9717393918
 "DE";"Rigid";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-19753,7646253414
 "DE";"Rigid";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-19753,7646253414
-"DE";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18205,2529267688
+"DE";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19753,7646253414
 "DE";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19753,7646253414
-"DE";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"DE";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19753,7646253414
 "DE";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19753,7646253414
 "DE";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19753,7646253414
 "DE";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19753,7646253414
@@ -36697,9 +36697,9 @@
 "DE";"Tractor-trailer";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21453,8158964085
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-22263,832409052
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-22263,832409052
-"DE";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20799,6307984516
+"DE";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22263,832409052
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22263,832409052
-"DE";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"DE";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22263,832409052
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22263,832409052
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22263,832409052
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22263,832409052
@@ -36879,9 +36879,9 @@
 "ES";"Rigid";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19161,9717393918
 "ES";"Rigid";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-19753,7646253414
 "ES";"Rigid";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-19753,7646253414
-"ES";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18205,2529267688
+"ES";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19753,7646253414
 "ES";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19753,7646253414
-"ES";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"ES";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19753,7646253414
 "ES";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19753,7646253414
 "ES";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19753,7646253414
 "ES";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19753,7646253414
@@ -36905,9 +36905,9 @@
 "ES";"Tractor-trailer";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21453,8158964085
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-22263,832409052
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-22263,832409052
-"ES";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20799,6307984516
+"ES";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22263,832409052
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22263,832409052
-"ES";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"ES";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22263,832409052
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22263,832409052
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22263,832409052
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22263,832409052
@@ -37087,9 +37087,9 @@
 "FR";"Rigid";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19161,9717393918
 "FR";"Rigid";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-19753,7646253414
 "FR";"Rigid";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-19753,7646253414
-"FR";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18205,2529267688
+"FR";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19753,7646253414
 "FR";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19753,7646253414
-"FR";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"FR";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19753,7646253414
 "FR";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19753,7646253414
 "FR";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19753,7646253414
 "FR";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19753,7646253414
@@ -37113,9 +37113,9 @@
 "FR";"Tractor-trailer";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21453,8158964085
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-22263,832409052
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-22263,832409052
-"FR";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20799,6307984516
+"FR";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22263,832409052
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22263,832409052
-"FR";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"FR";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22263,832409052
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22263,832409052
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22263,832409052
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22263,832409052
@@ -37295,9 +37295,9 @@
 "IT";"Rigid";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19161,9717393918
 "IT";"Rigid";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-19753,7646253414
 "IT";"Rigid";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-19753,7646253414
-"IT";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18205,2529267688
+"IT";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19753,7646253414
 "IT";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19753,7646253414
-"IT";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"IT";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19753,7646253414
 "IT";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19753,7646253414
 "IT";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19753,7646253414
 "IT";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19753,7646253414
@@ -37321,9 +37321,9 @@
 "IT";"Tractor-trailer";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21453,8158964085
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-22263,832409052
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-22263,832409052
-"IT";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20799,6307984516
+"IT";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22263,832409052
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22263,832409052
-"IT";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"IT";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22263,832409052
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22263,832409052
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22263,832409052
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22263,832409052
@@ -37503,9 +37503,9 @@
 "NL";"Rigid";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19161,9717393918
 "NL";"Rigid";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-19753,7646253414
 "NL";"Rigid";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-19753,7646253414
-"NL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18205,2529267688
+"NL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19753,7646253414
 "NL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19753,7646253414
-"NL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"NL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19753,7646253414
 "NL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19753,7646253414
 "NL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19753,7646253414
 "NL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19753,7646253414
@@ -37529,9 +37529,9 @@
 "NL";"Tractor-trailer";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21453,8158964085
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-22263,832409052
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-22263,832409052
-"NL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20799,6307984516
+"NL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22263,832409052
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22263,832409052
-"NL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"NL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22263,832409052
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22263,832409052
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22263,832409052
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22263,832409052
@@ -37711,9 +37711,9 @@
 "PL";"Rigid";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19161,9717393918
 "PL";"Rigid";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-19753,7646253414
 "PL";"Rigid";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-19753,7646253414
-"PL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18205,2529267688
+"PL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19753,7646253414
 "PL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19753,7646253414
-"PL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"PL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19753,7646253414
 "PL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19753,7646253414
 "PL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19753,7646253414
 "PL";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19753,7646253414
@@ -37737,9 +37737,9 @@
 "PL";"Tractor-trailer";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21453,8158964085
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-22263,832409052
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-22263,832409052
-"PL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20799,6307984516
+"PL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22263,832409052
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22263,832409052
-"PL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"PL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22263,832409052
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22263,832409052
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22263,832409052
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22263,832409052
@@ -37919,9 +37919,9 @@
 "UK";"Rigid";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19161,9717393918
 "UK";"Rigid";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-19753,7646253414
 "UK";"Rigid";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-19753,7646253414
-"UK";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18205,2529267688
+"UK";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-19753,7646253414
 "UK";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-19753,7646253414
-"UK";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"UK";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-19753,7646253414
 "UK";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-19753,7646253414
 "UK";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19753,7646253414
 "UK";"Rigid";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-19753,7646253414
@@ -37945,9 +37945,9 @@
 "UK";"Tractor-trailer";"ICET";"LC_HTM";2045;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21453,8158964085
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2045;"Current policies";"Resale value";"EUR/veh";-22263,832409052
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2045;"Removed policies";"Resale value";"EUR/veh";-22263,832409052
-"UK";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20799,6307984516
+"UK";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22263,832409052
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22263,832409052
-"UK";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"UK";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22263,832409052
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22263,832409052
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22263,832409052
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2045;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22263,832409052
@@ -38127,9 +38127,9 @@
 "DE";"Rigid";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19437,691002245
 "DE";"Rigid";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-20033,3518155538
 "DE";"Rigid";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-20033,3518155538
-"DE";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18462,9230777218
+"DE";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20033,3518155538
 "DE";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-20033,3518155538
-"DE";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"DE";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-20033,3518155538
 "DE";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-20033,3518155538
 "DE";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20033,3518155538
 "DE";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-20033,3518155538
@@ -38153,9 +38153,9 @@
 "DE";"Tractor-trailer";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21722,0268824686
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-22537,337620685
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-22537,337620685
-"DE";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21055,1486858888
+"DE";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22537,337620685
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22537,337620685
-"DE";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"DE";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22537,337620685
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22537,337620685
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22537,337620685
 "DE";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22537,337620685
@@ -38335,9 +38335,9 @@
 "ES";"Rigid";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19437,691002245
 "ES";"Rigid";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-20033,3518155538
 "ES";"Rigid";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-20033,3518155538
-"ES";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18462,9230777218
+"ES";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20033,3518155538
 "ES";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-20033,3518155538
-"ES";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"ES";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-20033,3518155538
 "ES";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-20033,3518155538
 "ES";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20033,3518155538
 "ES";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-20033,3518155538
@@ -38361,9 +38361,9 @@
 "ES";"Tractor-trailer";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21722,0268824686
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-22537,337620685
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-22537,337620685
-"ES";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21055,1486858888
+"ES";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22537,337620685
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22537,337620685
-"ES";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"ES";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22537,337620685
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22537,337620685
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22537,337620685
 "ES";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22537,337620685
@@ -38543,9 +38543,9 @@
 "FR";"Rigid";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19437,691002245
 "FR";"Rigid";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-20033,3518155538
 "FR";"Rigid";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-20033,3518155538
-"FR";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18462,9230777218
+"FR";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20033,3518155538
 "FR";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-20033,3518155538
-"FR";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"FR";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-20033,3518155538
 "FR";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-20033,3518155538
 "FR";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20033,3518155538
 "FR";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-20033,3518155538
@@ -38569,9 +38569,9 @@
 "FR";"Tractor-trailer";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21722,0268824686
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-22537,337620685
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-22537,337620685
-"FR";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21055,1486858888
+"FR";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22537,337620685
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22537,337620685
-"FR";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"FR";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22537,337620685
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22537,337620685
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22537,337620685
 "FR";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22537,337620685
@@ -38751,9 +38751,9 @@
 "IT";"Rigid";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19437,691002245
 "IT";"Rigid";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-20033,3518155538
 "IT";"Rigid";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-20033,3518155538
-"IT";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18462,9230777218
+"IT";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20033,3518155538
 "IT";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-20033,3518155538
-"IT";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"IT";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-20033,3518155538
 "IT";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-20033,3518155538
 "IT";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20033,3518155538
 "IT";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-20033,3518155538
@@ -38777,9 +38777,9 @@
 "IT";"Tractor-trailer";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21722,0268824686
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-22537,337620685
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-22537,337620685
-"IT";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21055,1486858888
+"IT";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22537,337620685
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22537,337620685
-"IT";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"IT";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22537,337620685
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22537,337620685
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22537,337620685
 "IT";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22537,337620685
@@ -38959,9 +38959,9 @@
 "NL";"Rigid";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19437,691002245
 "NL";"Rigid";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-20033,3518155538
 "NL";"Rigid";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-20033,3518155538
-"NL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18462,9230777218
+"NL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20033,3518155538
 "NL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-20033,3518155538
-"NL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"NL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-20033,3518155538
 "NL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-20033,3518155538
 "NL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20033,3518155538
 "NL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-20033,3518155538
@@ -38985,9 +38985,9 @@
 "NL";"Tractor-trailer";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21722,0268824686
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-22537,337620685
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-22537,337620685
-"NL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21055,1486858888
+"NL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22537,337620685
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22537,337620685
-"NL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"NL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22537,337620685
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22537,337620685
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22537,337620685
 "NL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22537,337620685
@@ -39167,9 +39167,9 @@
 "PL";"Rigid";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19437,691002245
 "PL";"Rigid";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-20033,3518155538
 "PL";"Rigid";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-20033,3518155538
-"PL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18462,9230777218
+"PL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20033,3518155538
 "PL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-20033,3518155538
-"PL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"PL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-20033,3518155538
 "PL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-20033,3518155538
 "PL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20033,3518155538
 "PL";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-20033,3518155538
@@ -39193,9 +39193,9 @@
 "PL";"Tractor-trailer";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21722,0268824686
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-22537,337620685
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-22537,337620685
-"PL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21055,1486858888
+"PL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22537,337620685
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22537,337620685
-"PL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"PL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22537,337620685
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22537,337620685
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22537,337620685
 "PL";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22537,337620685
@@ -39375,9 +39375,9 @@
 "UK";"Rigid";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-19437,691002245
 "UK";"Rigid";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-20033,3518155538
 "UK";"Rigid";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-20033,3518155538
-"UK";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-18462,9230777218
+"UK";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-20033,3518155538
 "UK";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-20033,3518155538
-"UK";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"UK";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-20033,3518155538
 "UK";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-20033,3518155538
 "UK";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-20033,3518155538
 "UK";"Rigid";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-20033,3518155538
@@ -39401,9 +39401,9 @@
 "UK";"Tractor-trailer";"ICET";"LC_HTM";2050;"Sensitivity | Removed policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-21722,0268824686
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2050;"Current policies";"Resale value";"EUR/veh";-22537,337620685
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2050;"Removed policies";"Resale value";"EUR/veh";-22537,337620685
-"UK";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-21055,1486858888
+"UK";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Interest rate";"Resale value";"EUR/veh";-22537,337620685
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Removed CO2 price";"Resale value";"EUR/veh";-22537,337620685
-"UK";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";0
+"UK";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Resale value";"Resale value";"EUR/veh";-22537,337620685
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current Policies | Urban depot-only charging";"Resale value";"EUR/veh";-22537,337620685
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Current policies | Removed diesel efficiency gains";"Resale value";"EUR/veh";-22537,337620685
 "UK";"Tractor-trailer";"ICET";"MC_MTM";2050;"Sensitivity | Removed policies except for H2 tax reduction";"Resale value";"EUR/veh";-22537,337620685
