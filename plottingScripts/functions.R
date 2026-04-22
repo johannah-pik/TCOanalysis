@@ -341,26 +341,27 @@ getRangeAnalysis <- function(weightedMileage, infrastructure) {
   dummy <- unique(rangeAnalysis[, c("period")])[, all := "All"]
   directRange <- merge(directRange, dummy, by = "all", allow.cartesian = TRUE)[, all := NULL]
   rangeAnalysis <- merge(rangeAnalysis, directRange, by = c("period"), allow.cartesian = TRUE)
+  # limit to an effective doubling of the direct driving range
   rangeAnalysis[, MCSrange := 2 * directRange]
-  
+
   # direct feasibility
   rangeAnalysis[directRange > dvktMax, directFeasibility := 1]
   rangeAnalysis[directRange > dvktMax, feasAvktShareEURperMaxdaily := weightedShareEUR]
-  # MCS feasibility
-  rangeAnalysisNoMCS <- rangeAnalysis[directFeasibility == 1, .(shareFeas = sum(feasAvktShareEURperMaxdaily)), by = c("period", "directRange")]
+  # save hypothetical no MCS availability separately
+  rangeAnalysisNoMCS <- rangeAnalysis[directFeasibility == 1, .(cumShareFeas = sum(feasAvktShareEURperMaxdaily)), by = c("period", "directRange")]
   rangeAnalysisNoMCS <- rangeAnalysisNoMCS[, c("period") := NULL]
   rangeAnalysisNoMCS <- unique(rangeAnalysisNoMCS)
+  # save hypothetical full MCS availability separately
   rangeAnalysis[directRange < dvktMax & MCSrange > dvktMax, MCSFeasibility := 1]
-  rangeAnalysisfullMCS <- rangeAnalysis[(directFeasibility == 1 | MCSFeasibility == 1), .(shareFeas = sum(weightedShareEUR)), by = c("period", "directRange")]
+  rangeAnalysisfullMCS <- rangeAnalysis[(directFeasibility == 1 | MCSFeasibility == 1), .(cumShareFeas = sum(weightedShareEUR)), by = c("period", "directRange")]
   rangeAnalysisfullMCS <- rangeAnalysisfullMCS[, c("period") := NULL]
   rangeAnalysisfullMCS <- unique(rangeAnalysisfullMCS)
+  # Only profiles with a maximum daily mileage within the limit of an effective doubling of the direct driving range by MCS can become feasible (to the extent of MCS availability)
   rangeAnalysis[directRange < dvktMax & MCSrange > dvktMax, feasAvktShareEURperMaxdaily := weightedShareEUR * MCSavailability]
   rangeAnalysis[is.na(feasAvktShareEURperMaxdaily), feasAvktShareEURperMaxdaily := 0]
   
-  rangeAnalysis <- rangeAnalysis[, .(shareFeas = sum(feasAvktShareEURperMaxdaily)), by = c("period", "directRange")]
-  rangeAnalysis[, cumShareFeas := cumsum(shareFeas), by = c("period", "directRange")]
-  rangeAnalysisNoMCS[, cumShareFeas := cumsum(shareFeas), by = c("directRange")]
-  rangeAnalysisfullMCS[, cumShareFeas := cumsum(shareFeas), by = c("directRange")]
+  rangeAnalysis <- rangeAnalysis[, .(cumShareFeas = sum(feasAvktShareEURperMaxdaily)), by = c("period", "directRange")]
+
   return(list(buildUp = rangeAnalysis,
               noMCS = rangeAnalysisNoMCS,
               fullMCS = rangeAnalysisfullMCS)
