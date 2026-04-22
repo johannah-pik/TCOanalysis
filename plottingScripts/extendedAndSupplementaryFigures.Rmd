@@ -819,14 +819,14 @@ DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribut
     
 plotWithLabels <- ggdraw(combined) +
   draw_label(
-    "Sensitivity |\nSetting resale value\nof ZEV to 0 %", x = 0.125, y = 0.93, angle = 0,
+    "Sensitivity |\nSetting resale value\nof ZETs to 0 %", x = 0.125, y = 0.93, angle = 0,
     fontface = "bold",
     fontfamily = "sans",
     size = baseTextSize * 0.9,
     hjust = 0
   ) +
   draw_label(
-    "Sensitivity |\nSetting interest rate\nfor ZEV to 11 %", x = 0.44, y = 0.93, angle = 0,
+    "Sensitivity |\nSetting interest rate\nfor ZETs to 11 %", x = 0.44, y = 0.93, angle = 0,
     fontface = "bold",
     fontfamily = "sans",
     size = baseTextSize * 0.9,
