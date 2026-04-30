@@ -2,7 +2,7 @@
 title: "Extended and supplementary figures"
 author: "Johanna Hoppe"
 date: "2025-05-27"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -55,7 +55,7 @@ setDT(DCOscenarios)
 ```
 
 
-# Extended Fig. A1: : Heterogeneous DCO of BETs against ICETs for feasible maximum daily mileages, and their respective cumulative share of vehicles.
+# Extended Fig. A1 | Heterogeneous DCO of BETs against ICETs for feasible maximum daily mileages, and their respective cumulative share of vehicles.
 ```{r, fig.width= 5, fig.height= 3, fig.fullwidth=FALSE}
 TCOdata <- loadTCO(dataFolder)
 binnedWeightedMileage <- prepareMileageData(dataFolder, bin = TRUE, reduce = FALSE)
@@ -144,7 +144,7 @@ ggsave(
 
 ```
 
-# Extended Fig. A2: Economically viable HDV road freight activity for the optimistic, medium, and pessimistic DCO scenario comparing BETs with FCETs.
+# Extended Fig. A2 | Economically viable HDV road freight activity for the optimistic, medium, and pessimistic DCO scenario comparing BETs with FCETs.
 ```{r, fig.width= 5, fig.height= 8.5, fig.fullwidth=FALSE}
 yr <- c(2030)
 paperScenario <- "Current policies"
@@ -254,7 +254,7 @@ ggsave(
 )
 ```
 
-# Extended Fig. A3: Assumptions on evolution of fast-charging infrastructure availability over time
+# Extended Fig. A3 | Assumptions on evolution of fast-charging infrastructure availability over time
 ```{r, fig.width=3, fig.height=1.5, fig.fullwidth=FALSE}
 infrastructure <- loadInfrastructureBuildUp(dataFolder)
 
@@ -284,7 +284,7 @@ ggsave(
 
 ```
 
-# Supplementary Fig. 1: CAPEX overview
+# Supplementary Fig. 1 | CAPEX overview
 ```{r, fig.width=45, fig.height=10, fig.fullwidth=FALSE}
 # Select plot data
 yrs <- c(2030)
@@ -421,7 +421,7 @@ ggsave(
 )
 ```
 
-# Supplementary Fig. 3:  Shares of bio, fossil, and synthetic diesel in the diesel fuel blend at the gas station
+# Supplementary Fig. 3 | Shares of bio, fossil, and synthetic diesel in the diesel fuel blend at the gas station
 ```{r, fig.width=4.5, fig.height=1.5, fig.fullwidth=FALSE}
 dieselBlendShares <- loadDieselBlendShares(dataFolder)[, value := as.numeric(value) * 100]
 dieselBlendShares <- aggregateCountryData(dieselBlendShares, weightType = "stock")[paperScen == "Current policies"]
@@ -471,7 +471,7 @@ ggsave(
 
 ```
 
-# Supplementary Fig. 4:  Enduse energy carrier prices overview.
+# Supplementary Fig. 4 | Enduse energy carrier prices overview.
 ## energy carrier prices enduse vs wholesale 
 ```{r, fig.width=4.5/2, fig.height=6/3, fig.fullwidth=FALSE}
 
@@ -743,7 +743,7 @@ ggsave(
 
 ```
 
-# Sensitivity Analysis
+# Supplementary Fig. 5 | Sensitivity analysis regarding resale value, interest rate and vehicle insurance
 ```{r, fig.width= 4.5, fig.height= 2.5, fig.fullwidth=FALSE}
 paperScenario <- c("Sensitivity | Current Policies | Resale value", "Sensitivity | Current Policies | Interest rate", "Sensitivity | Current Policies | Vehicle insurance", "Current policies")
 
@@ -855,112 +855,8 @@ ggsave(
 )
 ```
 
-# Country comparison: Economically viable activity [%]
-```{r, fig.width= 5, fig.height= 8.5, fig.fullwidth=FALSE}
-paperScenario <- "Current policies"
-DCOscen <- "Medium"
-
-TCOdata <- loadTCO(dataFolder)
-mileageDistribution <- prepareMileageData(dataFolder)
-DCOdata <- getDCO(DCOscenarios, TCOdata)
-setnames(mileageDistribution, "binMean", "annualM")
-DCOmilageDistribution <- applyMileage(mileageDistribution, DCOdata)
-DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribution, focus = "Country")
-
-data <- copy(DCOmilageDistributionShares)[paperScen == paperScenario & DCOscenario == DCOscen]
-  
-findZeroPoints <- data[ , .SD[which.min(abs(value))], by = .(period, truckTechnology, DCOscenario, country)][, .(period, `truckTechnology`, DCOscenario, country, cumBinShareCountry)]
-findZeroPoints[, DCOscenario := factor(DCOscenario, levels = c("Medium"))]
-  
-  p1 <- ggplot(findZeroPoints[period == 2030], 
-               aes(x = country, y = cumBinShareCountry * 100, color = truckTechnology)) +
-    geom_point() +
-    scale_color_manual(values = paperColors, guide = "none") +  # legend removed
-    labs(y = "Economically viable\nactivity [%]", x = NULL) +
-    scale_y_continuous(limits = c(0, 102)) +
-    plotTheme(baseTextSize) +
-    theme(legend.position = "bottom",
-          legend.box = "horizontal",
-          legend.direction = "vertical")
-  
-  p2 <- ggplot(findZeroPoints[period == 2035], 
-               aes(x = country, y = cumBinShareCountry * 100, color = truckTechnology)) +
-    geom_point() +
-    scale_color_manual(values = paperColors) +  
-    scale_y_continuous(limits = c(0, 102)) +
-    labs(
-      x = "Year",
-      y = NULL,
-      color = "Truck technology",
-      linetype = ""
-    ) +
-    plotTheme(baseTextSize) +
-    theme(legend.position = "bottom",
-          legend.box = "horizontal",
-          legend.direction = "vertical")
-  
-  p3 <- ggplot(findZeroPoints[period == 2040], 
-               aes(x = country, y = cumBinShareCountry * 100, color = truckTechnology)) +
-    geom_point() +
-    scale_color_manual(values = paperColors, guide = "none") +  # legend removed
-    labs(x = NULL, y = NULL) +
-    scale_y_continuous(limits = c(0, 102)) +
-    plotTheme(baseTextSize) +
-    theme(legend.position = "bottom",
-          legend.box = "horizontal",
-          legend.direction = "vertical")
-  
-  combined <- (
-    (p1 | p2 | p3) +
-      plot_layout(widths = c(0.8, 0.8, 0.8), guides = "collect") &
-      theme(
-        legend.position = "bottom",
-        plot.margin   =  margin(t = 10, r = 3, b = 3, l = 3)
-      ))
-
-    
-plotWithLabels <- ggdraw(combined) +
-  draw_label(
-    "Medium |\n2030", x = 0.125, y = 0.93, angle = 0,
-    fontface = "bold",
-    fontfamily = "sans",
-    size = baseTextSize * 1,
-    hjust = 0
-  ) +
-  draw_label(
-    "Medium |\n2035", x = 0.44, y = 0.93, angle = 0,
-    fontface = "bold",
-    fontfamily = "sans",
-    size = baseTextSize * 1,
-    hjust = 0
-  ) +
-  draw_label(
-    "Medium |\n2040", x = 0.75, y = 0.93, angle = 0,
-    fontface = "bold",
-    fontfamily = "sans",
-    size = baseTextSize * 1,
-    hjust = 0
-  )
-
-
-# 6. Display final plot
-plot(plotWithLabels)
-
-ggsave(
-  filename = file.path(plotFolder, paste0("countryComparisonViableActivity.pdf")),
-  plot     = plotWithLabels,
-  device   = cairo_pdf,
-  width    = 4.5,         
-  height   = 2.3,          
-  units    = "in",
-  dpi      = 300          
-)
-
-
-```
-
-# Country comparison: Annual mileage breakeven
-```{r, fig.width= 5, fig.height= 8.5, fig.fullwidth=FALSE}
+# SupplementaryFig. 6 | Country-specific breakeven annual mileages
+```{r, fig.width= 4.5, fig.height= 2.3, fig.fullwidth=FALSE}
 paperScenario <- "Current policies"
 DCOscen <- "Medium"
 
@@ -979,7 +875,7 @@ data <- copy(breakeven)[paperScen == paperScenario & DCOscenario == DCOscen & co
     scale_shape_manual(values = c("Rigid" = 17, "Tractor-trailer" = 15)) +
     scale_color_manual(values = paperColors, guide = "none") +  # legend removed
     labs(y = "Breakeven\nannual mileage [vehkm/yr]", x = NULL) +
-    scale_y_continuous(limits = c(0, 150000)) +
+    coord_cartesian(ylim = c(0, 150000)) +
     plotTheme(baseTextSize) +
     theme(legend.position = "bottom",
           legend.box = "horizontal",
@@ -990,12 +886,11 @@ data <- copy(breakeven)[paperScen == paperScenario & DCOscenario == DCOscen & co
     geom_point() +
     scale_shape_manual(values = c("Rigid" = 17, "Tractor-trailer" = 15)) +
     scale_color_manual(values = paperColors) +  
-    scale_y_continuous(limits = c(0, 150000)) +
+    coord_cartesian(ylim = c(0, 150000)) +
     labs(
       x = "Year",
       y = NULL,
       color = "Truck technology",
-      linetype = ""
     ) +
     plotTheme(baseTextSize) +
     theme(legend.position = "bottom",
@@ -1008,7 +903,7 @@ data <- copy(breakeven)[paperScen == paperScenario & DCOscenario == DCOscen & co
     scale_shape_manual(values = c("Rigid" = 17, "Tractor-trailer" = 15)) +
     scale_color_manual(values = paperColors, guide = "none") +  # legend removed
     labs(x = NULL, y = NULL) +
-    scale_y_continuous(limits = c(0, 150000)) +
+    coord_cartesian(ylim = c(0, 150000)) +
     plotTheme(baseTextSize) +
     theme(legend.position = "bottom",
           legend.box = "horizontal",
@@ -1063,4 +958,107 @@ ggsave(
 
 ```
 
+
+# Supplementary Fig.7 | Country-specific economically viable activity
+```{r, fig.width= 4.5, fig.height= 2.3, fig.fullwidth=FALSE}
+paperScenario <- "Current policies"
+DCOscen <- "Medium"
+
+TCOdata <- loadTCO(dataFolder)
+mileageDistribution <- prepareMileageData(dataFolder)
+DCOdata <- getDCO(DCOscenarios, TCOdata)
+setnames(mileageDistribution, "binMean", "annualM")
+DCOmilageDistribution <- applyMileage(mileageDistribution, DCOdata)
+DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribution, focus = "Country")
+
+data <- copy(DCOmilageDistributionShares)[paperScen == paperScenario & DCOscenario == DCOscen]
+  
+findZeroPoints <- data[ , .SD[which.min(abs(value))], by = .(period, truckTechnology, DCOscenario, country)][, .(period, `truckTechnology`, DCOscenario, country, cumBinShareCountry)]
+findZeroPoints[, DCOscenario := factor(DCOscenario, levels = c("Medium"))]
+  
+  p1 <- ggplot(findZeroPoints[period == 2030], 
+               aes(x = country, y = cumBinShareCountry * 100, color = truckTechnology)) +
+    geom_point() +
+    scale_color_manual(values = paperColors, guide = "none") +  # legend removed
+    labs(y = "Economically viable\nactivity [%]", x = NULL) +
+    coord_cartesian(ylim = c(0, 102)) +
+    plotTheme(baseTextSize) +
+    theme(legend.position = "bottom",
+          legend.box = "horizontal",
+          legend.direction = "vertical")
+  
+  p2 <- ggplot(findZeroPoints[period == 2035], 
+               aes(x = country, y = cumBinShareCountry * 100, color = truckTechnology)) +
+    geom_point() +
+    scale_color_manual(values = paperColors) +  
+    coord_cartesian(ylim = c(0, 102)) +
+    labs(
+      x = "Year",
+      y = NULL,
+      color = "Truck technology"
+    ) +
+    plotTheme(baseTextSize) +
+    theme(legend.position = "bottom",
+          legend.box = "horizontal",
+          legend.direction = "vertical")
+  
+  p3 <- ggplot(findZeroPoints[period == 2040], 
+               aes(x = country, y = cumBinShareCountry * 100, color = truckTechnology)) +
+    geom_point() +
+    scale_color_manual(values = paperColors, guide = "none") +  # legend removed
+    labs(x = NULL, y = NULL) +
+    coord_cartesian(ylim = c(0, 102)) +
+    plotTheme(baseTextSize) +
+    theme(legend.position = "bottom",
+          legend.box = "horizontal",
+          legend.direction = "vertical")
+  
+  combined <- (
+    (p1 | p2 | p3) +
+      plot_layout(widths = c(0.8, 0.8, 0.8), guides = "collect") &
+      theme(
+        legend.position = "bottom",
+        plot.margin   =  margin(t = 10, r = 3, b = 3, l = 3)
+      ))
+
+    
+plotWithLabels <- ggdraw(combined) +
+  draw_label(
+    "Medium |\n2030", x = 0.125, y = 0.93, angle = 0,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1,
+    hjust = 0
+  ) +
+  draw_label(
+    "Medium |\n2035", x = 0.44, y = 0.93, angle = 0,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1,
+    hjust = 0
+  ) +
+  draw_label(
+    "Medium |\n2040", x = 0.75, y = 0.93, angle = 0,
+    fontface = "bold",
+    fontfamily = "sans",
+    size = baseTextSize * 1,
+    hjust = 0
+  )
+
+
+# 6. Display final plot
+plot(plotWithLabels)
+
+ggsave(
+  filename = file.path(plotFolder, paste0("countryComparisonViableActivity.pdf")),
+  plot     = plotWithLabels,
+  device   = cairo_pdf,
+  width    = 4.5,         
+  height   = 2.3,          
+  units    = "in",
+  dpi      = 300          
+)
+
+
+```
 

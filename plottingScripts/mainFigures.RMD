@@ -2,7 +2,7 @@
 title: "Main figures"
 author: "Johanna Hoppe"
 date: "2025-02-03"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
