@@ -744,7 +744,7 @@ ggsave(
 ```
 
 # Sensitivity Analysis
-```{r, fig.width= 4.5, fig.height= 2.3, fig.fullwidth=FALSE}
+```{r, fig.width= 4.5, fig.height= 2.5, fig.fullwidth=FALSE}
 paperScenario <- c("Sensitivity | Current Policies | Resale value", "Sensitivity | Current Policies | Interest rate", "Sensitivity | Current Policies | Vehicle insurance", "Current policies")
 
 TCOdata <- loadTCO(dataFolder)
@@ -819,24 +819,24 @@ DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribut
     
 plotWithLabels <- ggdraw(combined) +
   draw_label(
-    "Sensitivity |\nSetting resale value\nof ZETs to 0 %", x = 0.125, y = 0.93, angle = 0,
+    "Sensitivity |\nReduce resale value\nof ZETs from 25 % to 10 %", x = 0.125, y = 0.93, angle = 0,
     fontface = "bold",
     fontfamily = "sans",
-    size = baseTextSize * 0.9,
+    size = baseTextSize * 0.7,
     hjust = 0
   ) +
   draw_label(
-    "Sensitivity |\nSetting interest rate\nfor ZETs to 11 %", x = 0.44, y = 0.93, angle = 0,
+    "Sensitivity |\nIncrease interest rate\nfor ZETs from 9.5 % to 11 %", x = 0.44, y = 0.93, angle = 0,
     fontface = "bold",
     fontfamily = "sans",
-    size = baseTextSize * 0.9,
+    size = baseTextSize * 0.7,
     hjust = 0
   ) +
   draw_label(
-    "Sensitivity |\nIncluding vehicle\ninsurance of 5% VPP/yr", x = 0.75, y = 0.93, angle = 0,
+    "Sensitivity |\nIncluding vehicle\ninsurance of 3% VPP/yr", x = 0.75, y = 0.93, angle = 0,
     fontface = "bold",
     fontfamily = "sans",
-    size = baseTextSize * 0.9,
+    size = baseTextSize * 0.7,
     hjust = 0
   )
 
