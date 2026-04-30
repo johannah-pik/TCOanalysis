@@ -26,14 +26,14 @@ loadInfrastructureBuildUp <- function(dataFolder) {
 }
 #- Load CO2 price current polices scenario ------------------------------------------------------------------------------------------------------------------
 loadCO2PriceTrajectory <- function(dataFolder) {
-  energyCarrierParameters <- fread(file.path(dataFolder, "TCOparameter", "energyCarrierParameters.csv"))
+  energyCarrierParameters <- fread(file.path(dataFolder, "TCOparameter", "energyCarrierParameters.csv"), dec = ",")
   co2PriceCurrentPol <- energyCarrierParameters[paperScen == "Current policies" & parameter == "Non-ETS CO2"]
   co2PriceCurrentPol <- unique(co2PriceCurrentPol[, c("period", "value")])
   return(co2PriceCurrentPol)
 }
 #- Load diesel blend shares ------------------------------------------------------------------------------------------------------------------
 loadDieselBlendShares <- function(dataFolder) {
-  energyCarrierParameters <- fread(file.path(dataFolder, "TCOparameter", "energyCarrierParameters.csv"))
+  energyCarrierParameters <- fread(file.path(dataFolder, "TCOparameter", "energyCarrierParameters.csv"), dec = ",")
   dieselBlendShares <- energyCarrierParameters[parameter %in% c("Share Synthetic Diesel (E-Fuels)", "Share Biodiesel")]
   return(dieselBlendShares)
 }
@@ -129,7 +129,7 @@ prepareMileageData <- function(dataFolder, bin = TRUE, reduce = TRUE) {
 }
 #- Load TCO data------------------------------------------------------------------------------------------------------------------
 loadTCO <- function(dataFolder) {
-  TCO <- fread(file.path(dataFolder, "TCOanalysis", "TCO.csv"))
+  TCO <- fread(file.path(dataFolder, "TCOanalysis", "TCO.csv"), dec = ",")
   TCO[, TCOscenario := paste0(vehicleParameterScenario, "x", energyCarrierParameterScenario)]
   cols <- names(TCO)[!names(TCO)%in% c("value", "country")]
   TCOEUR <- merge(TCO, loadWeight(dataFolder, "stock"), by = "country", allow.cartesian = TRUE)
@@ -370,6 +370,7 @@ getRangeAnalysis <- function(weightedMileage, infrastructure) {
 
 #- Group parameters for bar plots-------------------------------------------------------------------------------------------------------------------------
 groupParameters <- function(dt){
+
   dt[parameter %in% 
              c("Glider/Vehicle body invest without drivetrain",
                "Electric motor costs", 
@@ -393,6 +394,7 @@ groupParameters <- function(dt){
   
   
   cols <- names(dt)[!names(dt) == "value"]
+
   dt <- dt[, .(value = sum(as.numeric(value))), 
                        by = cols]
   dt[parameter == "Vehicle Tax", parameter := "Vehicle tax"]
@@ -410,16 +412,16 @@ groupParameters <- function(dt){
 
 #- Load TCO overview data for supplementary information-------------------------------------------------------------------------------------------------------------------------
 loadFuelPrices <- function(dataFolder) {
-  fuelPricesEURperkwh <- fread(file.path(dataFolder, "TCOanalysis", "fuelPricekWh.csv"))
+  fuelPricesEURperkwh <- fread(file.path(dataFolder, "TCOanalysis", "fuelPricekWh.csv"), dec = ",")
   return(fuelPricesEURperkwh)
 }
 loadSalesPrices <- function(dataFolder) {
-  salesPrices <- fread(file.path(dataFolder, "TCOanalysis", "SalesPrices.csv"))
+  salesPrices <- fread(file.path(dataFolder, "TCOanalysis", "SalesPrices.csv"), dec = ",")
   salesPrices <- groupParameters(salesPrices)
   return(salesPrices)
 }
 loadBatteryAndFCPrices <- function(dataFolder) {
-  rawBatFCPrices <- fread(file.path(dataFolder, "TCOparameter", "vehicleParameters.csv"))
+  rawBatFCPrices <- fread(file.path(dataFolder, "TCOparameter", "vehicleParameters.csv"), dec = ",")
   rawBatFCPrices <- rawBatFCPrices[parameter %in% c("Fuel cell system costs", "Battery costs")]
   return(rawBatFCPrices)
 }
