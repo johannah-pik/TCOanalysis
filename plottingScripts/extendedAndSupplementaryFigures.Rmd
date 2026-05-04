@@ -845,7 +845,7 @@ plotWithLabels <- ggdraw(combined) +
 plot(plotWithLabels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("sensitivityAnalysis.pdf")),
+  filename = file.path(plotFolder, paste0("sup_sensitivityAnalysis.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
   width    = 4.5,         
@@ -946,7 +946,7 @@ plotWithLabels <- ggdraw(combined) +
 plot(plotWithLabels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("countryComparisonAMb.pdf")),
+  filename = file.path(plotFolder, paste0("sup_countryComparisonAMb.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
   width    = 4.5,         
@@ -1050,7 +1050,7 @@ plotWithLabels <- ggdraw(combined) +
 plot(plotWithLabels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("countryComparisonViableActivity.pdf")),
+  filename = file.path(plotFolder, paste0("sup_countryComparisonViableActivity.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
   width    = 4.5,         
