@@ -833,7 +833,7 @@ plotWithLabels <- ggdraw(combined) +
     hjust = 0
   ) +
   draw_label(
-    "Sensitivity |\nIncluding vehicle\ninsurance of 3% VPP/yr", x = 0.75, y = 0.93, angle = 0,
+    "Sensitivity |\nIncluding vehicle\ninsurance of 5.8% VPP/yr", x = 0.75, y = 0.93, angle = 0,
     fontface = "bold",
     fontfamily = "sans",
     size = baseTextSize * 0.7,
