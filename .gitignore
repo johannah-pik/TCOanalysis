@@ -1,4 +1,16 @@
+# R/IDE Metadata
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+
+# renv 
+renv/library/
+renv/staging/
+
+# Outputs (Prevent reviewers from downloading your local runs)
+data/TCOanalysis/
+
+# System files
+.DS_Store
+Thumbs.db
