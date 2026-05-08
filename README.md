@@ -10,7 +10,10 @@ profiles".
 Hoppe, Johanna; Ueckerdt, Falko; Plötz, Patrick; Link, Steffen; Speth, Daniel; Weißenburger, Bastian; Zhao, Pei; Pietzcker, Robert (2025): Research software for analyzing the total cost of ownership (TCO) of alternative technologies for heavy-duty trucks under real-world usage profiles 
 
 ## How to use this software
-- Clone repository and setup R environment using renv::restore()
+- Clone repository and setup R environment:
+    1. Open project in your preferred IDE (RStudio, VS Code, etc.).
+    2. To save disk space, enable global cache: renv::settings$use.cache(TRUE)
+    3. Run renv::restore() to install required package versions.
 - TCOmodel.R reads in parameter raw data from data/TCOparameter
 	and saves calculated output in data/TCOanalysis.
 - The figures and analyses in the research article can be reproduced with the help of plottingScripts/mainFigures.RMD and plottingScripts/extendedAndSupplementaryFigures.Rmd

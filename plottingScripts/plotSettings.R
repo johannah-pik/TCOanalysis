@@ -40,7 +40,10 @@ paperColors <- c(
 
 paperLines <- c(
   "Current policies" = "solid",
-  "Removed policies" = "dashed"
+  "Removed policies" = "dashed",
+  "Sensitivity | Current Policies | Resale value" = "dotted",
+  "Sensitivity | Current Policies | Interest rate" = "dotted",
+  "Sensitivity | Current Policies | Vehicle insurance" = "dotted"
 )
 
 baseTextSize <- 7

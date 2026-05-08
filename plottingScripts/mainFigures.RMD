@@ -2,7 +2,7 @@
 title: "Main figures"
 author: "Johanna Hoppe"
 date: "2025-02-03"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -77,7 +77,7 @@ TCOdata <- loadTCO(dataFolder)
 TCO <- applyMileage(am, TCOdata)
 TCO <- groupParameters(TCO)
 
-TCOtoDCOexample <- dcoBarPlot(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScenario, baseTextSize)
+TCOtoDCOexample <- dcoBarPlot(TCO, DCOscenarios, yr, vehSize, exampleCountry, am, paperScenario, baseTextSize)
 ```
 ## Panel
 ```{r, fig.width=7.09, fig.height=6.2, fig.fullwidth=FALSE}
@@ -426,7 +426,7 @@ ggsave(
 
 ```
 
-# Fig. 6: Evolution of the cumulative share of economically viable road freight activity over time. Results are shown for th ecurrent-policies case and for a counterfactual scenario in which ZET road-toll reductions, carbon pricing, fuel mandates, and hydrogen tax exemptions are removed
+# Fig. 6: Evolution of the cumulative share of economically viable road freight activity over time. Results are shown for the current-policies case and for a counterfactual scenario in which ZET road-toll reductions, carbon pricing, fuel mandates, and hydrogen tax exemptions are removed
 ```{r, fig.width= 4.5, fig.height= 2.3, fig.fullwidth=FALSE}
 paperScenario <- c("Current policies", "Removed policies")
 

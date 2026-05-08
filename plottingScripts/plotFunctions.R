@@ -228,7 +228,8 @@ examplaryUtilisation <- function(country, reducedBinnedWeightedMileage, baseText
   return(fullPlot)
 }
 
-dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScenario, baseTextSize) {
+dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, annualM, paperScenario, baseTextSize) {
+
   # - Prepare data -------------------------------------------------------------
   barPlotData <- copy(TCO)[period == yr & truckClass == vehSize & country == exampleCountry & paperScen == paperScenario]
   # filter DCO scenarios
@@ -275,8 +276,16 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
   
   # - Plot -------------------------------------------------------------
   # Create one plot per facet, then stitch them back together
-  facetLevels <- unique(barPlotData$DCOscenario)
-  facetLevels <- facetLevels[c(2,3,1)]
+  masterOrder <- c("Optimistic", "Medium", "Pessimistic")
+  availableLevels <- intersect(masterOrder, unique(barPlotData$DCOscenario))
+  extraScenarios <- setdiff(unique(barPlotData$DCOscenario), masterOrder)
+  facetLevels <- c(availableLevels, extraScenarios)
+  if (length(facetLevels) > 2) {xAxisLabel <- length(facetLevels)} else {
+    xAxisLabel <- seq(1:length(facetLevels))}
+  if (length(facetLevels) > 2) {yAxisLabel <- ceiling(length(facetLevels)/2)} else {
+    yAxisLabel <- seq(1:length(facetLevels))}
+  
+  
   plotList <- lapply(seq_along(facetLevels), function(i) {
     
     facetLevel <- facetLevels[i]
@@ -315,8 +324,8 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
       facet_wrap(~ `truckTechnology`, nrow = 1, scales = "free_x") +
       coord_cartesian(ylim = c(0, yMax)) +
       labs(
-        x = if (i == 2) paste0("Vehicle and energy carrier parameter scenario") else NULL,
-        y = if (i == 1) "TCO [EUR/km]" else NULL,
+        x = if (i %in% xAxisLabel) paste0("Vehicle and energy carrier parameter scenario") else NULL,
+        y = if (i %in% yAxisLabel) "TCO [EUR/km]" else NULL,
         title = as.character(facetLevel),
         fill = NULL
       ) +  
@@ -327,7 +336,7 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
   })
   TCOtoDCOexample <- wrap_plots(
     plotList,
-    ncol = 3,
+    ncol = length(facetLevels),
     guides = "collect"
   ) &
     guides(
@@ -390,7 +399,7 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, paperScen
   )
   
   titleGrob <- textGrob(
-    paste("Utilisation 160000 km/yr |", vehSize, " | ", yr, " | Germany"),
+    paste("Utilisation", annualM, "km/yr |", vehSize, " | ", yr, " | ", exampleCountry),
     x = 0.5,                # centered horizontally
     y = 0.87,               # slightly above the top of the plot
     just = c("center", "bottom"),
@@ -422,10 +431,11 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
   data[is.na(cumWidth), cumWidth := (cumShare),
        by = c("paperScen", "DCOscenario", "truckTechnology")]
   # ensure that DCO scenarios are handled in the right order
-  data[, DCOscenario := factor(
-    DCOscenario,
-    levels = c("Optimistic", "Medium", "Pessimistic")
-  )]
+  masterOrder <- c("Optimistic", "Medium", "Pessimistic")
+  availableLevels <- intersect(masterOrder, unique(data$DCOscenario))
+  extraScenarios <- setdiff(unique(data$DCOscenario), masterOrder)
+  finalLevelOrder <- c(availableLevels, extraScenarios)
+  data[, DCOscenario := factor(DCOscenario, levels = finalLevelOrder)]
   # find cost benefitial percentage
   findZeroPoints <- data[, .SD[which.min(abs(value))],
                          by = .(period, truckTechnology, paperScen, DCOscenario)]

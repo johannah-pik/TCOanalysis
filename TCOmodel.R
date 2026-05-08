@@ -1,9 +1,12 @@
 rm(list=ls())
 library(data.table)
 
+mainFolder <- this.path::this.dir()
+dataFolder <- file.path(mainFolder, "data")
+
 #-Raw data-------------------------------------------------------------------------------------------------------------------------------------------------------------------
-vehicleParameters <- fread(file.path("data", "TCOparameter", "vehicleParameters.csv"))
-energyCarrierParameters <- fread(file.path("data", "TCOparameter", "energyCarrierParameters.csv"))
+vehicleParameters <- fread(file.path(dataFolder, "TCOparameter", "vehicleParameters.csv"))
+energyCarrierParameters <- fread(file.path(dataFolder, "TCOparameter", "energyCarrierParameters.csv"))
 # Remove underlying assumptions on bandwith that are not needed for the calculation
 energyCarrierParameters <- energyCarrierParameters[!parameter %in% c("Bandwith MCS", "Bandwith Depot")]
 energyCarrierParameters[, value := as.numeric(value)]
@@ -113,6 +116,13 @@ OMCosts[, unit := "EUR/vehkm"][, parameter := "M&R + tires"]
 #Comment: Varied by country (not by scenarios)
 vehTax <- unique(vehicleParameters[parameter == "Vehicle Tax"][, eval(colsToDelete[!colsToDelete %in% c("parameter", "unit")]) := NULL])
 vehTax[, unit := "EUR/veh yr"] # [EUR/a]
+
+##- Vehicle insurance (only considered in sensitivity analysis) in % of vehicle purchase price (VPP) per year
+insurance <- vehicleParameters[parameter == "Vehicle insurance"]
+insurance[, c("unit") := NULL]
+setnames(insurance, "value", "insurance")
+insuranceCosts <- merge(totCap, insurance, by = intersect(names(totCap), names(insurance)))
+insuranceCosts[, value := totCap * insurance][, unit := "EUR/veh yr"][, c("totCap", "insurance", "category", "subCategory") := NULL]
 
 ##-Road Tolls-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Comment: Varied by country (not by scenarios)
@@ -324,7 +334,7 @@ Tolls[, value := (as.numeric(value) + as.numeric(value)*as.numeric(TollRed))*as.
   H2AtPumpkWh <- rbind(h2WholeSalePrice, HRSCost, H2Tax)
 
 
-vehicleParameters <- rbind(CAPEX, efficiency, ChargingLosses, OMCosts, vehTax, Tolls)      
+vehicleParameters <- rbind(CAPEX, efficiency, ChargingLosses, OMCosts, vehTax, insuranceCosts, Tolls)      
 energyCarrierParameters <- unique(rbind(dieselAtPumpkWh, elecAtPumpkWh, H2AtPumpkWh))
 
 # check files---------------------------------------------------------
@@ -438,10 +448,10 @@ if (length((intersect(unique(TCO[`truckTechnology` == "FCET"]$parameter), FCET))
   stop(paste0("The following parameters are missing in the FCET TCO: ", FCET[!FCET %in% unique(TCO[`truckTechnology` == "FCET"]$parameter)]))
 
 # Save files---------------------------------------------------------
-write.csv(TCO, file.path("data", "TCOanalysis", "TCO.csv"), row.names = FALSE)
-write.csv(SalesPrice, file.path("data", "TCOanalysis", "salesPrices.csv"), row.names = FALSE)
-write.csv(Co2IntensityDieFuel, file.path("data", "TCOanalysis", "co2IntensityDieFuel.csv"), row.names = FALSE)
-write.csv(energyCarrierParameters, file.path("data", "TCOanalysis", "fuelPricekWh.csv"), row.names = FALSE)
+write.csv2(TCO, file.path(dataFolder, "TCOanalysis", "TCO.csv"), row.names = FALSE)
+write.csv2(SalesPrice, file.path(dataFolder, "TCOanalysis", "salesPrices.csv"), row.names = FALSE)
+write.csv2(Co2IntensityDieFuel, file.path(dataFolder, "TCOanalysis", "co2IntensityDieFuel.csv"), row.names = FALSE)
+write.csv2(energyCarrierParameters, file.path(dataFolder, "TCOanalysis", "fuelPricekWh.csv"), row.names = FALSE)
 
 rm(list=ls())
 

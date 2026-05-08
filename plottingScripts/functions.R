@@ -26,14 +26,14 @@ loadInfrastructureBuildUp <- function(dataFolder) {
 }
 #- Load CO2 price current polices scenario ------------------------------------------------------------------------------------------------------------------
 loadCO2PriceTrajectory <- function(dataFolder) {
-  energyCarrierParameters <- fread(file.path(dataFolder, "TCOparameter", "energyCarrierParameters.csv"))
+  energyCarrierParameters <- fread(file.path(dataFolder, "TCOparameter", "energyCarrierParameters.csv"), dec = ",")
   co2PriceCurrentPol <- energyCarrierParameters[paperScen == "Current policies" & parameter == "Non-ETS CO2"]
   co2PriceCurrentPol <- unique(co2PriceCurrentPol[, c("period", "value")])
   return(co2PriceCurrentPol)
 }
 #- Load diesel blend shares ------------------------------------------------------------------------------------------------------------------
 loadDieselBlendShares <- function(dataFolder) {
-  energyCarrierParameters <- fread(file.path(dataFolder, "TCOparameter", "energyCarrierParameters.csv"))
+  energyCarrierParameters <- fread(file.path(dataFolder, "TCOparameter", "energyCarrierParameters.csv"), dec = ",")
   dieselBlendShares <- energyCarrierParameters[parameter %in% c("Share Synthetic Diesel (E-Fuels)", "Share Biodiesel")]
   return(dieselBlendShares)
 }
@@ -129,7 +129,7 @@ prepareMileageData <- function(dataFolder, bin = TRUE, reduce = TRUE) {
 }
 #- Load TCO data------------------------------------------------------------------------------------------------------------------
 loadTCO <- function(dataFolder) {
-  TCO <- fread(file.path(dataFolder, "TCOanalysis", "TCO.csv"))
+  TCO <- fread(file.path(dataFolder, "TCOanalysis", "TCO.csv"), dec = ",")
   TCO[, TCOscenario := paste0(vehicleParameterScenario, "x", energyCarrierParameterScenario)]
   cols <- names(TCO)[!names(TCO)%in% c("value", "country")]
   TCOEUR <- merge(TCO, loadWeight(dataFolder, "stock"), by = "country", allow.cartesian = TRUE)
@@ -341,26 +341,27 @@ getRangeAnalysis <- function(weightedMileage, infrastructure) {
   dummy <- unique(rangeAnalysis[, c("period")])[, all := "All"]
   directRange <- merge(directRange, dummy, by = "all", allow.cartesian = TRUE)[, all := NULL]
   rangeAnalysis <- merge(rangeAnalysis, directRange, by = c("period"), allow.cartesian = TRUE)
+  # limit to an effective doubling of the direct driving range
   rangeAnalysis[, MCSrange := 2 * directRange]
-  
+
   # direct feasibility
   rangeAnalysis[directRange > dvktMax, directFeasibility := 1]
   rangeAnalysis[directRange > dvktMax, feasAvktShareEURperMaxdaily := weightedShareEUR]
-  # MCS feasibility
-  rangeAnalysisNoMCS <- rangeAnalysis[directFeasibility == 1, .(shareFeas = sum(feasAvktShareEURperMaxdaily)), by = c("period", "directRange")]
+  # save hypothetical no MCS availability separately
+  rangeAnalysisNoMCS <- rangeAnalysis[directFeasibility == 1, .(cumShareFeas = sum(feasAvktShareEURperMaxdaily)), by = c("period", "directRange")]
   rangeAnalysisNoMCS <- rangeAnalysisNoMCS[, c("period") := NULL]
   rangeAnalysisNoMCS <- unique(rangeAnalysisNoMCS)
+  # save hypothetical full MCS availability separately
   rangeAnalysis[directRange < dvktMax & MCSrange > dvktMax, MCSFeasibility := 1]
-  rangeAnalysisfullMCS <- rangeAnalysis[(directFeasibility == 1 | MCSFeasibility == 1), .(shareFeas = sum(weightedShareEUR)), by = c("period", "directRange")]
+  rangeAnalysisfullMCS <- rangeAnalysis[(directFeasibility == 1 | MCSFeasibility == 1), .(cumShareFeas = sum(weightedShareEUR)), by = c("period", "directRange")]
   rangeAnalysisfullMCS <- rangeAnalysisfullMCS[, c("period") := NULL]
   rangeAnalysisfullMCS <- unique(rangeAnalysisfullMCS)
+  # Only profiles with a maximum daily mileage within the limit of an effective doubling of the direct driving range by MCS can become feasible (to the extent of MCS availability)
   rangeAnalysis[directRange < dvktMax & MCSrange > dvktMax, feasAvktShareEURperMaxdaily := weightedShareEUR * MCSavailability]
   rangeAnalysis[is.na(feasAvktShareEURperMaxdaily), feasAvktShareEURperMaxdaily := 0]
   
-  rangeAnalysis <- rangeAnalysis[, .(shareFeas = sum(feasAvktShareEURperMaxdaily)), by = c("period", "directRange")]
-  rangeAnalysis[, cumShareFeas := cumsum(shareFeas), by = c("period", "directRange")]
-  rangeAnalysisNoMCS[, cumShareFeas := cumsum(shareFeas), by = c("directRange")]
-  rangeAnalysisfullMCS[, cumShareFeas := cumsum(shareFeas), by = c("directRange")]
+  rangeAnalysis <- rangeAnalysis[, .(cumShareFeas = sum(feasAvktShareEURperMaxdaily)), by = c("period", "directRange")]
+
   return(list(buildUp = rangeAnalysis,
               noMCS = rangeAnalysisNoMCS,
               fullMCS = rangeAnalysisfullMCS)
@@ -369,6 +370,7 @@ getRangeAnalysis <- function(weightedMileage, infrastructure) {
 
 #- Group parameters for bar plots-------------------------------------------------------------------------------------------------------------------------
 groupParameters <- function(dt){
+
   dt[parameter %in% 
              c("Glider/Vehicle body invest without drivetrain",
                "Electric motor costs", 
@@ -392,10 +394,13 @@ groupParameters <- function(dt){
   
   
   cols <- names(dt)[!names(dt) == "value"]
+
   dt <- dt[, .(value = sum(as.numeric(value))), 
                        by = cols]
   dt[parameter == "Vehicle Tax", parameter := "Vehicle tax"]
-  neworder <- c("CO2 tax", "Toll charge", "Vehicle tax", "Fuel cost", 
+  if (nrow(dt[parameter == "Vehicle insurance"] > 0)) neworder <- c("CO2 tax", "Toll charge", "Vehicle tax", "Vehicle insurance", "Fuel cost", 
+                                                                    "M&R + tires", "H2 tank", "Fuel cell system", "Battery", "Vehicle body\nincl. engine")
+  else neworder <- c("CO2 tax", "Toll charge", "Vehicle tax", "Fuel cost", 
                 "M&R + tires", "H2 tank", "Fuel cell system", "Battery", "Vehicle body\nincl. engine")
   valid_neworder <- intersect(neworder, unique(dt$parameter))
 
@@ -407,16 +412,16 @@ groupParameters <- function(dt){
 
 #- Load TCO overview data for supplementary information-------------------------------------------------------------------------------------------------------------------------
 loadFuelPrices <- function(dataFolder) {
-  fuelPricesEURperkwh <- fread(file.path(dataFolder, "TCOanalysis", "fuelPricekWh.csv"))
+  fuelPricesEURperkwh <- fread(file.path(dataFolder, "TCOanalysis", "fuelPricekWh.csv"), dec = ",")
   return(fuelPricesEURperkwh)
 }
 loadSalesPrices <- function(dataFolder) {
-  salesPrices <- fread(file.path(dataFolder, "TCOanalysis", "SalesPrices.csv"))
+  salesPrices <- fread(file.path(dataFolder, "TCOanalysis", "SalesPrices.csv"), dec = ",")
   salesPrices <- groupParameters(salesPrices)
   return(salesPrices)
 }
 loadBatteryAndFCPrices <- function(dataFolder) {
-  rawBatFCPrices <- fread(file.path(dataFolder, "TCOparameter", "vehicleParameters.csv"))
+  rawBatFCPrices <- fread(file.path(dataFolder, "TCOparameter", "vehicleParameters.csv"), dec = ",")
   rawBatFCPrices <- rawBatFCPrices[parameter %in% c("Fuel cell system costs", "Battery costs")]
   return(rawBatFCPrices)
 }
