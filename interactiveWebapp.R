@@ -97,7 +97,7 @@ ui <- fluidPage(
       selectInput("countryChoice", "Country:", choices = countryMapping$fullName),
       textInput("annualMileage", "Utilisation [km/yr]:", value = "160000"),
       
-      tags$h3("Optional: Specify custom sensitivity analysis"),
+      tags$h3("Optional: Choose a custom DCO scenario below (you must first select it above)."),
       tags$h4("Battery electric truck (BET)"),
       selectInput("BETveh", "Vehicle parameter scenario:", choices = names(scenMapVeh), selected = "Medium cost and medium technical maturity"),
       selectInput("BETen", "Energy carrier scenario:", choices = names(scenMapEn), selected = "Business as usual"),
