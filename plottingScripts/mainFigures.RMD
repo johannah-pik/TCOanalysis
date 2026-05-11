@@ -155,7 +155,7 @@ annotatedPanel <- ggdraw(introPanel) +
 annotatedPanel
 
 ggsave(
-  filename = file.path(plotFolder, paste0("introPanel.pdf")),
+  filename = file.path(plotFolder, paste0("Fig1.pdf")),
   plot = annotatedPanel,
   width = 7.1,
   height = 7.4,
@@ -258,7 +258,7 @@ plotWithLabels <- ggdraw(finalPlot) +
 plot(plotWithLabels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("EconomicallyViableActivity.pdf")),
+  filename = file.path(plotFolder, paste0("Fig2.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
   width    = 4.5,          
@@ -301,7 +301,7 @@ plot(combined)
 
 
 ggsave(
-  filename = file.path(plotFolder, paste0("rangeAnalysis.pdf")),
+  filename = file.path(plotFolder, paste0("Fig3.pdf")),
   plot     = combined,
   device   = cairo_pdf,
   width    = 4.5,          
@@ -388,7 +388,7 @@ plotWithLabels <- ggdraw(finalPlot) +
 plot(plotWithLabels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("FeasibleEconomicallyViableActivity.pdf")),
+  filename = file.path(plotFolder, paste0("Fig4.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
   width    = 4.5,          
@@ -415,7 +415,7 @@ capexVsOpex <- capexVsOpexOverviewPlot(DCO, breakeven, syntheticalBreakeven, sce
 plot(capexVsOpex)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("CAPEvsOPEX.pdf")),
+  filename = file.path(plotFolder, paste0("Fig5.pdf")),
   plot     = capexVsOpex,
   device   = cairo_pdf,
   width    = 7.09,          
@@ -545,7 +545,7 @@ plotWithLabels <- ggdraw(combined) +
 plot(plotWithLabels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("removedPolicies.pdf")),
+  filename = file.path(plotFolder, paste0("Fig6.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
   width    = 4.5,         

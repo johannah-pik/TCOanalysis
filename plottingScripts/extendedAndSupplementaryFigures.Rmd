@@ -130,7 +130,7 @@ plotWithLabels <- ggdraw(finalPlot) +
 plot(plotWithLabels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("Sup_FeasibleEconomicallyViableVehShare.pdf")),
+  filename = file.path(plotFolder, paste0("FigA1.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
   width    = 4.5,          
@@ -242,7 +242,7 @@ plotWithLabels <- ggdraw(finalPlot) +
 plot(plotWithLabels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("sup_BETvsFCETeconomicallyViableActivity.pdf")),
+  filename = file.path(plotFolder, paste0("FigA2.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
   width    = 4.5,          
@@ -271,7 +271,7 @@ infraPlot <- ggplot(data = infrastructure[period >= 2025], aes(x = period, y = v
 plot(infraPlot)
 
 ggsave(
-  file.path(plotFolder, "Sup_infraPlot.pdf"),
+  file.path(plotFolder, "FigA3.pdf"),
   plot = infraPlot,
   device   = cairo_pdf,
   width    = 3,          
@@ -409,7 +409,7 @@ combinedCAPEX <- (
 plot(combinedCAPEX)
 
 ggsave(
-  file.path(plotFolder, "Sup_pricesPanelCAPEX.pdf"),
+  file.path(plotFolder, "SupFig1.pdf"),
   plot     = combinedCAPEX,
   device   = cairo_pdf,
   width    = 4.5,          
@@ -457,7 +457,7 @@ plot(blendShares)
 
 
 ggsave(
-  file.path(plotFolder, "Sup_DieselBlendShares.pdf"),
+  file.path(plotFolder, "SupFig3.pdf"),
   plot = blendShares,
   device   = cairo_pdf,
   width    = 4.5,          
@@ -729,7 +729,7 @@ combined <- (
 plot(combined)
 
 ggsave(
-  file.path(plotFolder, "Sup_pricesPanelFuel.pdf"),
+  file.path(plotFolder, "SupFig4.pdf"),
   plot = combined,
   device   = cairo_pdf,
   width    = 4.5,          
@@ -843,7 +843,7 @@ plotWithLabels <- ggdraw(combined) +
 plot(plotWithLabels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("sup_sensitivityAnalysis.pdf")),
+  filename = file.path(plotFolder, paste0("SupFig5.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
   width    = 4.5,         
@@ -944,7 +944,7 @@ plotWithLabels <- ggdraw(combined) +
 plot(plotWithLabels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("sup_countryComparisonAMb.pdf")),
+  filename = file.path(plotFolder, paste0("SupFig6.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
   width    = 4.5,         
@@ -1048,7 +1048,7 @@ plotWithLabels <- ggdraw(combined) +
 plot(plotWithLabels)
 
 ggsave(
-  filename = file.path(plotFolder, paste0("sup_countryComparisonViableActivity.pdf")),
+  filename = file.path(plotFolder, paste0("SupFig7.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
   width    = 4.5,         
