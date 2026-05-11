@@ -22,6 +22,6 @@ Hoppe, Johanna; Ueckerdt, Falko; Plötz, Patrick; Link, Steffen; Speth, Daniel; 
   scenarios to visualize the DCO and explore results for specific countries and utilisation
   profiles.
 
-##System requirements: 
+## System requirements: 
 R (version 4.3.2). All package dependencies are managed via renv and listed in renv.lock. 
 No non-standard hardware required; tested on a standard x64-based desktop environment (e.g., Intel Core i7, 16GB RAM) running on Windows 11 Pro.
