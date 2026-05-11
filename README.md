@@ -18,6 +18,9 @@ Hoppe, Johanna; Ueckerdt, Falko; Plötz, Patrick; Link, Steffen; Speth, Daniel; 
 	and saves calculated output in data/TCOanalysis.
 - The figures and analyses in the research article can be reproduced with the help of plottingScripts/mainFigures.RMD and plottingScripts/extendedAndSupplementaryFigures.Rmd
 - Resulting figures are stored in plots/main or plots/supplementary
+- Running the interactiveWebapp.R allows users to combine different vehicle parameter and energy carrier
+  scenarios to visualize the DCO and explore results for specific countries and utilisation
+  profiles.
 
 ##System requirements: 
 R (version 4.3.2). All package dependencies are managed via renv and listed in renv.lock. 
