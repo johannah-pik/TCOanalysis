@@ -18,3 +18,7 @@ Hoppe, Johanna; Ueckerdt, Falko; Plötz, Patrick; Link, Steffen; Speth, Daniel; 
 	and saves calculated output in data/TCOanalysis.
 - The figures and analyses in the research article can be reproduced with the help of plottingScripts/mainFigures.RMD and plottingScripts/extendedAndSupplementaryFigures.Rmd
 - Resulting figures are stored in plots/main or plots/supplementary
+
+##System requirements: 
+R (version 4.3.2). All package dependencies are managed via renv and listed in renv.lock. 
+No non-standard hardware required; tested on a standard x64-based desktop environment (e.g., Intel Core i7, 16GB RAM) running on Windows 11 Pro.
