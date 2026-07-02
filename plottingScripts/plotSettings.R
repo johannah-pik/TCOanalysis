@@ -4,6 +4,7 @@ paperColors <- c(
   "Vehicle tax" = '#889c4e', 
   "Fuel cost" = '#A8E6A1', 
   "M&R + tires" = '#14532D',  
+  "Maintenance & repair + tires"= '#14532D', 
   "H2 tank" = '#c2d7e1', 
   "Fuel cell system" = '#858ca7', 
   "Fuel cell\nsystem" = '#858ca7', 

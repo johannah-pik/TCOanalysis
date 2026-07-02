@@ -149,7 +149,12 @@ scenOverview <- function(baseZise, paperColors, baseTextSize) {
 }
 
 examplaryUtilisation <- function(country, reducedBinnedWeightedMileage, baseTextSize) {
-
+  
+  countryMapping <- as.data.table(tribble(
+    ~country, ~fullName,
+    "DE", "Germany", "ES", "Spain", "FR", "France",
+    "IT", "Italy", "NL", "Netherlands", "PL", "Poland", "UK", "United Kingdom"
+  ))
   exampleCountry <- country
   widthSize <- 0.7 
   heightSize <- 0.8
@@ -161,6 +166,7 @@ examplaryUtilisation <- function(country, reducedBinnedWeightedMileage, baseText
   
   # ----- Plot ----- 
   foregroundData <- copy(reducedBinnedWeightedMileage[binMean < 500000 & country == exampleCountry]) 
+  foregroundData[, country := countryMapping[country == exampleCountry]$fullName]
   
   xLevels <- levels(foregroundData$avktBinned)
   xLimPlot <- c(0.5, length(xLevels) + 0.5)
@@ -229,9 +235,15 @@ examplaryUtilisation <- function(country, reducedBinnedWeightedMileage, baseText
 }
 
 dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, annualM, paperScenario, baseTextSize) {
-
+  
+  countryMapping <- as.data.table(tribble(
+    ~country, ~fullName,
+    "DE", "Germany", "ES", "Spain", "FR", "France",
+    "IT", "Italy", "NL", "Netherlands", "PL", "Poland", "UK", "United Kingdom"
+  ))
   # - Prepare data -------------------------------------------------------------
   barPlotData <- copy(TCO)[period == yr & truckClass == vehSize & country == exampleCountry & paperScen == paperScenario]
+  barPlotData[, country := countryMapping[country == exampleCountry]$fullName]
   # filter DCO scenarios
   truckSide <- merge(
     barPlotData,
@@ -250,8 +262,9 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, annualM, 
   barPlotData <- rbind(truckSide, counterSide)
   # Rename for slim legend and axis labelling
   barPlotData[parameter == "Vehicle body\nincl. engine", parameter := "Vehicle body incl. engine"]
+  barPlotData[parameter == "M&R + tires", parameter := "Maintenance & repair + tires"]
   newOrder <- c("CO2 tax", "Toll charge", "Vehicle tax", "Fuel cost", 
-                "M&R + tires", "H2 tank", "Fuel cell system", "Battery", "Vehicle body incl. engine")
+                "Maintenance & repair + tires", "H2 tank", "Fuel cell system", "Battery", "Vehicle body incl. engine")
   validNewOrder <- intersect(newOrder, unique(barPlotData$parameter))
   
   droplevels(barPlotData)
@@ -399,7 +412,7 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, annualM, 
   )
   
   titleGrob <- textGrob(
-    paste("Utilisation", annualM, "km/yr |", vehSize, " | ", yr, " | ", exampleCountry),
+    paste("Utilisation", annualM, "km/yr |", vehSize, " | ", yr, " | ", countryMapping[country == exampleCountry]$fullName),
     x = 0.5,                # centered horizontally
     y = 0.87,               # slightly above the top of the plot
     just = c("center", "bottom"),
@@ -954,7 +967,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
     geom_tile(data = syntheticalBreakeven, aes(x = capexDiff, y = opexDiff, fill = breakevenBin)) +
     scale_fill_manual(
       values =  colorMap,
-      name = "Breakeven mileage\n[vehkm/yr]",
+      name = "Breakeven mileage\n[vehkm yr⁻¹]",
       drop = FALSE,
       guide = guide_legend(title.position = "top", ncol = 2)
     ) +
@@ -991,8 +1004,8 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
     scale_shape_manual(values = c(16, 17, 18), guide = guide_legend(title.position = "top")
     ) +
     labs(
-      x = "CAPEX disadvantage\n(alt – ICET) [€/veh yr]",
-      y = "OPEX advantage\n(ICET – alt) [€/km]",
+      x = "CAPEX disadvantage\n(alt – ICET) [€ veh⁻¹ yr⁻¹]",
+      y = "OPEX advantage\n(ICET – alt) [€ km⁻¹]",
       shape = "Period",
       linetype = "DCO\nScenario"
     ) +
