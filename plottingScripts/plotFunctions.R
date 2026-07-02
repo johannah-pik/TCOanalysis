@@ -280,9 +280,9 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, annualM, 
   availableLevels <- intersect(masterOrder, unique(barPlotData$DCOscenario))
   extraScenarios <- setdiff(unique(barPlotData$DCOscenario), masterOrder)
   facetLevels <- c(availableLevels, extraScenarios)
-  if (length(facetLevels) > 2) {xAxisLabel <- length(facetLevels)} else {
+  if (length(facetLevels) > 2) {xAxisLabel <- ceiling(length(facetLevels)/2)} else {
     xAxisLabel <- seq(1:length(facetLevels))}
-  if (length(facetLevels) > 2) {yAxisLabel <- ceiling(length(facetLevels)/2)} else {
+  if (length(facetLevels) > 2) {yAxisLabel <- 1} else {
     yAxisLabel <- seq(1:length(facetLevels))}
   
   
