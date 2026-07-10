@@ -22,6 +22,7 @@ library(stringr)
 library(grid)
 library(tibble)
 
+
 rm(list=ls())
 mainFolder <- dirname(this.path::this.dir())
 dataFolder <-  file.path(mainFolder, "data")
@@ -83,10 +84,13 @@ TCOtoDCOexample <- dcoBarPlot(TCO, DCOscenarios, yr, vehSize, exampleCountry, am
 ```{r, fig.width=7.09, fig.height=6.2, fig.fullwidth=FALSE}
 gScenarios <- ggplotGrob(scenariosPlot)
 
+whiteSpace <- ggdraw() + theme_void() + 
+  theme(plot.background = element_rect(fill = "white", color = NA))
+
 row1 <- plot_grid(
   utilizationExample, gScenarios,
   ncol = 2,
-  rel_widths = c(3, 3.5)
+  rel_widths = c(1.3, 1.8)
 )
 
 row2 <- plot_grid(
@@ -94,8 +98,7 @@ row2 <- plot_grid(
   ncol = 1
 )
 
-whiteSpace <- ggdraw() + theme_void() + 
-  theme(plot.background = element_rect(fill = "white", color = NA))
+
 
 introPanel <- plot_grid(
   whiteSpace,
@@ -106,7 +109,7 @@ introPanel <- plot_grid(
   ncol = 1,
   rel_heights = c(0.16, 1.9, 0.16, 3, 0.05)
 )
-xMiddle <- 0.485
+xMiddle <- 0.4365
 triangleWidth  <- 0.06      
 triangleHeight <- 0.017      
 triangleY <- 8.3 / 13
@@ -196,27 +199,24 @@ legend <- get_legend(
 )
 
 # 2. Remove legends from the plots
-TCOxAnnualMileagePlot_noleg <- TCOxAnnualMileage + theme(legend.position = "none")
-metaPlot_noleg <- MetaTCOxAnnualMileage + theme(legend.position = "none")
+TCOxAnnualMileagePlotNoleg <- TCOxAnnualMileage + theme(legend.position = "none")
+metaPlotNoleg <- MetaTCOxAnnualMileage + theme(legend.position = "none")
 
 # 3. Combine the plots side by side
-combined <- plot_grid(
-  TCOxAnnualMileagePlot_noleg,
-  metaPlot_noleg,
-  ncol = 2,
-  rel_widths = c(1.2, 0.8),
-  align = "v",
-  labels = c("a", "b"),
-  label_size = baseTextSize,
-  label_fontface = "bold",
-  label_x = 0.02,
-  label_y = 1.02,
-  hjust = 0, vjust = 1
-) +
-  theme(plot.margin = margin(t = 8, r = 3, b = 3, l = 10))
+# Wrap each multi-facet plot so it behaves as a single unit in the layout
+combined <- wrap_plots(TCOxAnnualMileagePlotNoleg) + 
+            plot_spacer() + 
+            wrap_plots(metaPlotNoleg) + 
+            plot_layout(widths = c(1.2, 0.05, 0.8), ncol = 3) +
+            plot_annotation(tag_levels = 'a') & 
+            theme(
+                plot.tag = element_text(face = "bold", size = baseTextSize*1.2),
+                plot.tag.position = c(-0.05, 1.02), 
+                plot.margin = margin(t = 8, r = 3, b = 3, l = 15)
+              )
 
 # 4. Shift legend slightly to the right using a spacer
-legend_shifted <- plot_grid(
+legendShifted <- plot_grid(
   NULL,      # empty spacer
   legend,
   ncol = 2,
@@ -226,13 +226,13 @@ legend_shifted <- plot_grid(
 # 5. Combine plots and shifted legend vertically
 finalPlot <- plot_grid(
   combined,
-  legend_shifted,
+  legendShifted,
   ncol = 1,
   rel_heights = c(1, 0.05)  
 )
 plotWithLabels <- ggdraw(finalPlot) +
   draw_label(
-    "Optimistic", x = 0.02, y = 0.76, angle = 90,
+    "Optimistic", x = 0.02, y = 0.8, angle = 90,
     fontface = "bold",
     fontfamily = "sans",
     size = baseTextSize * 1.2,
@@ -261,8 +261,8 @@ ggsave(
   filename = file.path(plotFolder, paste0("Fig2.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
-  width    = 4.5,          
-  height   = 5,          
+  width    = 7.1,          
+  height = 7.89,        
   units    = "in",
   dpi      = 300           
 )
@@ -289,7 +289,7 @@ combined <- plot_grid(
     ncol = 2,
     rel_widths = c(2.35, 8),
     labels = c("a", "b"),
-    label_size = baseTextSize,
+    label_size = baseTextSize*1.2,
     label_fontface = "bold",
     label_x = 0.02,
     label_y = 1.02,
@@ -304,8 +304,8 @@ ggsave(
   filename = file.path(plotFolder, paste0("Fig3.pdf")),
   plot     = combined,
   device   = cairo_pdf,
-  width    = 4.5,          
-  height   = 1.8,          
+  width  = 7.1,          
+  height = 2.84,    
   units    = "in",
   dpi      = 300           
 )
@@ -351,7 +351,7 @@ combined <- plot_grid(
   rel_widths = c(1, 1),
   align = "h",
   labels = c("a", "b"),
-  label_size = baseTextSize,
+  label_size = baseTextSize*1.2,
   label_fontface = "bold",
   label_x = 0.02,
   label_y = 1.02,
@@ -360,7 +360,7 @@ combined <- plot_grid(
   theme(plot.margin = margin(t = 12, r = 5, b = 5, l = 12))
 
 # 4. Shift legend slightly to the right using a spacer
-legend_shifted <- plot_grid(
+legendShifted <- plot_grid(
   NULL,      # empty spacer
   legend,
   ncol = 2,
@@ -370,7 +370,7 @@ legend_shifted <- plot_grid(
 # 5. Combine plots and shifted legend vertically
 finalPlot <- plot_grid(
   combined,
-  legend_shifted,
+  legendShifted,
   ncol = 1,
   rel_heights = c(1, 0.08)  
 )
@@ -391,8 +391,8 @@ ggsave(
   filename = file.path(plotFolder, paste0("Fig4.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
-  width    = 4.5,          
-  height   = 6.2/3,          
+  width  = 7.1,          
+  height = 3.26,        
   units    = "in",
   dpi      = 300           
 )
@@ -418,7 +418,7 @@ ggsave(
   filename = file.path(plotFolder, paste0("Fig5.pdf")),
   plot     = capexVsOpex,
   device   = cairo_pdf,
-  width    = 7.09,          
+  width    = 7.1,          
   height   = 3.5,          
   units    = "in",
   dpi      = 300           
@@ -460,7 +460,7 @@ DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribut
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
                                     max(findZeroPoints$period), by = 5)) +
     scale_y_continuous(limits = c(0, 102)) +
-    plotTheme(baseTextSize) +
+    plotTheme(baseTextSize*1.2) +
     theme(legend.position = "bottom",
           legend.box = "horizontal",
           legend.direction = "vertical")
@@ -489,7 +489,7 @@ DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribut
       color = "Truck technology",
       linetype = ""
     ) +
-    plotTheme(baseTextSize) +
+    plotTheme(baseTextSize*1.2) +
     theme(legend.position = "bottom",
           legend.box = "horizontal",
           legend.direction = "vertical")
@@ -503,40 +503,42 @@ DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribut
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
                                     max(findZeroPoints$period), by = 5)) +
     scale_y_continuous(limits = c(0, 102)) +
-    plotTheme(baseTextSize) +
+    plotTheme(baseTextSize*1.2) +
     theme(legend.position = "bottom",
           legend.box = "horizontal",
           legend.direction = "vertical")
   
   combined <- (
     (p1 | p2 | p3) +
-      plot_layout(widths = c(0.8, 0.8, 0.8), guides = "collect") &
+      plot_layout(widths = c(0.8, 0.8, 0.8), guides = "collect") +
+      plot_annotation(tag_levels = 'a') &
       theme(
+        plot.tag = element_text(face = "bold", size = baseTextSize*1.2),
         legend.position = "bottom",
         plot.margin   =  margin(t = 10, r = 3, b = 3, l = 3)
       ))
 
-    
+   
 plotWithLabels <- ggdraw(combined) +
   draw_label(
     "Optimistic", x = 0.19, y = 0.93, angle = 0,
     fontface = "bold",
     fontfamily = "sans",
-    size = baseTextSize * 1,
+    size = baseTextSize * 1.2,
     hjust = 0
   ) +
   draw_label(
     "Medium", x = 0.5, y = 0.93, angle = 0,
     fontface = "bold",
     fontfamily = "sans",
-    size = baseTextSize * 1,
+    size = baseTextSize * 1.2,
     hjust = 0
   ) +
   draw_label(
     "Pessimistic", x = 0.8, y = 0.93, angle = 0,
     fontface = "bold",
     fontfamily = "sans",
-    size = baseTextSize * 1,
+    size = baseTextSize * 1.2,
     hjust = 0
   )
 
@@ -548,8 +550,8 @@ ggsave(
   filename = file.path(plotFolder, paste0("Fig6.pdf")),
   plot     = plotWithLabels,
   device   = cairo_pdf,
-  width    = 4.5,         
-  height   = 2.3,          
+  width    = 7.1,          
+  height   = 3.5,        
   units    = "in",
   dpi      = 300          
 )

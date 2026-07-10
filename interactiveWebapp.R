@@ -116,14 +116,14 @@ ui <- fluidPage(
       div(class = "figure-box",
           plotOutput("plot1", height = "auto"),
           div(class = "figure-caption", 
-              HTML("<b>Fig.1 | Exemplary Differential cost of Ownership (DCO) of ZET compared to their diesel ICET counterparts across utilisation profiles and vehicle-parameter/energy-carrier scenarios.</b> a, Share in road freight activity over annual mileage bin for considered truck types and markets. b, Scenario-based approach for DCO. c, Exemplary DCO evaluation."))
-      ),
+              HTML("<b>Fig.1 | Exemplary Differential cost of Ownership (DCO) of zero emission trucks (ZET) compared to their diesel ICET counterparts across utilisation profiles and vehicle-parameter/energy-carrier scenarios. a,</b> Share in road freight activity over annual mileage bin for considered truck types and markets. <b>b,</b> Scenario-based approach for DCO. Regarding performance and capital costs, we distinguish a low-cost & high technical maturity (LC_HTM), a medium cost & medium technical maturity (MC_MTM) and a high-cost & low technical maturity case (HC_LTM). Regarding energy carrier prices, we differentiate between a progressive (PROG) and a business-as-usual (BAU) end-use price pathway for the associated energy carrier of a truck technology, e.g., hydrogen for a fuel cell electric truck (FCET), electricity for a battery electric truck (BET) and diesel blend for an internal combustion engine truck (ICET). To incorporate our scenario-based approach in the DCO metric, we explore a medium case and two edge cases: The most optimistic and the most pessimistic combination for the BET/FCET under consideration. <b>c,</b> Exemplary DCO evaluation."))
+           ),
       
       # --- FIGURE 2 BOX (Activity Distribution) ---
       div(class = "figure-box",
           plotOutput("plot2", height = "auto"),
           div(class = "figure-caption", 
-              HTML("<b>Fig.2 | Economically viable HDV road freight activity for the selected DCO scenario.</b> a, Heterogeneous DCO in 2030 in descending order and their cumulative share in total annual road freight activity in the considered markets. The total share of economically viable road freight activity for one-to-one replacement of ICETs by BETs/FCETs is marked with arrows for each alternative. b, Evolution of the cumulative share of economically viable road freight activity over time."))
+              HTML("<b>Fig.2 |Economically viable road freight activity for the selected differential cost of ownership (DCO) scenario. a-c</b>, Heterogeneous DCO in 2030 in descending order and their cumulative share in total annual road freight activity in the considered markets. The total share of economically viable road freight activity for one-to-one replacement of internal combustion engine trucks (ICETs) with battery- (BETs) or fuel cell electric trucks (FCETs) is marked with arrows for each alternative. <b>d-f</b>, Evolution of the cumulative share of economically viable road freight activity over time for the respective DCO scenarios and alternative truck technologies."))
       )
   )
 )
@@ -218,7 +218,7 @@ server <- function(input, output, session) {
     DCOmilageDistributionShares <- calculateFreightActivityShares(DCOmilageDistribution, focus = "EUR")
     
     # Pass variables explicitly to functions
-    TCOxAnnualMileage <- amDistributionBarPlot(DCOmilageDistributionShares, as.numeric(input$yr), "Current policies")
+    TCOxAnnualMileage <- amDistributionBarPlot(DCOmilageDistributionShares, as.numeric(input$yr), "Current policies", baseTextSize = 6)
     
     # Meta plot logic
     dataMeta <- copy(DCOmilageDistributionShares)[period < 2041 & paperScen %in% "Current policies"]

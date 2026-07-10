@@ -1,6 +1,6 @@
 scenOverview <- function(baseZise, paperColors, baseTextSize) {
-  tileWidth   <- baseTextSize * 2   
-  tileHeight  <- baseTextSize * 0.5   
+  tileWidth   <- baseTextSize * 3.3  
+  tileHeight  <- baseTextSize * 1   
   tileSpacing <- baseTextSize * 0.01
   rowSpacing  <- baseTextSize * 0.01
   cornerRadius <- 0.15
@@ -14,7 +14,7 @@ scenOverview <- function(baseZise, paperColors, baseTextSize) {
   colLabels <- c(
     "BET/FCET",
     "ICET\ncounterpart",
-    "DCO scenario"
+    "DCO\nscenario"
   )
   rowLabels <- c(
     "Vehicle\nparameters", "Energy carrier\nparameters",
@@ -69,12 +69,12 @@ scenOverview <- function(baseZise, paperColors, baseTextSize) {
     stringsAsFactors = FALSE
   )
   
-  xMargin <- tileWidth * 0.5
+  xMargin <- tileWidth * 0.3
   xLimits <- c(min(colPositions) - tileWidth/2 - xMargin,
                max(colPositions) + tileWidth/2 + xMargin)
   
-  yMarginTop <- tileHeight * 0.5
-  yMarginBottom <- tileHeight * 0.5
+  yMarginTop <- tileHeight * 0.3
+  yMarginBottom <- tileHeight * 0.3
   yLimits <- c(min(rowPositions) - tileHeight/2 - yMarginBottom,
                topHeaderY + tileHeight/2 + yMarginTop)
   
@@ -142,7 +142,8 @@ scenOverview <- function(baseZise, paperColors, baseTextSize) {
       panel.grid = element_blank(),
       axis.title = element_blank(),
       axis.text = element_blank(),
-      legend.position = "none"
+      legend.position = "none",
+      plot.margin   =  margin(t = 0.7, r = 0, b = 0.5, l = 0)
     )
   
   return(scenariosPlot)
@@ -191,7 +192,7 @@ examplaryUtilisation <- function(country, reducedBinnedWeightedMileage, baseText
     facet_wrap(~country, scales = "free_y", ncol = 1) +
     scale_x_discrete(breaks = xBreaks, labels = xLabels) +
     labs(
-      x = "Annual mileage [km/yr]",
+      x = expression("Annual mileage [km yr"^-1*"]"),
       y = "Weighted share",
       fill = NULL
     ) +
@@ -203,7 +204,7 @@ examplaryUtilisation <- function(country, reducedBinnedWeightedMileage, baseText
       legend.text = element_text(lineheight = 0.9),
       axis.title.x = element_text(margin = margin(t = 4)),
       axis.title.y = element_text(margin = margin(r = 4)),
-      plot.margin = margin(t = 1, r = 1, b = 1, l = 1, unit = "pt"),
+      plot.margin = margin(t = 1, r = 0.1, b = 1, l = 0.1, unit = "pt"),
       panel.background = element_rect(fill = NA, color = NA),
       plot.background  = element_rect(fill = NA, color = NA))
   
@@ -262,9 +263,9 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, annualM, 
   barPlotData <- rbind(truckSide, counterSide)
   # Rename for slim legend and axis labelling
   barPlotData[parameter == "Vehicle body\nincl. engine", parameter := "Vehicle body incl. engine"]
-  barPlotData[parameter == "M&R + tires", parameter := "Maintenance & repair + tires"]
+  barPlotData[parameter == "M&R + tires", parameter := "Maintenance & repair"]
   newOrder <- c("CO2 tax", "Toll charge", "Vehicle tax", "Fuel cost", 
-                "Maintenance & repair + tires", "H2 tank", "Fuel cell system", "Battery", "Vehicle body incl. engine")
+                "Maintenance & repair", "H2 tank", "Fuel cell system", "Battery", "Vehicle body incl. engine")
   validNewOrder <- intersect(newOrder, unique(barPlotData$parameter))
   
   droplevels(barPlotData)
@@ -308,7 +309,7 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, annualM, 
     subDieselVal <- subset(dieselVal, DCOscenario == facetLevel)
     
     TCObarPlots <- ggplot(subBarPlotData, aes(x = `TCOscenario`)) +
-      geom_bar(aes(y = value, fill = parameter), position = "stack", stat = "identity", width = 0.6) +
+      geom_bar(aes(y = value, fill = parameter), position = "stack", stat = "identity", width = 0.55) +
       scale_fill_manual(values = paperColors) +
       geom_hline(yintercept = subDieselVal$value, linetype = "dashed", color = "black", linewidth = 0.7) +
       geom_segment(
@@ -335,10 +336,10 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, annualM, 
                  label.r = unit(0.15, "lines"),  
                  fontface = "bold") +
       facet_wrap(~ `truckTechnology`, nrow = 1, scales = "free_x") +
-      coord_cartesian(ylim = c(0, yMax)) +
+      coord_cartesian(ylim = c(0, yMax), clip = "off") +
       labs(
         x = if (i %in% xAxisLabel) paste0("Vehicle and energy carrier parameter scenario") else NULL,
-        y = if (i %in% yAxisLabel) "TCO [EUR/km]" else NULL,
+        y = if (i %in% yAxisLabel) expression("TCO [€ km"^-1*"]") else NULL,
         title = as.character(facetLevel),
         fill = NULL
       ) +  
@@ -371,11 +372,11 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, annualM, 
   grid.newpage()
   grid.draw(TCOtoDCO_grob)
   
-  widthSize <- 0.9 
-  heightSize <- 0.9
+  widthSize <- 0.92 
+  heightSize <- 0.92
   
   # - Shadow plots 
-  nShadow <- 10    # Amount of background plots
+  nShadow <- 8    # Amount of background plots
   offsetX <- 0.005 * widthSize 
   offsetY <- 0.005 * heightSize
   
@@ -412,11 +413,11 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, annualM, 
   )
   
   titleGrob <- textGrob(
-    paste("Utilisation", annualM, "km/yr |", vehSize, " | ", yr, " | ", countryMapping[country == exampleCountry]$fullName),
+    paste("Utilisation", annualM, "km per year |", vehSize, " | ", yr, " | ", countryMapping[country == exampleCountry]$fullName),
     x = 0.5,                # centered horizontally
-    y = 0.87,               # slightly above the top of the plot
+    y = 0.89,               # slightly above the top of the plot
     just = c("center", "bottom"),
-    gp = gpar(fontsize = baseTextSize *1.2 , fontface = "bold", col = "black")
+    gp = gpar(fontsize = baseTextSize *1.1 , fontface = "bold", col = "black")
   )
   
   # Combine your TCOtoDCO grob with title and ellipsis
@@ -428,7 +429,7 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, annualM, 
   return(TCOtoDCOAnnotated)
 }
 
-amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenario, xAxis = "activity", feas = FALSE) {
+amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenario, xAxis = "activity", feas = FALSE, baseTextSize = 8) {
 
   data <- copy(DCOmileageDistributionShares)[period %in% yr & paperScen == paperScenario]
 
@@ -501,7 +502,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
     
     extraLabel <- if (i %in% xAxisLabel) {
       annotate("label", x = xAnnotation, y = middleY, label = annotation,
-               color = "black", fill = "white", fontface = "bold", size = relSize(0.9),
+               color = "black", fill = "white", fontface = "bold", size = relSize(1.2, baseTextSize),
                hjust = 0, vjust = 0.5, linewidth = 0)
     } else NULL
     
@@ -525,7 +526,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
         aes(xmin = cumShare * 100 - cumWidth * 100,
             xmax = cumShare * 100, ymin = 0, ymax = value,
             color = truckTechnology),
-        fill = NA, linewidth = 0.002 * baseLineWidth, alpha = 0.005, show.legend = FALSE
+        fill = NA, linewidth = 0.0017 * baseLineWidth, alpha = 0.005, show.legend = FALSE
       ) +
       geom_rect(
         data = subDataNeg,
@@ -539,7 +540,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
         aes(xmin = cumShare * 100 - cumWidth * 100,
             xmax = cumShare * 100, ymin = 0, ymax = value,
             color = truckTechnology),
-        fill = NA, linewidth = 0.002 * baseLineWidth, show.legend = FALSE, alpha = 0.005
+        fill = NA, linewidth = 0.0017 * baseLineWidth, show.legend = FALSE, alpha = 0.005
       ) +
       geom_point(
         data = subZero,
@@ -558,7 +559,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
                  aes(x = 40, y = arrowY,
                      label = paste("~", round(cumShare * 100), "%")),
                  color = "black", fill = "white",
-                 size = relSize(0.9), fontface = "bold",
+                 size = relSize(1.2, baseTextSize), fontface = "bold",
                  label.padding = unit(0.1, "cm"),
                  linewidth = 0, hjust = 1, vjust = 0.5) +
       extraLabel +
@@ -568,9 +569,9 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
       scales +
       labs(
         x = if (i %in% xAxisLabel) xAxisTitle else NULL,
-        y = if (i %in% yAxisLabel) paste0("DCO in ", yr, " [EUR/km]") else NULL
+        y = if (i %in% yAxisLabel) as.expression(bquote("DCO in" ~ .(yr) ~ "[" * "EUR km"^-1 * "]")) else NULL
       ) +
-      plotTheme(baseTextSize) 
+      plotTheme(baseTextSize*1.2) 
     
     return(p)
     
@@ -609,7 +610,7 @@ metaPlot <- function(DCOmilageDistributionShares, paperScenario, horizontal = FA
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
                                     max(findZeroPoints$period), by = 5)) +
     scale_y_continuous(limits = c(0, 102)) +
-    plotTheme(baseTextSize)
+    plotTheme(baseTextSize*1.2)
   
   p2 <- ggplot(findZeroPoints[DCOscenario == "Medium"], 
                aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology, linetype = paperScen)) +
@@ -622,7 +623,7 @@ metaPlot <- function(DCOmilageDistributionShares, paperScenario, horizontal = FA
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
                                     max(findZeroPoints$period), by = 5)) +
     scale_y_continuous(limits = c(0, 102)) +
-    plotTheme(baseTextSize)
+    plotTheme(baseTextSize*1.2)
   
   p3 <- ggplot(findZeroPoints[DCOscenario == "Pessimistic"], 
                aes(x = period, y = cumBinWeightedShareEUR * 100, color = truckTechnology, linetype = paperScen)) +
@@ -634,7 +635,7 @@ metaPlot <- function(DCOmilageDistributionShares, paperScenario, horizontal = FA
     scale_x_continuous(breaks = seq(min(findZeroPoints$period),
                                     max(findZeroPoints$period), by = 5)) +
     scale_y_continuous(limits = c(0, 102)) +
-    plotTheme(baseTextSize)
+    plotTheme(baseTextSize*1.2)
   
   # Combine plots
   if (horizontal) columns = 3 else columns = 1
@@ -679,7 +680,7 @@ plotRangeAnalysis <- function(rangeAnalysis, ranges, infrastructure) {
       data = data.frame(x = 58, y = 950, label = "Fast-charging\ninfrastructure\navailability"),
       aes(x = x, y = y, label = label),
       color = "black",       
-      size = relSize(0.7),
+      size = relSize(1),
       fontface = "bold"
     ) +
     # Label border no MCS
@@ -687,7 +688,7 @@ plotRangeAnalysis <- function(rangeAnalysis, ranges, infrastructure) {
       data = data.frame(x = 78, y = 849, label = "0 %"),
       aes(x = x, y = y, label = label),
       color = "black",       
-      size = relSize(0.5),
+      size = relSize(1),
       angle = 20,
       fontface = "bold"
     ) +
@@ -695,11 +696,11 @@ plotRangeAnalysis <- function(rangeAnalysis, ranges, infrastructure) {
     geom_line(data = rangeAnalysis$fullMCS,  aes(x = cumShareFeas * 100, y = directRange), color = "black", linewidth = 0.5 * baseLineWidth, alpha = 0.5) +
     # Label border full MCS
     geom_text(
-      data = data.frame(x = 91, y = 511, label = "100 %"),
+      data = data.frame(x = 91, y = 500, label = "100 %"),
       aes(x = x, y = y, label = label),
       color = "black",       
-      size = relSize(0.5),
-      angle = 41,
+      size = relSize(1),
+      angle = 43,
       fontface = "bold"
     ) +
     # Label 2030
@@ -707,7 +708,7 @@ plotRangeAnalysis <- function(rangeAnalysis, ranges, infrastructure) {
       data = data.frame(x = 75, y = 735, label = "2030"),
       aes(x = x, y = y, label = label),
       color = "black",       # Black text
-      size = relSize(0.5),
+      size = relSize(1),
       angle = 15,
       fontface = "bold"
     ) +
@@ -716,7 +717,7 @@ plotRangeAnalysis <- function(rangeAnalysis, ranges, infrastructure) {
       data = data.frame(x = 80, y = 515, label = "2035"),
       aes(x = x, y = y, label = label),
       color = "black",       # Black text
-      size = relSize(0.5),
+      size = relSize(1),
       angle = 15,
       fontface = "bold"
     ) +
@@ -765,7 +766,7 @@ plotRangeAnalysis <- function(rangeAnalysis, ranges, infrastructure) {
     scale_y_continuous(limits = c(140, 1010),
                        expand = expansion(mult = c(0, 0))) +
     scale_color_manual(values = paperColors) +
-    plotTheme(baseTextSize)
+    plotTheme(baseTextSize*1.2)
   
   p <- p +
     guides(
@@ -796,7 +797,7 @@ plotMileageDensity <- function(weightedMileage) {
       x = "Maximum daily\nvehicle km travelled",
       y = "Cumulative\nfraction"
     ) +
-    plotTheme(baseTextSize) 
+    plotTheme(baseTextSize*1.2) 
   
   return(t)
 }
@@ -859,7 +860,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
     # bars
     geom_linerange(
       aes(ymin = Pessimistic, ymax = Optimistic),
-      linewidth = 3.5, alpha = 0.3,
+      linewidth = 5 * baseLineWidth, alpha = 0.3,
       position = position_dodge(width = dodgeWidth)
     ) +
     # medium scenario markers
@@ -871,7 +872,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       position = position_dodge(width = dodgeWidth)
     ) +
     # ICET bottom line
-    geom_hline(yintercept = 100, color = "grey50", linewidth = 1.6 * baseLineWidth) +
+    geom_hline(yintercept = 100, color = "grey50", linewidth = 1.4 * baseLineWidth) +
     annotate(
       "text",
       x = 3,
@@ -899,7 +900,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       legend.title = element_text(hjust = 0.5),
       panel.grid.major.x = element_blank(),
       panel.grid.minor.x = element_blank(),
-      panel.grid.major.y = element_line(color = "grey90", linewidth = 1.6 * baseLineWidth),
+      panel.grid.major.y = element_line(color = "grey90", linewidth = 1.4 * baseLineWidth),
       panel.grid.minor.y = element_line(color = "grey95", linewidth = 0.5 * baseLineWidth)
     )
 
@@ -922,7 +923,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
     geom_linerange(
       aes(ymin = Pessimistic, ymax = Optimistic, color = truckTechnology,
                          group = truckTechnology),
-      linewidth = 7 * baseLineWidth, alpha = 0.3,
+      linewidth = 5 * baseLineWidth, alpha = 0.3,
       position = position_dodge(width = dodgeWidth),
       show.legend = FALSE
     ) +
@@ -937,7 +938,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       show.legend = FALSE
     ) +
     # ICET bottom line
-    geom_hline(yintercept = 100, color = "grey50", linewidth = 1.6 * baseLineWidth) +
+    geom_hline(yintercept = 100, color = "grey50", linewidth = 1.4 * baseLineWidth) +
     annotate(
       "text",
       x = 3,
@@ -959,7 +960,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
     theme(
       panel.grid.major.x = element_blank(),
       panel.grid.minor.x = element_blank(),
-      panel.grid.major.y = element_line(color = "grey90", linewidth = 1.6 * baseLineWidth),
+      panel.grid.major.y = element_line(color = "grey90", linewidth = 1.4 * baseLineWidth),
       panel.grid.minor.y = element_line(color = "grey95", linewidth = 0.5 * baseLineWidth)
     ) 
   
@@ -967,7 +968,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
     geom_tile(data = syntheticalBreakeven, aes(x = capexDiff, y = opexDiff, fill = breakevenBin)) +
     scale_fill_manual(
       values =  colorMap,
-      name = "Breakeven mileage\n[vehkm yr⁻¹]",
+      name = expression(atop("Breakeven mileage", paste("[vehkm yr"^"-1", "]"))),
       drop = FALSE,
       guide = guide_legend(title.position = "top", ncol = 2)
     ) +
@@ -1004,8 +1005,9 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
     scale_shape_manual(values = c(16, 17, 18), guide = guide_legend(title.position = "top")
     ) +
     labs(
-      x = "CAPEX disadvantage\n(alt – ICET) [€ veh⁻¹ yr⁻¹]",
-      y = "OPEX advantage\n(ICET – alt) [€ km⁻¹]",
+      # Update your labs() or scale functions with these:
+      x = expression(atop("CAPEX disadvantage", paste("(alt ", textstyle("-"), " ICET) [€ veh"^"-1", " yr"^"-1", "]"))),
+      y = expression(atop("OPEX advantage", paste("(ICET ", textstyle("-"), " alt) [€ km"^"-1", "]"))),
       shape = "Period",
       linetype = "DCO\nScenario"
     ) +
