@@ -429,7 +429,7 @@ dcoBarPlot <- function(TCO, DCOscenarios, yr, vehSize, exampleCountry, annualM, 
   return(TCOtoDCOAnnotated)
 }
 
-amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenario, xAxis = "activity", feas = FALSE) {
+amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenario, xAxis = "activity", feas = FALSE, baseTextSize = 8) {
 
   data <- copy(DCOmileageDistributionShares)[period %in% yr & paperScen == paperScenario]
 
@@ -502,7 +502,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
     
     extraLabel <- if (i %in% xAxisLabel) {
       annotate("label", x = xAnnotation, y = middleY, label = annotation,
-               color = "black", fill = "white", fontface = "bold", size = relSize(1.2),
+               color = "black", fill = "white", fontface = "bold", size = relSize(1.2, baseTextSize),
                hjust = 0, vjust = 0.5, linewidth = 0)
     } else NULL
     
@@ -559,7 +559,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
                  aes(x = 40, y = arrowY,
                      label = paste("~", round(cumShare * 100), "%")),
                  color = "black", fill = "white",
-                 size = relSize(1.2), fontface = "bold",
+                 size = relSize(1.2, baseTextSize), fontface = "bold",
                  label.padding = unit(0.1, "cm"),
                  linewidth = 0, hjust = 1, vjust = 0.5) +
       extraLabel +
