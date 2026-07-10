@@ -232,7 +232,7 @@ finalPlot <- plot_grid(
 )
 plotWithLabels <- ggdraw(finalPlot) +
   draw_label(
-    "Optimistic", x = 0.02, y = 0.76, angle = 90,
+    "Optimistic", x = 0.02, y = 0.8, angle = 90,
     fontface = "bold",
     fontfamily = "sans",
     size = baseTextSize * 1.2,

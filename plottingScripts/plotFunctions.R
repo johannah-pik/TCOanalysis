@@ -526,7 +526,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
         aes(xmin = cumShare * 100 - cumWidth * 100,
             xmax = cumShare * 100, ymin = 0, ymax = value,
             color = truckTechnology),
-        fill = NA, linewidth = 0.002 * baseLineWidth, alpha = 0.005, show.legend = FALSE
+        fill = NA, linewidth = 0.0017 * baseLineWidth, alpha = 0.005, show.legend = FALSE
       ) +
       geom_rect(
         data = subDataNeg,
@@ -540,7 +540,7 @@ amDistributionBarPlot <- function(DCOmileageDistributionShares, yr, paperScenari
         aes(xmin = cumShare * 100 - cumWidth * 100,
             xmax = cumShare * 100, ymin = 0, ymax = value,
             color = truckTechnology),
-        fill = NA, linewidth = 0.002 * baseLineWidth, show.legend = FALSE, alpha = 0.005
+        fill = NA, linewidth = 0.0017 * baseLineWidth, show.legend = FALSE, alpha = 0.005
       ) +
       geom_point(
         data = subZero,
@@ -872,7 +872,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       position = position_dodge(width = dodgeWidth)
     ) +
     # ICET bottom line
-    geom_hline(yintercept = 100, color = "grey50", linewidth = 1.6 * baseLineWidth) +
+    geom_hline(yintercept = 100, color = "grey50", linewidth = 1.4 * baseLineWidth) +
     annotate(
       "text",
       x = 3,
@@ -900,7 +900,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       legend.title = element_text(hjust = 0.5),
       panel.grid.major.x = element_blank(),
       panel.grid.minor.x = element_blank(),
-      panel.grid.major.y = element_line(color = "grey90", linewidth = 1.6 * baseLineWidth),
+      panel.grid.major.y = element_line(color = "grey90", linewidth = 1.4 * baseLineWidth),
       panel.grid.minor.y = element_line(color = "grey95", linewidth = 0.5 * baseLineWidth)
     )
 
@@ -938,7 +938,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
       show.legend = FALSE
     ) +
     # ICET bottom line
-    geom_hline(yintercept = 100, color = "grey50", linewidth = 1.6 * baseLineWidth) +
+    geom_hline(yintercept = 100, color = "grey50", linewidth = 1.4 * baseLineWidth) +
     annotate(
       "text",
       x = 3,
@@ -960,7 +960,7 @@ capexVsOpexOverviewPlot <- function(DCO, breakeven, syntheticalBreakeven, scenar
     theme(
       panel.grid.major.x = element_blank(),
       panel.grid.minor.x = element_blank(),
-      panel.grid.major.y = element_line(color = "grey90", linewidth = 1.6 * baseLineWidth),
+      panel.grid.major.y = element_line(color = "grey90", linewidth = 1.4 * baseLineWidth),
       panel.grid.minor.y = element_line(color = "grey95", linewidth = 0.5 * baseLineWidth)
     ) 
   
