@@ -4,7 +4,7 @@ paperColors <- c(
   "Vehicle tax" = '#889c4e', 
   "Fuel cost" = '#A8E6A1', 
   "M&R + tires" = '#14532D',  
-  "Maintenance & repair + tires"= '#14532D', 
+  "Maintenance & repair"= '#14532D', 
   "H2 tank" = '#c2d7e1', 
   "Fuel cell system" = '#858ca7', 
   "Fuel cell\nsystem" = '#858ca7', 
@@ -47,8 +47,8 @@ paperLines <- c(
   "Sensitivity | Current Policies | Vehicle insurance" = "dotted"
 )
 
-baseTextSize <- 7
-baseLineWidth <- 0.5
+baseTextSize <- 8
+baseLineWidth <- 0.7
 plotTheme <- function(baseTextSize) {
   themePanel <- theme_minimal(base_size = baseTextSize) +
   theme(
