@@ -14,7 +14,7 @@ Hoppe, Johanna; Ueckerdt, Falko; Plötz, Patrick; Link, Steffen; Speth, Daniel; 
     3. Run renv::restore() to install required package versions.
 - TCOmodel.R reads in parameter raw data from data/TCOparameter
 	and saves calculated output in data/TCOanalysis.
-- The figures and analyses in the research article can be reproduced with the help of plottingScripts/mainFigures.RMD and plottingScripts/extendedAndSupplementaryFigures.Rmd
+- The figures and analyses in the research article can be reproduced with the help of plottingScripts/mainFigures.RMD and plottingScripts/supplementaryFigures.Rmd
 - Resulting figures are stored in plots/main or plots/supplementary
 - Running the interactiveWebapp.R allows users to combine different vehicle parameter and energy carrier
   scenarios to visualize the DCO and explore results for specific countries and utilisation
